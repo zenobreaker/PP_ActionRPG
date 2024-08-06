@@ -8,14 +8,13 @@ public class Evade_Animation : StateMachineBehaviour
     /// 같은 프레임에 시작과 끝을 주지 않기 위한 변수 
     /// </summary>
     private bool bFirstExecution;
-    private SprintComponent sprint;
+    //private SprintComponent sprint;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        if (sprint == null)
-            sprint = animator.gameObject.GetComponent<SprintComponent>();
+       
 
         bFirstExecution = true; 
 

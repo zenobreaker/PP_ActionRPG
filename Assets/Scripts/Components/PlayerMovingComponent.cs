@@ -37,13 +37,13 @@ public class PlayerMovingComponent : MonoBehaviour
     private CameraArm cameraArm;
     private WeaponComponent weapon;
     private StateComponent state;
-    private SprintComponent sprint;
   
     private Vector3 inputMove;
     public Vector2 InputMove { get => inputMove; }
 
     private Vector2 currentInputMove; // 현재 입력한 이동값 
     private bool bRun;
+    private bool bDash;
 
     private Vector2 inputLook; // 마우스의 델타값 
     public void Move()
@@ -64,10 +64,7 @@ public class PlayerMovingComponent : MonoBehaviour
         weapon = GetComponent<WeaponComponent>();
         state = GetComponent<StateComponent>();
 
-        state.OnStateTypeChanged += OnStateTypeChangaed;
-        //sprint = GetComponent<SprintComponent>();
-        //sprint.OnBeginSprint += OnBeginSprint;
-        //sprint.OnEndSprint += OnEndSprint;
+        //state.OnStateTypeChanged += OnStateTypeChangaed;
 
         cameraArm = FindObjectOfType<CameraArm>();
         Debug.Assert(cameraArm != null);
@@ -97,6 +94,7 @@ public class PlayerMovingComponent : MonoBehaviour
 
         InputAction runAction = actionMap.FindAction("Run");
         runAction.started += Input_Run_Started;
+        runAction.performed += Input_Run_Performed;
         runAction.canceled += Input_Run_Canceled;
 
     }
@@ -137,6 +135,12 @@ public class PlayerMovingComponent : MonoBehaviour
 
     #region Run
     private void Input_Run_Started(InputAction.CallbackContext context)
+    {
+        //bRun = true;
+        bDash = true;
+    }
+
+    private void Input_Run_Performed(InputAction.CallbackContext context)
     {
         bRun = true;
     }
@@ -220,76 +224,5 @@ public class PlayerMovingComponent : MonoBehaviour
 
     }
 
-    private Quaternion? evadeRotation = null;
-    private void OnStateTypeChangaed(StateType prevType, StateType newType)
-    {
-        switch (newType)
-        {
-            case StateType.Evade:
-            {
-                Vector2 value = InputMove;
-
-                EvadeDirection direction = EvadeDirection.Forward;
-                if (bTargetMode)
-                {
-                    if (value.y == 0.0f)
-                    {
-                        direction = EvadeDirection.Forward;
-
-                        if (value.x < 0.0f)
-                            direction = EvadeDirection.Left;
-                        else if (value.x > 0.0f)
-                            direction = EvadeDirection.Right;
-                    }
-                    else if (value.y >= 0.0f)
-                    {
-                        direction = EvadeDirection.Forward;
-
-                        // 대각선 처리 
-                        if (value.x < 0.0f)
-                        {
-                            evadeRotation = transform.rotation;
-                            transform.Rotate(Vector3.up, -45.0f); // 어색하면 보간해주자 
-                        }
-                        else if (value.x > 0.0f)
-                        {
-                            evadeRotation = transform.rotation;
-                            transform.Rotate(Vector3.up, 45.0f);
-                        }
-                    }
-                    else
-                    {
-                        direction = EvadeDirection.Backward;
-                    }
-                }
-
-
-                //// 회피 동작 실행
-                animator.SetInteger("Direction", (int)direction);
-                animator.SetTrigger("Evade");
-                //sprint?.Execute_SprintAnimation(moving.InputMove);
-            }
-            return;
-        }
-    }
-
-    private void End_Evade()
-    {
-        //if(evadeRotation.HasValue)
-        //    evadeRotation
-
-        state.SetIdleMode();
-
-    }
-
-
-    void OnBeginSprint()
-    {
-        Stop();
-    }
-
-    void OnEndSprint()
-    {
-        Move();
-    }
+  
 }

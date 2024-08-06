@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.WSA;
@@ -11,7 +12,7 @@ public class Player
     IDamagable
 {
     private PlayerMovingComponent moving;
-    private SprintComponent sprint;
+    private DashComponent dash;
     private GroundedComponent ground;
     private LaunchComponent launch;
     private ComboComponent combo;
@@ -19,7 +20,8 @@ public class Player
     private Color originColor; 
     private Color targetColor;
 
-    
+    public event Action OnEvadeState;
+    public event Action OnDamaged; 
 
     protected override void Awake()
     {
@@ -34,7 +36,7 @@ public class Player
         Debug.Assert(ground != null);
         combo = GetComponent<ComboComponent>();
         //sprint = GetComponent<SprintComponent>();
-        
+
         PlayerInput input = GetComponent<PlayerInput>();
         InputActionMap actionMap = input.actions.FindActionMap("Player");
 
@@ -77,7 +79,6 @@ public class Player
             weapon.DoSubAction();
         };
 
-
         actionMap.FindAction("Evade").started += (context) =>
         {
             if (state.IdleMode == false)
@@ -88,9 +89,9 @@ public class Player
 
     }
 
+
     protected override void OnAnimatorMove()
     {
-        //base.OnAnimatorMove();
         OnNonForwardAttackAnim();
     }
 
@@ -121,6 +122,14 @@ public class Player
 
     public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, DoActionData data)
     {
+        if (state.Type == StateType.Evade)
+        {
+            OnEvadeState?.Invoke();
+            return;
+        }
+
+        OnDamaged?.Invoke();
+
         healthPoint.Damage(data.Power);
 
         //TODO: 내가 당하는데 프레임이 멈추면 좋은가?

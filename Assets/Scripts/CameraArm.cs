@@ -200,7 +200,7 @@ public class CameraArm : MonoBehaviour
 #if UNITY_EDITOR
     private void OnGUI()
     {
-        GUILayout.Label(transform.rotation.ToString());
+        //GUILayout.Label(transform.rotation.ToString());
     }
 
 

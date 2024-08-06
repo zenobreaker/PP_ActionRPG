@@ -269,6 +269,17 @@
                 },
                 {
                     "name": "",
+                    "id": "cfa793d3-8ad1-4795-a7ec-5fd5212a8a3a",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Evade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "12bd4958-23a7-4fb5-946b-2cfd546d4edb",
                     "path": "<Keyboard>/5",
                     "interactions": "",

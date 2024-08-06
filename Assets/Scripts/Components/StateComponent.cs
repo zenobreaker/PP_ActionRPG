@@ -9,6 +9,7 @@ public class StateComponent : MonoBehaviour
         Idle = 0, Equip, Action, Evade, Damaged,  Dead,
     }
     private StateType type = StateType.Idle;
+    public StateType Type { get => type; }
 
     public event Action<StateType, StateType> OnStateTypeChanged;
 
