@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fa277eddc94d454ca12b7dd0799cd10, type: 3}
+  m_Name: FistCombo
+  m_EditorClassIdentifier: 
+  comboDatas:
+  - ComboName: Fist_Combo1
+    comboInputLimitTime: 0.5
+    comboQueueLimitTime: 1.5
+  - ComboName: Fist_Combo2
+    comboInputLimitTime: 0.5
+    comboQueueLimitTime: 1.5
+  - ComboName: Fist_Combo3
+    comboInputLimitTime: 1
+    comboQueueLimitTime: 1.5
+  - ComboName: Fist_Combo4
+    comboInputLimitTime: 1
+    comboQueueLimitTime: 1.75
