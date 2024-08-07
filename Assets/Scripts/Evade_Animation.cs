@@ -10,23 +10,29 @@ public class Evade_Animation : StateMachineBehaviour
     private bool bFirstExecution;
     //private SprintComponent sprint;
 
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-       
 
-        bFirstExecution = true; 
+
+        bFirstExecution = true;
 
 
     }
 
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+
+
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateExit(animator, stateInfo, layerIndex);
 
         if (bFirstExecution == false)
-            return; 
+            return;
 
         bFirstExecution = false;
     }

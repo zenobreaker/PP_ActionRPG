@@ -182,6 +182,7 @@ public class Enemy :
 
         animator.SetTrigger("Dead");
         MovableStopper.Instance.Delete(this);
+        MovableSlower.Instance.Delete(this);
         BossStageManager.Instance.SetEnemyCount(1);
         Destroy(gameObject, 5);
     }
@@ -238,5 +239,15 @@ public class Enemy :
         base.Begin_DownCondition();
     }
 
-    
+    public override void ApplySlow(float duration, float slowFactor)
+    {
+        base.ApplySlow(duration, slowFactor);
+        aiController.Slow_NavMeshSpeed(slowFactor);
+    }
+
+    public override void ResetSpeed()
+    {
+        base.ResetSpeed();
+        aiController.Reset_NavMeshSpeed();
+    }
 }

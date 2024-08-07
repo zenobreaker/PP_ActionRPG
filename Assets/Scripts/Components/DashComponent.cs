@@ -18,29 +18,27 @@ using static UnityEngine.EventSystems.StandaloneInputModule;
 public class DashComponent : MonoBehaviour
 {
 
-    [SerializeField] private float sprintSpeed = 5.0f;
+    [SerializeField] private float dashSpeed = 5.0f;
     //[SerializeField] private float originalAnimationSpeed = 1f;
     //[SerializeField] private float sprintMultiplier = 2f; // 이 예제에서는 2초로 늘어났을 때를 가정
-    [SerializeField] private float sprintDistance = 3.0f;
+    [SerializeField] private float dashDistance = 3.0f;
     [SerializeField] private string sprintAnimName = ""; // 스프린트 애니메이션 
 
-    private PlayerMovingComponent moving; 
+    private PlayerMovingComponent moving;
     private StateComponent state;
 
     private Vector2 inputMove;
-    private bool bTargetMode; 
+    private bool bTargetMode;
 
-    private Vector3 direction;
     private Vector3 targetPos;
     private float distance;
-    private bool bStart = false;
+    private bool bDash = false;
 
 
     private Animator animator;
-    private CharacterController contoller;
     //private bool bSprint = false;
 
-    public event Action OnBeginEvadeState; 
+    public event Action OnBeginEvadeState;
 
     private void Awake()
     {
@@ -55,37 +53,67 @@ public class DashComponent : MonoBehaviour
 
     }
 
-    public void DoAction_Dash()
+    public void DoAction_Dash(Vector3 direction)
     {
-        if (state.IdleMode == false)
-            return; 
-
         StopAllCoroutines();
-        StartCoroutine(Start_Sprint());
+        StartCoroutine(Start_Dash(direction));
     }
 
 
-    private IEnumerator Start_Sprint()
+    private void AdjustingAnimation(bool bBegin)
     {
-        float startTime = Time.time; 
-        bStart = true; 
-        targetPos = transform.position + (direction * sprintDistance);
-        distance = Vector3.Distance(targetPos, transform.position);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-
-        while (distance > 0.2f)
-        {
-
-            direction = (targetPos - transform.position).normalized;
-            distance = Vector3.Distance(targetPos, transform.position);
-
-            contoller.Move(direction * sprintSpeed * Time.deltaTime);
-            yield return new WaitForFixedUpdate();
+        //TODO: 애니메이션이 어색하면 구간 시간을 조금씩 느리게 흘러가게 해볼까
+        if (bBegin)
+        { 
+     
+            Debug.Log($"현재 이름 :  {stateInfo.shortNameHash}");
+            if (stateInfo.normalizedTime >= 0.5f && stateInfo.normalizedTime <= 0.6f)
+            {
+                animator.speed = 0.0f;
+                return;
+            }
         }
 
-        bStart = false;
-        contoller.Move(Vector3.zero);
+        animator.speed = 1.0f;
+    }
 
+
+
+
+    private IEnumerator Start_Dash(Vector3 direction)
+    {
+        float startTime = Time.time;
+        bDash = true;
+        targetPos = transform.position + (direction.normalized * dashDistance);
+        distance = Vector3.Distance(targetPos, transform.position);
+
+        float resultTime = distance / dashSpeed;
+        Debug.Log($"최종 걸리는 시간 {resultTime}");
+
+        moving.Stop();
+        //AdjustingAnimation(true);
+
+        while (distance > 0)
+        {
+            transform.Translate(direction.normalized * dashSpeed * Time.fixedDeltaTime);
+            distance = Vector3.Distance(targetPos, transform.position);
+
+            yield return new WaitForFixedUpdate();
+            float time = Time.time;
+            //Debug.Log($"측정 시간{time}");
+            if (time - startTime >= resultTime)
+                break;
+        }
+        
+        Debug.Log("대쉬 종료");
+        
+        //AdjustingAnimation(false);
+        bDash = false;
+        moving.Move();
+        //TODO: Test
+        state.SetIdleMode();
     }
 
     private Quaternion? evadeRotation = null;
@@ -136,8 +164,11 @@ public class DashComponent : MonoBehaviour
 
 
                 //// 회피 동작 실행
-                animator.SetInteger("Direction", (int)direction);
+                animator.SetInteger("Direction", (int)0);
                 animator.SetTrigger("Evade");
+
+                if (direction == EvadeDirection.Forward)
+                    DoAction_Dash(Vector3.forward);
 
             }
             return;
@@ -154,7 +185,7 @@ public class DashComponent : MonoBehaviour
     private void OnGUI()
     {
         if (Selection.activeGameObject != gameObject)
-            return; 
+            return;
 
         Gizmos.color = Color.red;
         GUILayout.Label(distance.ToString("f6"));
@@ -166,11 +197,6 @@ public class DashComponent : MonoBehaviour
         if (Application.isPlaying == false)
             return;
 
-        if (bStart)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(targetPos, 2.0f);
-        }
 
     }
 

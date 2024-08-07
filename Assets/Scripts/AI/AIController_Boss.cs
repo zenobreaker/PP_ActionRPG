@@ -73,7 +73,7 @@ public class AIController_Boss : AIController
 
     private void OnEnable()
     {
-        SetEquipMode(enemy.weaponType);
+      //  SetEquipMode(enemy.weaponType);
     }
 
     protected override void Update()

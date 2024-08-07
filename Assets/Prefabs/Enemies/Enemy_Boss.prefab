@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 736937223243926072}
   - component: {fileID: 8568872400529192760}
   m_Layer: 7
-  m_Name: Enemy_GreatSword
+  m_Name: Enemy_Boss
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

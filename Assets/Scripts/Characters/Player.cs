@@ -109,10 +109,10 @@ public class Player
             {
                 position = Vector3.zero;
             }
-            else if(moving.InputMove.y > 0)
-            {
-                position = transform.forward * 1.0f * Time.deltaTime;
-            }
+            //else if(moving.InputMove.y > 0)
+            //{
+            //    position = transform.forward * 1.0f * Time.deltaTime;
+            //}
         }
         
 
@@ -125,6 +125,7 @@ public class Player
         if (state.Type == StateType.Evade)
         {
             OnEvadeState?.Invoke();
+            MovableSlower.Instance.Start_Slow(this);
             return;
         }
 
@@ -182,6 +183,7 @@ public class Player
 
         animator.SetTrigger("Dead");
         MovableStopper.Instance.Delete(this);
+        MovableSlower.Instance.Delete(this);
         Destroy(gameObject, 5);
 
     }

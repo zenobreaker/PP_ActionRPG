@@ -123,6 +123,7 @@ public class WeaponComponent : MonoBehaviour
         if (state.IdleMode == false)
             return;
 
+
         SetMode(WeaponType.Sword);// 칼 장착할 거니 칼타입을 준다
     }
 

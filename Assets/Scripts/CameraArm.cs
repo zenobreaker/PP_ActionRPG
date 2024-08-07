@@ -31,8 +31,8 @@ public class CameraArm : MonoBehaviour
     [SerializeField] private CutsenceController cutscene;
 
     private Vector2 inputLook;
-
-    private bool visibleCursor;
+    public bool bDebugMode = false; 
+    private  bool visibleCursor;
 
     private void Awake()
     {
@@ -92,6 +92,9 @@ public class CameraArm : MonoBehaviour
     }
     private void Update_ZoomCamera()
     {
+        if (bDebugMode)
+            return; 
+
         if (MathHelpers.IsNearlyEqual(tpsFollowCamera.CameraDistance, zoomDistance, 0.01f))
         {
             tpsFollowCamera.CameraDistance = zoomDistance;

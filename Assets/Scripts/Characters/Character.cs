@@ -7,21 +7,22 @@ using UnityEngine;
 [RequireComponent(typeof(WeaponComponent))]
 [RequireComponent(typeof(Rigidbody))]
 
-public abstract class Character 
+public abstract class Character
     : MonoBehaviour,
-    IStoppable
+    IStoppable,
+    ISlowable
 {
     //TODO: 이 값들은 따로 빼주기 
     private enum CharacterCondition
     {
-        None, Down, Max, 
+        None, Down, Max,
     }
     private CharacterCondition myCondition;
 
     public bool NoneCondition { get => myCondition == CharacterCondition.None; }
     public bool DownCondition { get => myCondition == CharacterCondition.Down; }
-    public void SetNoneConditon() {  myCondition = CharacterCondition.None; }
-    public void SetDownCondition() {  myCondition = CharacterCondition.Down; }
+    public void SetNoneConditon() { myCondition = CharacterCondition.None; }
+    public void SetDownCondition() { myCondition = CharacterCondition.Down; }
 
     protected Animator animator;
     protected new Rigidbody rigidbody;
@@ -29,12 +30,17 @@ public abstract class Character
     protected StateComponent state;
     protected HealthPointComponent healthPoint;
     protected WeaponComponent weapon;
-   
-    protected Coroutine downConditionCoroutine; 
+
+    protected Coroutine downConditionCoroutine;
+
+    private float originAnimSpeed;
 
     protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
+        Debug.Assert(animator != null);
+        originAnimSpeed = animator.speed;
+
         rigidbody = GetComponent<Rigidbody>();
 
         state = GetComponent<StateComponent>();
@@ -46,6 +52,7 @@ public abstract class Character
     {
         // 등록
         Regist_MovableStopper();
+        Regist_MovableSlower();
     }
 
     protected virtual void Update()
@@ -83,7 +90,7 @@ public abstract class Character
     }
 
 
-    
+
     protected virtual void Begin_DownCondition()
     {
         if (downConditionCoroutine != null)
@@ -97,6 +104,11 @@ public abstract class Character
     }
 
 
+    private void Regist_MovableSlower()
+    {
+        MovableSlower.Instance.Regist(this);
+    }
+
     // 일어나기 시작 
     protected IEnumerator Change_GetUpCondition()
     {
@@ -109,7 +121,7 @@ public abstract class Character
     protected virtual void Begin_GetUp()
     {
         if (state.DeadMode)
-            return; 
+            return;
 
         animator.SetBool("IsDownCondition", false);
 
@@ -119,5 +131,21 @@ public abstract class Character
         SetNoneConditon();
     }
 
-    
+    public virtual void ApplySlow(float duration, float slowFactor)
+    {
+        animator.speed = originAnimSpeed * slowFactor;
+        StopCoroutine(ResetSpeedAfterDelay(duration));
+        StartCoroutine(ResetSpeedAfterDelay(duration));
+    }
+
+    public virtual void ResetSpeed()
+    {
+        animator.speed = originAnimSpeed;
+    }
+
+    public IEnumerator ResetSpeedAfterDelay(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ResetSpeed();
+    }
 }

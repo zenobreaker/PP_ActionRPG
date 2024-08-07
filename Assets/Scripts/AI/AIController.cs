@@ -47,6 +47,8 @@ public abstract class AIController : MonoBehaviour
     protected TextMeshProUGUI userInterface;
     protected Canvas uiStateCanvas;
 
+    private float navOriginSpeed;
+    private float navOriginAngularSpeed;
 
     [SerializeField]
     private float currentCoolTime = 0.0f;
@@ -61,6 +63,9 @@ public abstract class AIController : MonoBehaviour
         Debug.Assert(perception != null);
         navMeshAgent = GetComponent<NavMeshAgent>();
         Debug.Assert(navMeshAgent != null);
+        navOriginSpeed = navMeshAgent.speed;
+        navOriginAngularSpeed = navMeshAgent.angularSpeed;
+
         animator = GetComponent<Animator>();
 
         state = GetComponent<StateComponent>();
@@ -71,9 +76,6 @@ public abstract class AIController : MonoBehaviour
         weapon = GetComponent<WeaponComponent>();
         weapon.OnEndEquip += OnEndEquip;
         weapon.OnEndDoAction += OnEndDoAction;
-
-
-
     }
 
     private void Start()
@@ -394,4 +396,16 @@ public abstract class AIController : MonoBehaviour
         currentCoolTime = time;
     }
 
+
+    public void Slow_NavMeshSpeed(float slowFactor)
+    {
+        navMeshAgent.speed = navMeshAgent.speed * slowFactor;
+        navMeshAgent.angularSpeed = navMeshAgent.angularSpeed * slowFactor;
+    }
+
+    public void Reset_NavMeshSpeed()
+    {
+        navMeshAgent.speed = navOriginSpeed;
+        navMeshAgent.angularSpeed = navOriginAngularSpeed;
+    }
 }

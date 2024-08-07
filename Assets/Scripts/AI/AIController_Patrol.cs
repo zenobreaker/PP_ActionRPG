@@ -148,6 +148,7 @@ public class AIController_Patrol : AIController
         bCheck &= StrafeState;
         bCheck &= !state.DeadMode;
         bCheck &= !enemy.DownCondition;
+        bCheck &= sideStep != null;
         if (bCheck == false)
             return;
 
@@ -236,7 +237,7 @@ public class AIController_Patrol : AIController
         WaitState prevState = waitState;
         waitState = newState;
 
-        sideStep.StopStep();
+        sideStep?.StopStep();
 
         if (waitState == WaitState.Idle)
         {
