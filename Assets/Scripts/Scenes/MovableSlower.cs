@@ -13,11 +13,23 @@ public class MovableSlower : MonoBehaviour
             instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        Awake_MainLight();
+        Awake_SkyBoxMaterial();
     }
 
     public static MovableSlower Instance { get => instance; }
 
     ///////////////////////////////////////////////////////////////////////////
+
+    // 조명 
+    [SerializeField] private Light mainLight;
+    private float originalIntensity;
+    [SerializeField] private float tragetIntensity = 0.35f; 
+    // 스카이 박스
+    [SerializeField] private Material originalSkybox;
+    [SerializeField] private Material darkSkybox;
+
 
     [SerializeField] private float duration = 2.0f;
     [SerializeField] private float slotFactor = 0.5f;       // 늦춰질 속도 값 
@@ -25,6 +37,17 @@ public class MovableSlower : MonoBehaviour
     private bool bCanSlowTime = true;                       // 슬로우 타임 가능 여부
 
     private List<ISlowable> slowers = new List<ISlowable>();
+
+    private void Awake_MainLight()
+    {
+        if(mainLight != null)
+            originalIntensity = mainLight.intensity;
+    }
+
+    private void Awake_SkyBoxMaterial()
+    {
+        originalSkybox = RenderSettings.skybox;
+    }
 
     public void Regist(ISlowable slower)
     {
@@ -42,31 +65,86 @@ public class MovableSlower : MonoBehaviour
         if (bCanSlowTime == false)
             return;
 
-        bCanSlowTime = false; 
+        bCanSlowTime = false;
+        float shortDuration = duration * 0.2f;
         slowers.ForEach(slower =>
         {
             // 슬로우 타임을 일으킨 대상은 더 빨리 풀리도록 
             if (causer != null)
             {
-                if(slower == causer)
+                if (slower == causer)
                 {
-                    float shortDuration = duration * 0.2f;
                     slower.ApplySlow(shortDuration, slotFactor);
                 }
             }
-            else 
-                slower.ApplySlow(duration, slotFactor);
+
+            slower.ApplySlow(duration, slotFactor);
         });
 
 
-
         StartCoroutine(Delay_SlowTime());
+
+        //Lighting
+        {
+            StartCoroutine(Adjusting_Lighting(shortDuration, tragetIntensity));
+            StartCoroutine(Reset_Ligiting(duration));
+        }
+
+        // Skybox
+        {
+            AdjustingSkybox();
+            StartCoroutine(Reset_Skybox(duration));
+        }
     }
 
     private IEnumerator Delay_SlowTime()
     {
         yield return new WaitForSeconds(slowTimeCoolTime);
-        bCanSlowTime = true; 
+        bCanSlowTime = true;
     }
+
+    #region Lighting
+    private IEnumerator Adjusting_Lighting(float duration, float targetIntensity)
+    {
+        float elapsedTime = 0f;
+
+        float currentIntesity = mainLight.intensity;
+
+        while (elapsedTime < duration)
+        {
+            mainLight.intensity = Mathf.Lerp(currentIntesity, targetIntensity, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+
+        mainLight.intensity = targetIntensity;
+    }
+
+    private IEnumerator Reset_Ligiting(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        StartCoroutine(Adjusting_Lighting(duration * 0.2f, originalIntensity));
+    }
+    #endregion
+
+    #region Skybox
+    private void AdjustingSkybox()
+    {
+        RenderSettings.skybox = darkSkybox;
+    }
+    
+    private IEnumerator Reset_Skybox(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ResetSkybox();
+    }
+
+    private void ResetSkybox()
+    {
+        RenderSettings.skybox = originalSkybox;
+    }
+
+    #endregion
 
 }

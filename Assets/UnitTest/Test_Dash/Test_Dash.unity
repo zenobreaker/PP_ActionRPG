@@ -35,10 +35,10 @@ RenderSettings:
   m_DefaultReflectionMode: 0
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
-  m_ReflectionIntensity: 1
+  m_ReflectionIntensity: 0.3
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.028462086, g: 0.2996052, b: 0.4944356, a: 1}
+  m_IndirectSpecularColor: {r: 0.008538626, g: 0.08988156, b: 0.14833069, a: 0.3}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 7240e38a2d7cb7440892b234a18c565a, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -604,6 +604,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5d63679eea77248bf4c33e5fdb8625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainLight: {fileID: 705507994}
+  tragetIntensity: 0.35
+  originalSkybox: {fileID: 0}
+  darkSkybox: {fileID: 2100000, guid: 1cc6e6796f833a94f94e6d794ca654c3, type: 2}
   duration: 10
   slotFactor: 0.1
   slowTimeCoolTime: 2
@@ -893,10 +897,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -24.6}
   m_LocalScale: {x: 5, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 705507995}
+  m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &479384565
 MeshRenderer:
@@ -1145,7 +1148,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &586885920
 BoxCollider:
@@ -1242,7 +1245,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!65 &587749934
 BoxCollider:
@@ -2070,12 +2073,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.29874858, z: 0.3769738}
+  m_LocalPosition: {x: 0, y: 3, z: -24.6}
+  m_LocalScale: {x: 1.25, y: 1.6574233, z: 1.5840869}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 479384563}
-  m_RootOrder: 0
+  m_Father: {fileID: 1026970170}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &705507996
 MonoBehaviour:
@@ -2226,7 +2229,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &760415001
 BoxCollider:
@@ -2550,6 +2553,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1727067787}
+  - {fileID: 705507995}
   - {fileID: 479384563}
   - {fileID: 586885919}
   - {fileID: 760415000}
@@ -2668,7 +2672,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1076335335
 MonoBehaviour:
@@ -4079,7 +4083,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1026970170}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!65 &1695251338
 BoxCollider:
@@ -6283,6 +6287,10 @@ PrefabInstance:
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5532808461678546066, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
+      propertyPath: attackRange
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546164, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_Name

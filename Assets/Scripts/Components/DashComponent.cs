@@ -22,17 +22,15 @@ public class DashComponent : MonoBehaviour
     //[SerializeField] private float originalAnimationSpeed = 1f;
     //[SerializeField] private float sprintMultiplier = 2f; // 이 예제에서는 2초로 늘어났을 때를 가정
     [SerializeField] private float dashDistance = 3.0f;
-    [SerializeField] private string sprintAnimName = ""; // 스프린트 애니메이션 
+    //[SerializeField] private string sprintAnimName = ""; // 스프린트 애니메이션 
 
     private PlayerMovingComponent moving;
     private StateComponent state;
 
-    private Vector2 inputMove;
     private bool bTargetMode;
 
     private Vector3 targetPos;
     private float distance;
-    private bool bDash = false;
 
 
     private Animator animator;
@@ -45,8 +43,7 @@ public class DashComponent : MonoBehaviour
         animator = GetComponent<Animator>();
         moving = GetComponent<PlayerMovingComponent>();
         Debug.Assert(moving != null);
-        inputMove = moving.InputMove;
-
+        
         state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
         state.OnStateTypeChanged += OnStateTypeChanged;
@@ -85,7 +82,6 @@ public class DashComponent : MonoBehaviour
     private IEnumerator Start_Dash(Vector3 direction)
     {
         float startTime = Time.time;
-        bDash = true;
         targetPos = transform.position + (direction.normalized * dashDistance);
         distance = Vector3.Distance(targetPos, transform.position);
 
@@ -110,7 +106,6 @@ public class DashComponent : MonoBehaviour
         Debug.Log("대쉬 종료");
         
         //AdjustingAnimation(false);
-        bDash = false;
         moving.Move();
         //TODO: Test
         state.SetIdleMode();
@@ -126,7 +121,7 @@ public class DashComponent : MonoBehaviour
 
                 OnBeginEvadeState?.Invoke();
 
-                Vector2 value = inputMove;
+                Vector2 value = moving.InputMove;
 
                 EvadeDirection direction = EvadeDirection.Forward;
                 if (bTargetMode)
@@ -162,13 +157,20 @@ public class DashComponent : MonoBehaviour
                     }
                 }
 
+                if(value.magnitude == 0.0f)
+                    direction = EvadeDirection.Backward;
 
                 //// 회피 동작 실행
-                animator.SetInteger("Direction", (int)0);
+                animator.SetInteger("Direction", (int)direction);
                 animator.SetTrigger("Evade");
 
+                Vector3 dir = Vector3.zero;
                 if (direction == EvadeDirection.Forward)
-                    DoAction_Dash(Vector3.forward);
+                    dir = Vector3.forward;
+                else if(direction == EvadeDirection.Backward)
+                    dir = Vector3.back;
+
+                DoAction_Dash(dir);
 
             }
             return;

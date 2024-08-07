@@ -247,17 +247,6 @@
                 },
                 {
                     "name": "",
-                    "id": "399d42c1-9efd-46b2-a720-d363d5926b32",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Evade",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f00bb6c0-6ebd-4f2b-b60c-9947a6783743",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
