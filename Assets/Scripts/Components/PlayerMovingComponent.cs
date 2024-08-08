@@ -105,6 +105,7 @@ public class PlayerMovingComponent : MonoBehaviour
     }
 
     #region Keyboard
+
     private void Input_Move_Performed(InputAction.CallbackContext context)
     {
         inputMove = context.ReadValue<Vector2>();

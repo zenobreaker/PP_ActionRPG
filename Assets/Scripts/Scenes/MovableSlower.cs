@@ -16,6 +16,7 @@ public class MovableSlower : MonoBehaviour
 
         Awake_MainLight();
         Awake_SkyBoxMaterial();
+        Awake_EvadeUI();
     }
 
     public static MovableSlower Instance { get => instance; }
@@ -29,7 +30,8 @@ public class MovableSlower : MonoBehaviour
     // 스카이 박스
     [SerializeField] private Material originalSkybox;
     [SerializeField] private Material darkSkybox;
-
+    // Evade UI 
+    [SerializeField] private EvadeEffectUIController evadeUiController;
 
     [SerializeField] private float duration = 2.0f;
     [SerializeField] private float slotFactor = 0.5f;       // 늦춰질 속도 값 
@@ -48,6 +50,13 @@ public class MovableSlower : MonoBehaviour
     {
         originalSkybox = RenderSettings.skybox;
     }
+
+    private void Awake_EvadeUI()
+    {
+        if(evadeUiController == null)
+            evadeUiController = FindObjectOfType<EvadeEffectUIController>();
+    }
+
 
     public void Regist(ISlowable slower)
     {
@@ -94,6 +103,11 @@ public class MovableSlower : MonoBehaviour
         {
             AdjustingSkybox();
             StartCoroutine(Reset_Skybox(duration));
+        }
+
+        // Evade Effect UI 
+        {
+            PlayEvadeEffectUI();
         }
     }
 
@@ -147,4 +161,17 @@ public class MovableSlower : MonoBehaviour
 
     #endregion
 
+
+    #region Evade Effect UI 
+    private void PlayEvadeEffectUI()
+    {
+        if (evadeUiController == null)
+            return;
+
+
+        evadeUiController.OnEvadeEffectUi();
+    }
+
+
+    #endregion
 }

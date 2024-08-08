@@ -11,6 +11,7 @@ public class Player
     : Character,
     IDamagable
 {
+
     private PlayerMovingComponent moving;
     private DashComponent dash;
     private GroundedComponent ground;
@@ -194,4 +195,7 @@ public class Player
 
         state.SetIdleMode();
     }
+
+
+  
 }
