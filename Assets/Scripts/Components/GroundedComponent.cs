@@ -24,7 +24,7 @@ public class GroundedComponent : MonoBehaviour
     }
 
     [SerializeField]  private float distance = 0.1f;
-    private LaunchComponent launchComponent;
+    private AirborneComponent airborne;
 
     private float originMass;
     private float originDrag;
@@ -48,9 +48,10 @@ public class GroundedComponent : MonoBehaviour
         originConstraints = rigidbody.constraints;
 
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
-        launchComponent = GetComponent<LaunchComponent>();  
-        Debug.Assert(launchComponent != null);
-        launchComponent.OnChangeAirState += OnStartCheckGroundByDelay;
+
+        airborne = GetComponent<AirborneComponent>();  
+        Debug.Assert(airborne != null);
+        airborne.OnChangeAirState += OnStartCheckGroundByDelay;
     }
 
     private void FixedUpdate()

@@ -6,7 +6,7 @@ public class StateComponent : MonoBehaviour
 {
     public enum StateType 
     {
-        Idle = 0, Equip, Action, Evade, Damaged,  Dead,
+        Idle = 0, Equip, Action, Evade, Damaged, Dead, Airborne,
     }
     private StateType type = StateType.Idle;
     public StateType Type { get => type; }
@@ -19,7 +19,7 @@ public class StateComponent : MonoBehaviour
     public bool EvadeMode { get => type == StateType.Evade; }
     public bool DamagedMode { get => type == StateType.Damaged; }
     public bool DeadMode { get => type == StateType.Dead; }
-
+    public bool AirborneMode { get=>type == StateType.Airborne; }
 
     public void SetIdleMode() => ChangeType(StateType.Idle);
     public void SetEquipMode() => ChangeType(StateType.Equip);
@@ -27,7 +27,7 @@ public class StateComponent : MonoBehaviour
     public void SetEvadeMode() => ChangeType(StateType.Evade);
     public void SetDamagedMode() => ChangeType(StateType.Damaged);
     public void SetDeadMode() => ChangeType(StateType.Dead);
-
+    public void SetAirborneMode() =>ChangeType(StateType.Airborne);
 
     private void ChangeType(StateType type)
     {

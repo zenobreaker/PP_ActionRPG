@@ -186,8 +186,8 @@ public class AIController_Boss : AIController
 
     private void LateUpdate_Wandering()
     {
-        if (launch.IsAir)
-            return;
+        //if (launch.IsAir)
+        //    return;
         if (WanderingMode == false)
             return;
         

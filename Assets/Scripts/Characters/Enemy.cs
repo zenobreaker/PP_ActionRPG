@@ -29,6 +29,7 @@ public class Enemy :
 
     private GroundedComponent ground;
     private LaunchComponent launch;
+    private AirborneComponent airborne;
     private AIController aiController;
 
     public WeaponType weaponType;
@@ -48,6 +49,9 @@ public class Enemy :
 
         launch = GetComponent<LaunchComponent>();
         Debug.Assert(launch != null);
+
+        airborne = GetComponent<AirborneComponent>();
+        Debug.Assert(airborne);
 
         Debug.Assert(weapon != null);
 
@@ -140,7 +144,8 @@ public class Enemy :
             aiController?.SetDamagedMode();
             state.SetDamagedMode();
             launch.DoHit(attacker, causer, data, true,grade);
-          
+            airborne?.DoAir(attacker, causer, data);
+
             // 다운 시키는 공격인가
             if (data.bDownable == false || grade == CharacterGrade.Boss)
             {
@@ -233,8 +238,8 @@ public class Enemy :
         if (ground.IsGround == false)
             return;
 
-        if (launch.IsAir == true)
-            return;
+        //if (launch.IsAir == true)
+        //    return;
 
         base.Begin_DownCondition();
     }

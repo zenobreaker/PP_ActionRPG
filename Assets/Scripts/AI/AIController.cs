@@ -181,8 +181,8 @@ public abstract class AIController : MonoBehaviour
 
     private void LateUpdate_Approach()
     {
-        if (launch.IsAir)
-            return;
+        //if (launch.IsAir)
+          //  return;
         if (ApproachMode == false)
             return;
 
@@ -220,8 +220,8 @@ public abstract class AIController : MonoBehaviour
 
     public void SetNavMeshStop(bool bStop = false)
     {
-        if (launch.IsAir)
-            return;
+        //if (launch.IsAir)
+        //    return;
 
         if (navMeshAgent != null)
         {

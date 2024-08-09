@@ -262,8 +262,8 @@ public class BTAIController : MonoBehaviour
 
     public void SetNavMeshStop(bool bStop = false)
     {
-        if (launch.IsAir)
-            return;
+        //if (launch.IsAir)
+        //    return;
 
         if (navMeshAgent != null)
             navMeshAgent.isStopped = bStop;

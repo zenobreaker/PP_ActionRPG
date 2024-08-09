@@ -627,6 +627,7 @@ GameObject:
   - component: {fileID: 6027634458269586188}
   - component: {fileID: 6027634458269586187}
   - component: {fileID: 6027634458269586189}
+  - component: {fileID: 6299231137628874197}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -789,7 +790,6 @@ MonoBehaviour:
   acceleration: 5.9
   additionalAccel: 0.25
   airMaintainTime: 0.5
-  bDebuMode: 1
   airforceMode: 1
   airLauncherValue: 3
 --- !u!114 &6027634458269586189
@@ -805,6 +805,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   airStateRatio: 1.5
+--- !u!114 &6299231137628874197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6027634458269586431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aae3ccbae71e2e849b72c33b3d11bede, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forceMode: 1
+  acceleration: 17.5
+  additionalAccel: 0.25
+  airMaintainTime: 0.5
+  bDebuMode: 1
 --- !u!1 &6027634458355781103
 GameObject:
   m_ObjectHideFlags: 0
