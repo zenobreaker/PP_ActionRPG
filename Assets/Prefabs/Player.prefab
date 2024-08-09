@@ -319,6 +319,8 @@ GameObject:
   - component: {fileID: 3529553462426329908}
   - component: {fileID: 8963279703339321749}
   - component: {fileID: 2906856119406926859}
+  - component: {fileID: 2035203950233239101}
+  - component: {fileID: 579492929713512276}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -538,13 +540,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56668762ec66d08498b8d9b4cd10a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMode: 1
-  acceleration: 5.9
-  additionalAccel: 0.25
-  airMaintainTime: 0.5
-  bDebuMode: 1
-  airforceMode: 1
-  airLauncherValue: 3
 --- !u!114 &897998076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,6 +603,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dashSpeed: 10
   dashDistance: 3
+--- !u!114 &2035203950233239101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708970197503925176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aae3ccbae71e2e849b72c33b3d11bede, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forceMode: 0
+  acceleration: 1
+  additionalAccel: 0
+  airMaintainTime: 0
+  bDebuMode: 0
+--- !u!114 &579492929713512276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708970197503925176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46eaa3ce1dc19694bbf7a897eb639f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeTime: 0.25
+  meshRefreshRate: 0.05
+  positionToSpawn: {fileID: 188328818107154690}
+  destroyDelayTime: 2
+  material: {fileID: 2100000, guid: c2f960bc0a8f1be4fbc894a51f1eb42b, type: 2}
+  shaderVarRef: _Alpha
+  shaderVarRate: 0.1
+  shaderVarRefreshRate: 1
+  shaderScaleRate: 1.05
 --- !u!1 &725833728595507427
 GameObject:
   m_ObjectHideFlags: 0

@@ -139,7 +139,7 @@ public class AirborneComponent : MonoBehaviour
 
     private void DoLaunch()
     {
-  
+        
     }
 
     private IEnumerator On_AirCombo(DoActionData data)
