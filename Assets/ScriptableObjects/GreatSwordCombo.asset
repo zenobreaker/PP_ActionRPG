@@ -24,4 +24,4 @@ MonoBehaviour:
     comboQueueLimitTime: 1.25
   - ComboName: Hammer_Combo4
     comboInputLimitTime: 0.75
-    comboQueueLimitTime: 1.25
+    comboQueueLimitTime: 0.75

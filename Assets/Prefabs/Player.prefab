@@ -527,7 +527,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 128
-  rotateSpeed: 1
 --- !u!114 &897998075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,6 +539,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56668762ec66d08498b8d9b4cd10a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knockbackCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  knockbackTime: 0
 --- !u!114 &897998076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,6 +625,8 @@ MonoBehaviour:
   acceleration: 1
   additionalAccel: 0
   airMaintainTime: 0
+  minLaunchHeight: 0.1
+  heightReductionFactor: 0.5
   bDebuMode: 0
 --- !u!114 &579492929713512276
 MonoBehaviour:
