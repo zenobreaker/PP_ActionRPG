@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using static StateComponent;
 
 /// <summary>
 /// 공격을 맞으면 경직으로 인해 밀리는 기능을 해주는 컴포넌트
@@ -9,28 +10,42 @@ using UnityEngine.AI;
 public class LaunchComponent : MonoBehaviour
 {
     private StateComponent state;
+    private AirborneComponent airborne;
     private OtherStateColliderComponent otherCollider;
-
     private new Rigidbody rigidbody;
     private NavMeshAgent agent;
 
+    [SerializeField] private AnimationCurve knockbackCurve;
+    [SerializeField] private float knockbackTime = 1.0f;
+
     private bool bSuperArmor = false;
+    private StateType prevType;
 
     private float originDrag;
     private float originMass;
 
+
     private void Awake()
     {
+        state = GetComponent<StateComponent>();
+        Debug.Assert(state != null);
+        state.OnStateTypeChanging += OnStateTypeChanging;
+
+        otherCollider = GetComponent<OtherStateColliderComponent>();
+        airborne = GetComponent<AirborneComponent>();    
+        agent = GetComponent<NavMeshAgent>();
+
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
         originDrag = rigidbody.drag;
         originMass = rigidbody.mass;
 
 
-        state = GetComponent<StateComponent>();
-        otherCollider = GetComponent<OtherStateColliderComponent>();
-        agent = GetComponent<NavMeshAgent>();
+    }
 
+    private void OnStateTypeChanging(StateType prevType)
+    {
+        this.prevType = prevType;
     }
 
     private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, DoActionData data)
@@ -55,7 +70,7 @@ public class LaunchComponent : MonoBehaviour
 
         if (grade == CharacterGrade.Boss)
             bSuperArmor = true;
-        
+
         // 나를 바라본 대상 바라보기 
         if (targetView)
             StartCoroutine(Change_Rotate(attacker));
@@ -125,9 +140,11 @@ public class LaunchComponent : MonoBehaviour
         for (int i = 0; i < frame; i++)
             yield return new WaitForFixedUpdate();
 
-        // 땅에 닿아 있지 않다면 키네메틱스를 끌 필요는 없다 
-        if(state.AirborneMode == false)
+        if (state?.AirborneMode == false)
+        {
+
             rigidbody.isKinematic = true;
+        }
     }
 
     private void DoLaunch(GameObject attacker, Weapon causer,
@@ -135,6 +152,7 @@ public class LaunchComponent : MonoBehaviour
     {
         bool bResult = true;
         bResult &= CheckDoLauch(attacker, causer, data);
+        bResult &= data.bLauncher == false; 
 
         float distanace = data.Distance;
         float launch = rigidbody.drag * distanace * 10.0f;
@@ -142,29 +160,19 @@ public class LaunchComponent : MonoBehaviour
         Vector3 forceDir = attacker.transform.forward;
         var fm = ForceMode.Force;
 
-        //if (bAir)
-        //{
-        //    rigidbody.mass = originMass * airLauncherValue;
-        //    //distanace = distanace * ; 
-        //    fm = airforceMode;
-        //    if (data.bLauncher)
-        //    {
-        //        forceDir += Vector3.down * 0.5f;
-        //        distanace = data.Distance;
-        //        Debug.Log($"to launcher {rigidbody.mass * data.Distance * 10.0f} ");
-        //    }
-
-        //    float toDistance = Vector3.Distance(attacker.transform.localPosition, transform.localPosition);
-        //    // 공중 상태에서 공격자와 나의 거리가 가깝다면 더 밀리게 
-        //    //if (toDistance <= 2.5f)
-        //    //{
-        //    //    Debug.Log($"too near");
-        //    //    distanace *= 2.0f;
-        //    //}
-
-        //    launch = rigidbody.mass * distanace;
-        //    Debug.Log($"air launcher => {launch}");
-        //}
+        if (data.bLauncher)
+        {
+            StartCoroutine(Do_Knockback(forceDir.normalized, distanace, knockbackTime));
+            return; 
+        }
+            
+        if (prevType == StateType.Airborne)
+        {
+            rigidbody.mass = originMass /** 0.05f*/;
+            fm = ForceMode.Impulse;
+            launch = rigidbody.mass * distanace;
+            Debug.Log($"air launcher => {launch}");
+        }
 
         if (bResult)
         {
@@ -172,10 +180,30 @@ public class LaunchComponent : MonoBehaviour
             rigidbody.AddForce(forceDir * launch, fm);
         }
 
-        StartCoroutine(Change_IsKinematics(data, 5));
+        if(airborne != null && data.heightValue > 0.0f || prevType == StateType.Airborne)
+            airborne.DoAir(attacker, causer, data);
+        else 
+            StartCoroutine(Change_IsKinematics(data, 5));
+    }
+
+
+    private IEnumerator Do_Knockback(Vector3 direciton, float distance, float knockbackTime)
+    {
+        float elapsedTime = 0;
+        Vector3 startPositin = transform.position;
+
+        while(elapsedTime < knockbackTime)
+        {
+            float curveValue = knockbackCurve.Evaluate(elapsedTime / 2);
+            Vector3 resultPos = startPositin + direciton * curveValue * distance;
+
+            transform.position = new Vector3(resultPos.x, transform.position.y, resultPos.z);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 
     #endregion
 
-  
+
 }

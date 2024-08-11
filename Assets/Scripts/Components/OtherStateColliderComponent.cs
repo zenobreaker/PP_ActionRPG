@@ -8,15 +8,14 @@ public class OtherStateColliderComponent : MonoBehaviour
     protected Vector3 originalCenter;
     protected float originalHeight;
 
-
-    [SerializeField]
-    private float airStateRatio = 1.5f;
+    [SerializeField] private float airStateRatio = 1.5f;
     private float donwCenterY = 1.5f;
 
     protected CapsuleCollider capsuleCollider;
-    private float originRadius; // Ä¸½¶ÄÝ¶óÀÌ´õ Àü¿ë..
-
     protected new Rigidbody rigidbody;
+    
+    private float originRadius; // Ä¸½¶ÄÝ¶óÀÌ´õ Àü¿ë..
+    private bool bOriginTrigger;
 
     private void Awake()
     {
@@ -35,6 +34,7 @@ public class OtherStateColliderComponent : MonoBehaviour
                 originalCenter = capsuleCollider.center;
                 originalHeight = capsuleCollider.height;
                 originRadius = capsuleCollider.radius;
+                bOriginTrigger = capsuleCollider.isTrigger;
             }
         }
     }
@@ -49,13 +49,14 @@ public class OtherStateColliderComponent : MonoBehaviour
 
         if (state == true)
         {
-            
+            capsuleCollider.isTrigger = true;
             capsuleCollider.height = originalHeight * airStateRatio;
             capsuleCollider.center = 
                 new Vector3(originalCenter.x, originalCenter.y - donwCenterY, originalCenter.z);
         }
         else
         {
+            capsuleCollider.isTrigger = bOriginTrigger;
             capsuleCollider.center = originalCenter;
             capsuleCollider.height = originalHeight;
         }

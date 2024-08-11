@@ -10,21 +10,18 @@ using UnityEngine.UIElements;
 /// </summary>
 public class GroundedComponent : MonoBehaviour
 {
+    private StateComponent state;
+    private AirborneComponent airborne;
     private new Rigidbody rigidbody;
 
-    [SerializeField]
-    private bool bGround = true;
+    [SerializeField] private bool bGround = true;
     public bool IsGround { get => bGround; }
 
     private bool bCheck = true;
-    public bool IsCheck { get => bCheck; }
-    public void SetGroundCheck(bool value)
-    {
-        bCheck = value;
-    }
+    private bool bDistanceCheck = false;
+    private Vector3 checkOnPosition = Vector3.zero;
 
-    [SerializeField]  private float distance = 0.1f;
-    private AirborneComponent airborne;
+    [SerializeField] private float distance = 0.1f;
 
     private float originMass;
     private float originDrag;
@@ -36,10 +33,16 @@ public class GroundedComponent : MonoBehaviour
     public event Action OnCharacterGround;
 
 
-    private Coroutine coroutineStartDelayCheck;
-
     private void Awake()
     {
+        state = GetComponent<StateComponent>();
+        Debug.Assert(state != null);
+
+        airborne = GetComponent<AirborneComponent>();
+        Debug.Assert(airborne != null);
+        airborne.OnAirborneChange += OnAirborneChange;
+
+
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
 
@@ -48,14 +51,11 @@ public class GroundedComponent : MonoBehaviour
         originConstraints = rigidbody.constraints;
 
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
-
-        airborne = GetComponent<AirborneComponent>();  
-        Debug.Assert(airborne != null);
-        airborne.OnChangeAirState += OnStartCheckGroundByDelay;
     }
 
     private void FixedUpdate()
     {
+        FixedUpdate_CheckOverDistance();
         FixedUpdate_CheckGrounded();
     }
 
@@ -64,8 +64,8 @@ public class GroundedComponent : MonoBehaviour
         if (bCheck == false)
             return;
         Vector3 boxSize = new Vector3(transform.lossyScale.x, distance, transform.lossyScale.z);
-        Collider[] colliders = Physics.OverlapBox(transform.position, boxSize , Quaternion.identity, groundLayer);
-        
+        Collider[] colliders = Physics.OverlapBox(transform.position, boxSize, Quaternion.identity, groundLayer);
+
         foreach (Collider candidate in colliders)
         {
             int layer = candidate.gameObject.layer;
@@ -74,7 +74,8 @@ public class GroundedComponent : MonoBehaviour
 
             Debug.Log($"땅 체크 있는 듯 {candidate.gameObject.name}");
             bGround = true;
-            Change_RigidBodyToGround(candidate.gameObject);
+            bDistanceCheck = false;
+            Change_RigidBodyToGround();
             return;
         }
 
@@ -82,13 +83,32 @@ public class GroundedComponent : MonoBehaviour
         bGround = false;
     }
 
-    private void Change_RigidBodySettinToAir()
+    private void OnAirborneChange()
     {
-        rigidbody.isKinematic = false;
-        rigidbody.useGravity = true;
+        if (state.AirborneMode == false)
+            return;
+
+        bDistanceCheck = true;
+        checkOnPosition = transform.position;
     }
 
-    private void Change_RigidBodyToGround(GameObject groundObject)
+    private void FixedUpdate_CheckOverDistance()
+    {
+        if (bDistanceCheck == false)
+            return;
+
+        // 현재 값에서 체크를 시작한 값을 뺀 값이 측정 길이보다 크거나 같다면 공중 판정
+        float y = transform.position.y - checkOnPosition.y;
+
+        if (y >= distance)
+        {
+            bCheck = true;
+            bGround = false; 
+        }
+    }
+
+ 
+    private void Change_RigidBodyToGround()
     {
         //rigidbody.isKinematic = true;
         bCheck = false;
@@ -106,26 +126,6 @@ public class GroundedComponent : MonoBehaviour
         OnChangedGorund?.Invoke();
         OnCharacterGround?.Invoke();
     }
-
-
-
-    #region Event
-    private void OnStartCheckGroundByDelay(float delay = 0.0f)
-    {
-        if (coroutineStartDelayCheck != null)
-            StopCoroutine(coroutineStartDelayCheck);
-
-        coroutineStartDelayCheck = StartCoroutine(Start_DelayCheck(delay));
-    }
-
-    private IEnumerator Start_DelayCheck(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        bCheck = true; 
-    }
-    
-
-    #endregion
 
 
 #if UNITY_EDITOR

@@ -171,8 +171,8 @@ public class CameraArm : MonoBehaviour
     private Quaternion rotation;
     void RotateCinemachine()
     {
-        rotation *= Quaternion.AngleAxis(inputLook.x * mouseSensitivity.x, Vector3.up);
-        rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y, Vector3.right);
+        rotation *= Quaternion.AngleAxis(inputLook.x * mouseSensitivity.x * cameraRotSpeed, Vector3.up);
+        rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y* cameraRotSpeed, Vector3.right);
         this.transform.rotation = rotation;
 
         //회전 축 제한하기 

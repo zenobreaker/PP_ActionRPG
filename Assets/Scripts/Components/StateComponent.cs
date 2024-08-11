@@ -12,6 +12,7 @@ public class StateComponent : MonoBehaviour
     public StateType Type { get => type; }
 
     public event Action<StateType, StateType> OnStateTypeChanged;
+    public event Action<StateType> OnStateTypeChanging; // 이전 상태에 대한 이벤트 콜
 
     public bool IdleMode { get => type == StateType.Idle; }
     public bool EquipMode { get => type == StateType.Equip; }
@@ -37,6 +38,7 @@ public class StateComponent : MonoBehaviour
         StateType prevType = this.type; // 이전 상태 저장 
         this.type = type; // 타입 교체 
 
+        OnStateTypeChanging?.Invoke(prevType);
         OnStateTypeChanged?.Invoke(prevType, type);  // 이벤트가 있다면 콜
     }
 

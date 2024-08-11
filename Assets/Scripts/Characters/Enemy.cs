@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -55,8 +56,6 @@ public class Enemy :
 
         Debug.Assert(weapon != null);
 
-        // 무기 바로 장착시키는 이벤트 전달 
-        weapon.OnEquipWeapon += StartEquipWeapon;
 
         aiController = GetComponent<AIController>();
 
@@ -114,7 +113,7 @@ public class Enemy :
 
     private void RandAttack()
     {
-        int random = Random.Range(0, 3);
+        int random = UnityEngine.Random.Range(0, 3);
 
         state.SetActionMode();
         animator.SetInteger("Sword_Combo_Index", random);
@@ -143,8 +142,9 @@ public class Enemy :
         {
             aiController?.SetDamagedMode();
             state.SetDamagedMode();
-            launch.DoHit(attacker, causer, data, true,grade);
-            airborne?.DoAir(attacker, causer, data);
+            
+            //airborne?.DoAir(attacker, causer, data, false, grade);
+            launch?.DoHit(attacker, causer, data, true, grade);
 
             // 다운 시키는 공격인가
             if (data.bDownable == false || grade == CharacterGrade.Boss)
@@ -224,7 +224,18 @@ public class Enemy :
         base.End_Damaged();
 
         animator.SetInteger("ImpactIndex", 0);
-        state.SetIdleMode();
+
+        if(ground != null)
+        {
+            if(ground.IsGround)
+                state.SetIdleMode();
+            else 
+                state.SetAirborneMode();
+        }
+        else
+        {
+            state.SetIdleMode();
+        }
 
         // ai야 너 스스로가 처리해
         aiController?.End_Damage();
@@ -237,10 +248,7 @@ public class Enemy :
 
         if (ground.IsGround == false)
             return;
-
-        //if (launch.IsAir == true)
-        //    return;
-
+       
         base.Begin_DownCondition();
     }
 

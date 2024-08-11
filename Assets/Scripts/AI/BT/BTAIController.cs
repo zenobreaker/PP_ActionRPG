@@ -63,8 +63,8 @@ public class BTAIController : MonoBehaviour
 
     private BTNode root; // BTNode¿« ∑Á∆Æ 
 
-    public event Action OnBeginEquipWeapon;
-    public event Action OnEndEquipWeapon;
+  //  public event Action OnBeginEquipWeapon;
+   // public event Action OnEndEquipWeapon;
 
     [SerializeField] private float currentCoolTime = 0.0f;
 

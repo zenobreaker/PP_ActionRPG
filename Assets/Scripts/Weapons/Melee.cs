@@ -12,7 +12,7 @@ public class Melee : Weapon
     [SerializeField] protected SO_Combo comboObjData;
     public SO_Combo ComboObjData { get => comboObjData; }
 
-    [SerializeField] private bool bDebugMode = false;
+  //  [SerializeField] private bool bDebugMode = false;
 
     [SerializeField] protected int index;
 

@@ -18,7 +18,7 @@ public class PatrolComponent : MonoBehaviour
     private Queue<Vector3> sidePositionQueue = new Queue<Vector3>();
     [SerializeField] private float angleIncrement = 10.0f; // 각도 증가량 
     [SerializeField] float totalAngle = 90.0f; // 원호 이동 최대각 
-    bool bCircularMode = false;
+    //bool bCircularMode = false;
 
     #endregion
 
@@ -39,7 +39,6 @@ public class PatrolComponent : MonoBehaviour
         return navMeshPath;
     }
 
-    public event Action OnArrived;
 
     private void Awake()
     {
@@ -175,7 +174,6 @@ public class PatrolComponent : MonoBehaviour
             return;
 
         GenerateCircularPath(target.transform.position);
-        bCircularMode = true;
     }
 
     public void MoveTo()

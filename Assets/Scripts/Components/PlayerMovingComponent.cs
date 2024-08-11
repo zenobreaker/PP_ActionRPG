@@ -43,7 +43,6 @@ public class PlayerMovingComponent : MonoBehaviour
 
     private Vector2 currentInputMove; // 현재 입력한 이동값 
     private bool bRun;
-    private bool bDash;
 
     private Vector2 inputLook; // 마우스의 델타값 
     public void Move()
@@ -138,7 +137,6 @@ public class PlayerMovingComponent : MonoBehaviour
     private void Input_Run_Started(InputAction.CallbackContext context)
     {
         //bRun = true;
-        bDash = true;
     }
 
     private void Input_Run_Performed(InputAction.CallbackContext context)

@@ -99,6 +99,7 @@ public abstract class Character
         if (animator.GetBool("IsDownCondition") == false)
             return;
 
+        state.SetIdleMode();
         SetDownCondition();
         downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
     }

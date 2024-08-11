@@ -140,7 +140,7 @@ MonoBehaviour:
     bDownable: 1
     bLauncher: 0
     Power: 12
-    Distance: 8
+    Distance: 3
     heightValue: 3
     StopFrame: 3
     airConditionTime: 0
@@ -174,7 +174,6 @@ MonoBehaviour:
     HitParticleSacleOffset: {x: 3, y: 3, z: 3}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 6914b112c1edd524286736885d955764, type: 2}
-  bDebugMode: 0
   index: 0
   slashTransformName: Slash_Transform
   startPosObj: {fileID: 3500354102378999462}

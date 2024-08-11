@@ -11,8 +11,8 @@ using UnityEngine.AI;
 public class MovementComponent : MonoBehaviour
 {
     [SerializeField] private float radius = 10.0f; // ¼øÂû ¹Ý°æ 
-    [SerializeField] private float goalDelay = 2.0f; // µµ´Þ ½Ã ´ë±â ½Ã°£ 
-    [SerializeField] private float goalDelayRandom = 0.5f; // goalDelay +( - ·£´ý ~ +·£´ý)
+   // [SerializeField] private float goalDelay = 2.0f; // µµ´Þ ½Ã ´ë±â ½Ã°£ 
+   // [SerializeField] private float goalDelayRandom = 0.5f; // goalDelay +( - ·£´ý ~ +·£´ý)
     [SerializeField] //private PatrolPoints patrolPoints;
     //public bool HasPatrolPoints { get => patrolPoints != null; }
 

@@ -10,10 +10,10 @@ public class TargetComponent : MonoBehaviour
 {
     [SerializeField] private float radius = 1f;
     [SerializeField] private LayerMask layerMask;
-    [SerializeField] private float rotateSpeed = 1.0f; // 타게팅 대상까지 회전할 속도 
+    //[SerializeField] private float rotateSpeed = 1.0f; // 타게팅 대상까지 회전할 속도 
 
     private GameObject targetObject;
-    private float deltaRotation = 0.0f;
+    //private float deltaRotation = 0.0f;
     private bool bMovingFocus;
 
     private void Awake()
@@ -104,7 +104,7 @@ public class TargetComponent : MonoBehaviour
 
         if(Quaternion.Angle(from,to) < 2.0f)
         {
-            deltaRotation = 0.0f;
+            //deltaRotation = 0.0f;
             transform.localRotation = to;
 
             return; 
@@ -187,7 +187,7 @@ public class TargetComponent : MonoBehaviour
 
 
 
-        deltaRotation = 0.0f;
+        //deltaRotation = 0.0f;
         targetObject = null;
 
         // 후보자가 없으면 그냥 다 풀어.. 

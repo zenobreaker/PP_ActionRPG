@@ -122,12 +122,12 @@ public class MotionPath : MonoBehaviour
     //씬 GUI 그리기 위한 델리게이트 추가
     void OnEnable()
     {
-        SceneView.onSceneGUIDelegate += DrawSceneGUI;
+        SceneView.duringSceneGui += DrawSceneGUI;
         Undo.undoRedoPerformed += MyUndoCallback;
     }
     void OnDisable()
     {
-        SceneView.onSceneGUIDelegate -= DrawSceneGUI;
+        SceneView.duringSceneGui -= DrawSceneGUI;
         Undo.undoRedoPerformed -= MyUndoCallback;
     }
 
@@ -533,7 +533,7 @@ public class MotionPath_Editor : Editor
 
         //애니메이터 
         EditorGUI.BeginChangeCheck();
-        Ge.Animator = (Animator)EditorGUILayout.ObjectField("Animator", Ge.Animator, typeof(Animator));
+        Ge.Animator = (Animator)EditorGUILayout.ObjectField("Animator", Ge.Animator, typeof(Animator), true);
         bool ChangeAniamtor = EditorGUI.EndChangeCheck(); //애니메이터 바뀜
 
         // //오브젝트
@@ -651,7 +651,7 @@ public class MotionPath_Editor : Editor
                 //패스가 그릴 오브젝트
                 EditorGUI.BeginChangeCheck();
                 GUILayout.Space(10);
-                Ge.PathInfo[Ge.SelectPath].TargetObject = (GameObject)EditorGUILayout.ObjectField("Path Target", Ge.PathInfo[Ge.SelectPath].TargetObject, typeof(GameObject));
+                Ge.PathInfo[Ge.SelectPath].TargetObject = (GameObject)EditorGUILayout.ObjectField("Path Target", Ge.PathInfo[Ge.SelectPath].TargetObject, typeof(GameObject),true);
                 if (EditorGUI.EndChangeCheck())
                 {
                     if (Ge.PathInfo[Ge.SelectPath].TargetObject != null)

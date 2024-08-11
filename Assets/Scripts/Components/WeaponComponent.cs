@@ -22,7 +22,7 @@ public class WeaponComponent : MonoBehaviour
 
     private event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // 무기 교체 이벤트
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
-    public event Action OnEquipWeapon;
+   
     public event Action OnEndEquip;
     public event Action OnBeginDoAction;
     public event Action OnEndDoAction;

@@ -20,7 +20,7 @@ public class BossGaugeController : MonoBehaviour
 
     [SerializeField] private Gauge bossGauge;
 
-    public event Action OnEndGauge; 
+   // public event Action OnEndGauge; 
     public void SetGauge(HealthPointComponent health)
     {
         if (health == null)

@@ -111,7 +111,7 @@ public class DashComponent : MonoBehaviour
         state.SetIdleMode();
     }
 
-    private Quaternion? evadeRotation = null;
+    //private Quaternion? evadeRotation = null;
     private void OnStateTypeChanged(StateType prevType, StateType newType)
     {
         switch (newType)

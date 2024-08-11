@@ -628,6 +628,7 @@ GameObject:
   - component: {fileID: 6027634458269586187}
   - component: {fileID: 6027634458269586189}
   - component: {fileID: 6299231137628874197}
+  - component: {fileID: 893219571}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -682,7 +683,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6027634458269586431}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2
@@ -786,12 +787,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56668762ec66d08498b8d9b4cd10a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMode: 1
-  acceleration: 5.9
-  additionalAccel: 0.25
-  airMaintainTime: 0.5
-  airforceMode: 1
-  airLauncherValue: 3
+  knockbackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  knockbackTime: 1
 --- !u!114 &6027634458269586189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -817,11 +837,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae3ccbae71e2e849b72c33b3d11bede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMode: 1
+  forceMode: 2
   acceleration: 17.5
   additionalAccel: 0.25
   airMaintainTime: 0.5
+  minLaunchHeight: 0.1
+  heightReductionFactor: 0.5
   bDebuMode: 1
+--- !u!114 &893219571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6027634458269586431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee9e558cc6c3bde4cb951a0208b9ca58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiStateName: EnemyAIState
+  bDrawDebug: 1
 --- !u!1 &6027634458355781103
 GameObject:
   m_ObjectHideFlags: 0

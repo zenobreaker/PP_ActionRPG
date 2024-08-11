@@ -36,7 +36,7 @@ public class ComboComponent : MonoBehaviour
 
     private Coroutine coroutine_ChangeLimitTime;
     private Coroutine coroutine_LimitInputCombo;
-    public event Action OnClearInputQueue;
+   // public event Action OnClearInputQueue;
     public event Action OnInputCombo;
 
     private void Awake()

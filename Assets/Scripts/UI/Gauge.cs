@@ -10,7 +10,7 @@ public class Gauge : MonoBehaviour
 
     [SerializeField] private Image hpbarImage;
     [SerializeField] private Image afterHpbar;
-    [SerializeField] private Text statText = null;
+    //[SerializeField] private Text statText = null;
 
     [SerializeField] private float lerpSpeed = 10.0f;
 

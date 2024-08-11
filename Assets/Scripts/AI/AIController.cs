@@ -34,7 +34,6 @@ public abstract class AIController : MonoBehaviour
     public bool ActionMode { get => type == Type.Action; }
     public bool DamagedMode { get => type == Type.Damaged; }
 
-
     protected Enemy enemy;
     protected PerceptionComponent perception;
     protected NavMeshAgent navMeshAgent;
@@ -135,9 +134,12 @@ public abstract class AIController : MonoBehaviour
         // 공격할 때도 처리 안함
         bCheck |= (ActionMode == true);
         bCheck |= (DamagedMode == true);
-        bCheck |= (animator.GetBool("IsDownCondition") == true);
-        bCheck |= state.DeadMode;
-        bCheck |= enemy.DownCondition;
+        bCheck |= (enemy.DownCondition);
+        if (state != null)
+        {
+            bCheck |= state.DeadMode;
+            bCheck |= state.AirborneMode;
+        }
 
         if (state.DeadMode)
             SetNavMeshStop(true);
