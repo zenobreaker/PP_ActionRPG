@@ -3,14 +3,6 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    [SerializeField]
-    protected SkillType type;
-
-    [SerializeField]
-    protected DoActionData doActionData;
-
-    public SkillType Type { get => type; }
-
     protected GameObject rootObject;
 
     protected StateComponent state;
@@ -76,12 +68,5 @@ public class Skill : MonoBehaviour
 
     protected void CheckStop(int index)
     {
-        if (doActionData.bCanMove == false)
-        {
-            PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
-
-            if (moving != null)
-                moving.Stop();
-        }
     }
 }

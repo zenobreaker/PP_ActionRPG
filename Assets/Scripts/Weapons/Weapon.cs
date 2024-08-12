@@ -5,10 +5,7 @@ using UnityEngine;
 [Serializable]
 public class DoActionData
 {
-    public int dataID;
-
     public bool bCanMove;
-    public bool bUpper = false; 
     public bool bDownable = false; 
     public bool bLauncher;  // 적을 날려버리는게 가능한지 여부 
 
@@ -40,13 +37,6 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected WeaponType type;
     [SerializeField] protected DoActionData[] doActionDatas;
 
-    protected Dictionary<int,  DoActionData> doActionDataTable;
-
-    public DoActionData GetCurrentData(int index)
-    {
-        return doActionDataTable[index];
-    }
-
     public WeaponType Type { get => type; }
 
     private bool bEquipping;
@@ -72,10 +62,6 @@ public abstract class Weapon : MonoBehaviour
 
         state = rootObject.GetComponent<StateComponent>();
         animator = rootObject.GetComponent<Animator>();
-
-        doActionDataTable = new Dictionary<int, DoActionData>();
-        foreach (DoActionData data in doActionDatas)
-            doActionDataTable.Add(data.dataID, data);
     }
 
     protected virtual void Start()

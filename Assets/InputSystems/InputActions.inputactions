@@ -60,6 +60,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Skill1",
+                    "type": "Button",
+                    "id": "672e9e4d-9bcc-46c9-8cee-c5aebe5e89b9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skill2",
+                    "type": "Button",
+                    "id": "2cb650b4-0934-44d6-a909-f7749600f6b8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Fist",
                     "type": "Button",
                     "id": "f1c0731d-8141-429e-bcd7-7dc95bc3fac3",
@@ -247,17 +265,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f00bb6c0-6ebd-4f2b-b60c-9947a6783743",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Evade",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "cfa793d3-8ad1-4795-a7ec-5fd5212a8a3a",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -319,6 +326,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Target",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "83097c66-549d-4d03-ba4c-26d9c06ca3a3",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Skill1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3dff245-bb90-4f8f-be89-eb6fbc4cf3f5",
+                    "path": "<Keyboard>/R",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Skill2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

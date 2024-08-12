@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a741315af6fc59649b5a991e5bfa6536, type: 3}
+  m_Name: Sword_JudgementCut
+  m_EditorClassIdentifier: 
+  skillName: JudgementCut
+  weaponType: 2
+  cooldown: 10
+  animationName: Sword_Skill1
+  doAction:
+    bCanMove: 0
+    bDownable: 1
+    bLauncher: 0
+    Power: 3
+    Distance: 0
+    heightValue: 0.5
+    StopFrame: 1
+    airConditionTime: 0
+    impulseDirection: {x: 0, y: 1.2, z: 0}
+    impulseSettings: {fileID: 11400000, guid: 34bf35ef5ccf1db488c40cbd5f718ca6, type: 2}
+    Particle: {fileID: 1011191742018456, guid: 5ddce4a94a63ce14b9f717142ff9ba41, type: 3}
+    effectSoundName: 
+    HitImpactIndex: 0
+    hitSoundName: 
+    HitParticle: {fileID: 2955623459812423943, guid: a18df61b2a52e5345a9427f4506a6e01, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}

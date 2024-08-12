@@ -20,13 +20,14 @@ public class WeaponComponent : MonoBehaviour
     private WeaponType type = WeaponType.Unarmed;
     public WeaponType Type { get => type; }
 
-    private event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // 무기 교체 이벤트
+    public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // 무기 교체 이벤트
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
    
     public event Action OnEndEquip;
     public event Action OnBeginDoAction;
     public event Action OnEndDoAction;
 
+    public event Action<string> OnSkillAction;
     public bool UnarmedMode { get => type == WeaponType.Unarmed; }
     public bool FistMode { get => type == WeaponType.Fist; }
     public bool SwordMode { get => type == WeaponType.Sword; }
@@ -52,17 +53,6 @@ public class WeaponComponent : MonoBehaviour
         return weaponTable[type];
     }
 
-    public DoActionData GetCurrentData(int index)
-    {
-        if (UnarmedMode)
-            return null;
-
-        Weapon weapon = weaponTable[type];
-        if(weapon == null) 
-            return null;
-
-        return weapon.GetCurrentData(index);
-    }
 
     private Dictionary<WeaponType, Weapon> weaponTable;
     private void Awake()
@@ -271,6 +261,11 @@ public class WeaponComponent : MonoBehaviour
             return;
 
         weaponTable[type].DoSubAction();
+    }
+
+    public void DoSkillAction(string skillInput)
+    {
+        OnSkillAction?.Invoke(skillInput);
     }
 
     private void Begin_DoAction()

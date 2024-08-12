@@ -311,8 +311,9 @@ GameObject:
   - component: {fileID: 6088084786491087740}
   - component: {fileID: 6088084786491087731}
   - component: {fileID: 6088084786491087729}
-  - component: {fileID: 6088084786491087730}
   - component: {fileID: 6088084786491087728}
+  - component: {fileID: 6088084786491087730}
+  - component: {fileID: 7341162145035168675}
   - component: {fileID: 2017066823369154302}
   - component: {fileID: 897998075}
   - component: {fileID: 897998076}
@@ -478,9 +479,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f46acc9baeb21147a4d7cc0a7f8a09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealthPoint: 10000
+  maxHealthPoint: 1000
   uiPlayerName: Image_Healthbar_Foreground
   uiEnemyName: EnemyHealthBar
+--- !u!114 &6088084786491087728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708970197503925176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa16ba23f1266534384403965d98f9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6088084786491087730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,7 +512,7 @@ MonoBehaviour:
   - {fileID: 3562533772447042769, guid: 7ca5e2947952dc9429e74dce97a3d458, type: 3}
   - {fileID: 1751527872988195315, guid: 98fe1c17f0781274d94df1856f12d7ee, type: 3}
   - {fileID: 5875270693028758024, guid: 20d55f9b1fd1df944a7a6826ebcd0859, type: 3}
---- !u!114 &6088084786491087728
+--- !u!114 &7341162145035168675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -508,7 +521,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 708970197503925176}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa16ba23f1266534384403965d98f9a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 78275415dfd8a0140a8c5f3497a19910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2017066823369154302
@@ -523,7 +536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0909b4be5db385a4981793978fd429f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 10
+  radius: 20
   layerMask:
     serializedVersion: 2
     m_Bits: 128

@@ -80,6 +80,15 @@ public class Player
             weapon.DoSubAction();
         };
 
+        actionMap.FindAction("Skill1").started += (context) =>
+        {
+            weapon.DoSkillAction("Skill1");
+        };
+        actionMap.FindAction("Skill2").started += (context) =>
+        {
+            weapon.DoSkillAction("Skill2");
+        };
+
         actionMap.FindAction("Evade").started += (context) =>
         {
             if (state.IdleMode == false)
