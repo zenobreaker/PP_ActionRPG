@@ -247,7 +247,7 @@ public class Melee : Weapon
 
     }
 
-    public virtual void Play_Impulse()
+    public override void Play_Impulse()
     {
         if (impulse == null)
             return;
@@ -258,6 +258,8 @@ public class Melee : Weapon
             return;
         if (listener == null)
             return;
+
+        base.Play_Impulse();
 
         listener.m_ReactionSettings.m_SecondaryNoise = doActionDatas[index].impulseSettings;
 

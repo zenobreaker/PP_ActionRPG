@@ -153,8 +153,6 @@ public abstract class Weapon : MonoBehaviour
     {
         state.SetActionMode();
 
-        Begin_SkillAction();
-
         CheckStop(0);
     }
 
@@ -171,14 +169,88 @@ public abstract class Weapon : MonoBehaviour
         Move();
     }
 
-    #region Skill_Action
-    public virtual void Begin_SkillAction()
+    public virtual void Play_Impulse()
     {
 
     }
 
+    #region Skill_Action
+
+    public virtual void DoSkillAction(SkillData skill)
+    {
+        // 애니메이션 재생
+        if (!string.IsNullOrEmpty(skill.animationName))
+        {
+            // 애니메이션 재생 로직
+            animator.Play(skill.animationName);
+            CheckStop(0, skill);
+        }
+    }
+
+    public virtual void Begin_SkillAction(SkillData currentSkill)
+    {
+        CreateSkillEffect(currentSkill);
+    }
+
     public virtual void End_SkillAciton()
     {
+
+    }
+
+    private void CreateSkillEffect(SkillData currentSkill)
+    {
+        if (rootObject == null)
+            return;
+
+        if (currentSkill == null)
+            return;
+
+        DoActionData aData = currentSkill.doAction;
+        if (aData == null)
+            return;
+
+        if (aData.Particle == null)
+            return;
+
+        Vector3 position = transform.position + currentSkill.additionalPos;
+        GameObject obj = Instantiate<GameObject>(aData.Particle, position, rootObject.transform.rotation);
+        if (obj.TryGetComponent<Skill_Trigger>(out Skill_Trigger trigger))
+        {
+            trigger.SetRootObject(rootObject);
+            trigger.SetSkillData(currentSkill.DeepCopy());
+            trigger.OnSkillHit += OnSkillHit;
+        }
+    }
+
+    private void OnSkillHit(Collider other, SkillData skillData)
+    {
+        Debug.Log("Skill hit!");
+
+        if (skillData == null)
+        {
+            Debug.Log("No skill data");
+            return;
+        }
+
+        IDamagable damage = other.GetComponent<IDamagable>();
+
+        if (damage != null)
+        {
+            Vector3 hitPoint = Vector3.zero;
+
+            // 월드 상 좌표 
+            hitPoint = other.ClosestPoint(other.transform.position);
+            // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
+            hitPoint = other.transform.InverseTransformPoint(hitPoint);
+
+            damage?.OnDamage(transform.gameObject, this, hitPoint, skillData.doAction);
+            // hit Sound Play
+            SoundManager.Instance.PlaySFX(skillData.doAction.hitSoundName);
+
+            Play_Impulse();
+
+            return;
+        }
 
     }
     #endregion
@@ -243,20 +315,13 @@ public abstract class Weapon : MonoBehaviour
     }
 
 
-    public virtual void DoSkillAction(SkillData skill)
-    {
-        // 애니메이션 재생
-        if (!string.IsNullOrEmpty(skill.animationName))
-        {
-            // 애니메이션 재생 로직
-            animator.Play(skill.animationName);
-            CheckStop(0, skill);
-        }
-    }
 
     public virtual void EndSkillAction()
     {
         Move();
     }
+
+
+
 }
 

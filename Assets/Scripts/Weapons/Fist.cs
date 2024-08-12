@@ -186,16 +186,6 @@ public class Fist : Melee
     }
 
 
-    public override void Begin_SkillAction()
-    {
-        base.Begin_SkillAction();
-
-        Fist_AirCombo();
-
-
-
-        CanMove();
-    }
 
     public override void End_SkillAciton()
     {

@@ -153,35 +153,21 @@ public class SkillComponent : MonoBehaviour
             weapon.DoSkillAction(currentSkill);
     }
 
-    private void CreateSkillEffect()
-    {
-        if (currentSkill == null)
-            return;
-
-        DoActionData aData = currentSkill.doAction;
-        if (aData == null)
-            return;
-
-        if (aData.Particle == null)
-            return; 
-
-        Vector3 position = transform.position + currentSkill.additionalPos;
-        GameObject obj = Instantiate<GameObject>(aData.Particle, position, transform.rotation);
-        if(obj.TryGetComponent<Skill_Trigger>(out Skill_Trigger trigger))
-        {
-            trigger.SetRootObject(gameObject);
-            trigger.SetSkillData(currentSkill.DeepCopy());
-            trigger.OnSkillHit += OnSkillHit;    
-        }
-    }
-
+  
 
     private void Begin_SkillAction()
     {
         if (currentSkill == null)
             return;
+        if (weapon == null)
+            return; 
 
-        CreateSkillEffect(); 
+        Weapon currentWeapon = weapon.GetEquippedWeapon();
+        if(currentWeapon == null) 
+            return;
+
+        currentWeapon.Begin_SkillAction(currentSkill);
+
     }
 
     private void End_SkillAction()
@@ -226,28 +212,7 @@ public class SkillComponent : MonoBehaviour
 #endif
     }
 
-    private void OnSkillHit(Collider other, SkillData skillData)
-    {
-        Debug.Log("Skill hit!");
-
-        if (skillData == null)
-        {
-            Debug.Log("No skill data");
-            return;
-        }
-
-        IDamagable damage = other.GetComponent<IDamagable>();
-
-        if (damage != null)
-        {
-            Vector3 hitPoint = Vector3.zero;
-            hitPoint = other.transform.InverseTransformPoint(hitPoint);
-            damage?.OnDamage(transform.gameObject, weapon.GetEquippedWeapon(), hitPoint, skillData.doAction);
-
-            return;
-        }
-
-    }
+  
     private void OnWeaponTypeChanged(WeaponType prevType, WeaponType newType)
     {
         if (skillDataTable.ContainsKey(newType))
