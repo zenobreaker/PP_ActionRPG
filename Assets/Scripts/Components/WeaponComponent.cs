@@ -13,6 +13,7 @@ public class WeaponComponent : MonoBehaviour
     [SerializeField] private GameObject[] originPrefabs;
 
     private StateComponent state;
+    private SkillComponent skill;
     private TargetComponent target;
 
     protected Animator animator;
@@ -27,7 +28,6 @@ public class WeaponComponent : MonoBehaviour
     public event Action OnBeginDoAction;
     public event Action OnEndDoAction;
 
-    public event Action<string> OnSkillAction;
     public bool UnarmedMode { get => type == WeaponType.Unarmed; }
     public bool FistMode { get => type == WeaponType.Fist; }
     public bool SwordMode { get => type == WeaponType.Sword; }
@@ -59,6 +59,9 @@ public class WeaponComponent : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         state = GetComponent<StateComponent>();
+        skill = GetComponent<SkillComponent>();
+        if(skill !=null)
+            skill.OnEndSkillAction += End_DoAction;
         target = GetComponent<TargetComponent>();
 
         Debug.Assert(state != null, $"{gameObject.name} has not");
@@ -265,7 +268,10 @@ public class WeaponComponent : MonoBehaviour
 
     public void DoSkillAction(string skillInput)
     {
-        OnSkillAction?.Invoke(skillInput);
+        if (weaponTable[type] == null)
+            return;
+
+        skill.DoSkillAction(skillInput, weaponTable[Type]);
     }
 
     private void Begin_DoAction()

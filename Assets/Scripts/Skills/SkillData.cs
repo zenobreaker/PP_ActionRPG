@@ -12,4 +12,18 @@ public class SkillData : ScriptableObject
     //public float knockbackDistance;         // 넉백 거리
     //public float airborneHeight;            // 공중에 띄우는 높이 값
     public DoActionData doAction;
+    public Vector3 additionalPos;           // 이펙트 프리팹 생성 위치
+
+    public SkillData DeepCopy()
+    {
+        SkillData s = new SkillData();
+        s.skillName = skillName;
+        s.weaponType = weaponType;
+        s.cooldown = cooldown;
+        s.animationName = animationName;
+        s.doAction = doAction.DeepCopy();
+        s.additionalPos = additionalPos;
+        return s;
+
+    }
 }

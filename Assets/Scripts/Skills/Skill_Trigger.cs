@@ -7,7 +7,7 @@ public class Skill_Trigger : MonoBehaviour
 {
     private SkillData skillData;
     private GameObject rootObject;
-    public event Action<Collider> OnSkillHit;
+    public event Action<Collider, SkillData> OnSkillHit;
 
     public void SetRootObject(GameObject rootObject)
     { 
@@ -22,9 +22,11 @@ public class Skill_Trigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == rootObject)
-            return; 
+            return;
+        if (skillData == null)
+            return;
 
-        OnSkillHit?.Invoke(other);
+        OnSkillHit?.Invoke(other, skillData);
     }
 
 

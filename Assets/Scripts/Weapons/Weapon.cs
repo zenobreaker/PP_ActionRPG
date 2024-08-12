@@ -6,7 +6,7 @@ using UnityEngine;
 public class DoActionData
 {
     public bool bCanMove;
-    public bool bDownable = false; 
+    public bool bDownable = false;
     public bool bLauncher;  // 적을 날려버리는게 가능한지 여부 
 
     public float Power;     // 위력 
@@ -29,6 +29,34 @@ public class DoActionData
     public GameObject HitParticle;
     public Vector3 HitParticlePositionOffset;
     public Vector3 HitParticleSacleOffset = Vector3.one;
+
+    public DoActionData DeepCopy()
+    {
+        DoActionData doAction = new DoActionData();
+        doAction.bCanMove = bCanMove;
+        doAction.bDownable = bDownable;
+        doAction.bLauncher = bLauncher;
+        
+        doAction.Power = Power;
+        doAction.Distance = Distance;
+        doAction.heightValue = heightValue;
+        
+        doAction.StopFrame = StopFrame;
+        
+        doAction.Particle = Particle;
+        doAction.effectSoundName = effectSoundName;
+        
+        doAction.impulseDirection = impulseDirection;
+        doAction.impulseSettings = impulseSettings;
+        
+        doAction.HitImpactIndex = HitImpactIndex;
+        doAction.hitSoundName = hitSoundName;
+        doAction.HitParticle = HitParticle;
+        doAction.HitParticlePositionOffset = HitParticlePositionOffset;
+        doAction.HitParticleSacleOffset = HitParticleSacleOffset;
+
+        return doAction;
+    }
 }
 
 
@@ -41,7 +69,7 @@ public abstract class Weapon : MonoBehaviour
 
     private bool bEquipping;
     public bool Equipping { get => bEquipping; }
-    protected int currentComboCount = 0; 
+    protected int currentComboCount = 0;
 
     protected GameObject rootObject;
     protected StateComponent state;
@@ -91,7 +119,7 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void End_Equip()
     {
-        bEquipping = true; 
+        bEquipping = true;
         state.SetIdleMode();
     }
 
@@ -100,7 +128,7 @@ public abstract class Weapon : MonoBehaviour
     {
         bEquipping = false;
     }
-    
+
 
     public void DoIdleAction()
     {
@@ -135,7 +163,7 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
-    
+
     public virtual void End_DoAction()
     {
         state.SetIdleMode();
@@ -164,10 +192,10 @@ public abstract class Weapon : MonoBehaviour
     {
 
     }
-    
+
     public virtual void Begin_EnemyAttack(AnimationEvent e)
     {
-        
+
     }
 
     protected void Move()
@@ -190,16 +218,45 @@ public abstract class Weapon : MonoBehaviour
                 moving.Stop();
         }
     }
+    protected void CheckStop(int index, SkillData skill)
+    {
+        if (skill == null)
+            return;
+
+        if (skill.doAction.bCanMove == false)
+        {
+            PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
+
+            if (moving != null)
+                moving.Stop();
+        }
+    }
 
     public bool IsDoesCombo(int index)
     {
-        if(doActionDatas == null)
+        if (doActionDatas == null)
             return false;
-        if(index >= doActionDatas.Length)
+        if (index >= doActionDatas.Length)
             return false;
 
-        return true; 
+        return true;
     }
 
+
+    public virtual void DoSkillAction(SkillData skill)
+    {
+        // 애니메이션 재생
+        if (!string.IsNullOrEmpty(skill.animationName))
+        {
+            // 애니메이션 재생 로직
+            animator.Play(skill.animationName);
+            CheckStop(0, skill);
+        }
+    }
+
+    public virtual void EndSkillAction()
+    {
+        Move();
+    }
 }
 

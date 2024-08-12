@@ -287,17 +287,6 @@
                 },
                 {
                     "name": "",
-                    "id": "5ca58cc5-667d-4326-999e-a8d70eeec0ee",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Action2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b19219e5-779b-414d-a475-36040e3e0394",
                     "path": "<Mouse>/delta",
                     "interactions": "",

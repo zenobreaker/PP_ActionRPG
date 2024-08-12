@@ -34,3 +34,4 @@ MonoBehaviour:
     HitParticle: {fileID: 2955623459812423943, guid: a18df61b2a52e5345a9427f4506a6e01, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  additionalPos: {x: 0, y: 1, z: 0}
