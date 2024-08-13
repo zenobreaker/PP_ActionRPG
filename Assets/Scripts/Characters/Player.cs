@@ -130,7 +130,7 @@ public class Player
     }
 
 
-    public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, DoActionData data)
+    public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
         if (state.Type == StateType.Evade)
         {

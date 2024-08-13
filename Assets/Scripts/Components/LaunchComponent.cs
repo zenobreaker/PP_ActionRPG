@@ -48,7 +48,7 @@ public class LaunchComponent : MonoBehaviour
         this.prevType = prevType;
     }
 
-    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, DoActionData data)
+    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
     {
         bool bCheck = true;
         bCheck &= (attacker != null);
@@ -60,7 +60,7 @@ public class LaunchComponent : MonoBehaviour
 
 
 
-    public void DoHit(GameObject attacker, Weapon causer, DoActionData data, bool targetView = false,
+    public void DoHit(GameObject attacker, Weapon causer, ActionData data, bool targetView = false,
         CharacterGrade grade = CharacterGrade.Common)
     {
 
@@ -113,7 +113,7 @@ public class LaunchComponent : MonoBehaviour
     /// <param name="attacker"></param>
     /// <param name="causer"></param>
     /// <param name="data"></param>
-    private bool CheckDoLauch(GameObject attacker, Weapon causer, DoActionData data)
+    private bool CheckDoLauch(GameObject attacker, Weapon causer, ActionData data)
     {
         // 근접 무기가 아니라면 어느 거리든 상관 없이 해당 무기의 데이터로 처리한다. 
         Melee melee = causer as Melee;
@@ -134,7 +134,7 @@ public class LaunchComponent : MonoBehaviour
     }
 
 
-    private IEnumerator Change_IsKinematics(DoActionData data, int frame)
+    private IEnumerator Change_IsKinematics(ActionData data, int frame)
     {
 
         for (int i = 0; i < frame; i++)
@@ -148,7 +148,7 @@ public class LaunchComponent : MonoBehaviour
     }
 
     private void DoLaunch(GameObject attacker, Weapon causer,
-        DoActionData data)
+        ActionData data)
     {
         bool bResult = true;
         bResult &= CheckDoLauch(attacker, causer, data);

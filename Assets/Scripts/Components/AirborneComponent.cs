@@ -85,7 +85,7 @@ public class AirborneComponent : MonoBehaviour
             agent.enabled = true;
     }
 
-    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, DoActionData data)
+    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
     {
         bool bCheck = true;
         bCheck &= (attacker != null);
@@ -96,7 +96,7 @@ public class AirborneComponent : MonoBehaviour
         return bCheck;
     }
 
-    public void DoAir(GameObject attacker, Weapon causer, DoActionData data, bool targetView = false,
+    public void DoAir(GameObject attacker, Weapon causer, ActionData data, bool targetView = false,
         CharacterGrade grade = CharacterGrade.Common)
     {
         bool result = CheckAttackerAboutData(attacker, causer, data);
@@ -114,7 +114,7 @@ public class AirborneComponent : MonoBehaviour
 
     #region Air_Launch
     // 공중 상태에 맞았다면 관련된 컴포넌트나 변수들을 관리 한다. 
-    private void DoAirborneLaunch(GameObject attacker, Weapon causer, DoActionData data)
+    private void DoAirborneLaunch(GameObject attacker, Weapon causer, ActionData data)
     {
         bool result = CheckAttackerAboutData(attacker, causer, data);
         if (result == false)
@@ -134,14 +134,14 @@ public class AirborneComponent : MonoBehaviour
     }
 
 
-    private IEnumerator On_AirCombo(DoActionData data)
+    private IEnumerator On_AirCombo(ActionData data)
     {
         rigidbody.useGravity = false;
         rigidbody.velocity = Vector3.zero;
 
         //float distance = Mathf.Clamp(data.heightValue * 1.0f , 1.0f, data.heightValue);
 
-        yield return new WaitForSecondsRealtime(airMaintainTime + data.airConditionTime);
+        yield return new WaitForSecondsRealtime(airMaintainTime);
 
         Debug.Log($"Change_UseGravity time is over- {true}");
 
@@ -156,7 +156,7 @@ public class AirborneComponent : MonoBehaviour
     #region Airbone
 
     // 공중에 띄우기
-    private void BeginDoAir(DoActionData data)
+    private void BeginDoAir(ActionData data)
     {
         if (bSuperArmor)
             return;

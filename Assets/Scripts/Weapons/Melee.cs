@@ -267,6 +267,27 @@ public class Melee : Weapon
 
     }
 
+    public override void Play_Impulse(ActionData data)
+    {
+        if (impulse == null || data == null)
+            return;
+
+        if (data.impulseSettings == null)
+            return;
+        if (data.impulseDirection.magnitude <= 0.0f)
+            return;
+        if (listener == null)
+            return;
+
+        base.Play_Impulse();
+
+        listener.m_ReactionSettings.m_SecondaryNoise = data.impulseSettings;
+
+        impulse.GenerateImpulse(data.impulseDirection);
+
+    }
+
+
 
     protected void OnTriggerEnter(Collider other)
     {

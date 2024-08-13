@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [Serializable]
-public class DoActionData
+public class ActionData
 {
-    public bool bCanMove;
+   
     public bool bDownable = false;
     public bool bLauncher;  // 적을 날려버리는게 가능한지 여부 
 
@@ -14,13 +15,11 @@ public class DoActionData
     public float heightValue; // 공중에 띄우는 높이값 
 
     public int StopFrame;   // 히트스탑 프레임 
-    public float airConditionTime; // 공중에 유지시키는 시간 
 
     [Header("Camera Shake")]
     public Vector3 impulseDirection;
     public Cinemachine.NoiseSettings impulseSettings;
 
-    public GameObject Particle;
     public string effectSoundName; // 재생 시킬 사운드 
 
     public int HitImpactIndex; // 피격당했을 때 모션 인덱스
@@ -29,6 +28,15 @@ public class DoActionData
     public GameObject HitParticle;
     public Vector3 HitParticlePositionOffset;
     public Vector3 HitParticleSacleOffset = Vector3.one;
+
+}
+
+[Serializable]
+public class DoActionData : ActionData
+{
+    public bool bCanMove;
+    public GameObject Particle;
+
 
     public DoActionData DeepCopy()
     {
@@ -174,6 +182,11 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
+    public virtual void Play_Impulse(ActionData data)
+    { 
+
+    }
+
     #region Skill_Action
 
     public virtual void DoSkillAction(SkillData skill)
@@ -205,24 +218,21 @@ public abstract class Weapon : MonoBehaviour
         if (currentSkill == null)
             return;
 
-        DoActionData aData = currentSkill.doAction;
-        if (aData == null)
-            return;
-
-        if (aData.Particle == null)
+        if (currentSkill.Particle == null)
             return;
 
         Vector3 position = transform.position + currentSkill.additionalPos;
-        GameObject obj = Instantiate<GameObject>(aData.Particle, position, rootObject.transform.rotation);
+        GameObject obj = Instantiate<GameObject>(currentSkill.Particle, position, rootObject.transform.rotation);
         if (obj.TryGetComponent<Skill_Trigger>(out Skill_Trigger trigger))
         {
             trigger.SetRootObject(rootObject);
             trigger.SetSkillData(currentSkill.DeepCopy());
             trigger.OnSkillHit += OnSkillHit;
+            trigger.ExecuteSkill();
         }
     }
 
-    private void OnSkillHit(Collider other, SkillData skillData)
+    private void OnSkillHit(Collider other, SkillActionData skillData)
     {
         Debug.Log("Skill hit!");
 
@@ -243,11 +253,11 @@ public abstract class Weapon : MonoBehaviour
             // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
             hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
-            damage?.OnDamage(transform.gameObject, this, hitPoint, skillData.doAction);
+            damage?.OnDamage(transform.gameObject, this, hitPoint, skillData);
             // hit Sound Play
-            SoundManager.Instance.PlaySFX(skillData.doAction.hitSoundName);
+            SoundManager.Instance.PlaySFX(skillData.hitSoundName);
 
-            Play_Impulse();
+            Play_Impulse(skillData);
 
             return;
         }
@@ -295,7 +305,7 @@ public abstract class Weapon : MonoBehaviour
         if (skill == null)
             return;
 
-        if (skill.doAction.bCanMove == false)
+        if (skill.bCanMove == false)
         {
             PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
 

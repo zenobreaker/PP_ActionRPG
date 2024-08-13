@@ -120,7 +120,7 @@ public class Enemy :
         animator.SetBool("IsAction", true);
     }
 
-    public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, DoActionData data)
+    public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
         healthPoint.Damage(data.Power);
         if (grade == CharacterGrade.Boss)
