@@ -38,6 +38,7 @@ public class Skill_Trigger : MonoBehaviour
 
     public void ExecuteSkill()
     {
+        Play_SkillMainSound();
         StartCoroutine(Apply_Skill());
     }
 
@@ -56,6 +57,9 @@ public class Skill_Trigger : MonoBehaviour
                 //var target = colliders.ToList().Find(x => x == collider);
                 
                 Debug.Log("skill count " + i);
+                
+                SoundManager.Instance.PlaySFX(skillData.skillActions[i].effectSoundName);
+
                 OnSkillHit?.Invoke(collider, skillData.skillActions[i]);
             }
 
@@ -64,6 +68,14 @@ public class Skill_Trigger : MonoBehaviour
 
     }
 
+    //TODO: 스킬 사운드 처리는 언제할까
+    private void Play_SkillMainSound()
+    {
+        if (skillData == null)
+            return;
+
+        SoundManager.Instance.PlaySFX(skillData.skillMainSound);
+    }
 
 
     //private void Update()

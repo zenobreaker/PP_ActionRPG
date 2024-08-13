@@ -83,6 +83,8 @@ public abstract class Weapon : MonoBehaviour
     protected StateComponent state;
     protected Animator animator;
 
+    protected SkillData currSkillData; // 현재 사용 중인 스킬 정보 
+
     protected static readonly int SkillNumberHash = Animator.StringToHash("SkillNumber");
     protected static readonly int SkillActionHash = Animator.StringToHash("SkillAction");
 
@@ -191,6 +193,7 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void DoSkillAction(SkillData skill)
     {
+        currSkillData = skill; 
         // 애니메이션 재생
         if (!string.IsNullOrEmpty(skill.animationName))
         {
@@ -199,15 +202,21 @@ public abstract class Weapon : MonoBehaviour
             CheckStop(0, skill);
         }
     }
-
-    public virtual void Begin_SkillAction(SkillData currentSkill)
+    
+    public virtual void Play_SkillEffect(SkillData currentSkill)
     {
         CreateSkillEffect(currentSkill);
     }
 
+    public virtual void Begin_SkillAction()
+    {
+       
+    }
+
     public virtual void End_SkillAciton()
     {
-
+        currSkillData = null; // 사용이 끝나면 데이터를 지운다. 
+        Move();
     }
 
     private void CreateSkillEffect(SkillData currentSkill)
@@ -328,7 +337,7 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void EndSkillAction()
     {
-        Move();
+        
     }
 
 

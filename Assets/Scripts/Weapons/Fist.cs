@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Fist : Melee
@@ -10,7 +11,7 @@ public class Fist : Melee
 
 
     protected bool bSkillAction = false;
-  
+
     protected override void Reset()
     {
         base.Reset();
@@ -34,11 +35,11 @@ public class Fist : Melee
     protected override void Awake()
     {
         base.Awake();
-        
-        for(int i = 0; i < (int)PartType.Max; i++)
+
+        for (int i = 0; i < (int)PartType.Max; i++)
         {
             Transform t = colliders[i].transform;
-            
+
             //t.DetachChildren();
             //t.position = Vector3.zero;
             //t.rotation = Quaternion.identity;
@@ -56,13 +57,6 @@ public class Fist : Melee
         }
     }
 
-    //public override void DoAction(int comboIndex)
-    //{
-    //    base.DoAction(comboIndex);
-    //    Debug.Log("자식에서 팅길께?");
-    //    Debug.Log($"Current Combo: {comboIndex}");
-    //    animator.Play($"Fist_Combo{comboIndex}");
-    //}
 
     public override void Begin_Collision(AnimationEvent e)
     {
@@ -78,7 +72,7 @@ public class Fist : Melee
                 if (int.TryParse(s, out int result))
                     colliders[result].enabled = true;
             }
-            return; 
+            return;
         }
 
         colliders[e.intParameter].enabled = true;
@@ -100,89 +94,97 @@ public class Fist : Melee
 
     }
 
-    private GameObject target = null; 
-    public override void End_Collision()
-    {
-        target = null;
-
-        target = ChaseAirboneEnemy();
-        //2. 높이 뜬 적이 있다면 적에게 바로 이동 
-        StartCoroutine(QuickApproachToTarget(target));
-
-        //TODO: 임시로 여기에 둠 
-        bSkillAction = false; 
-        base.End_Collision();
-    }
-
     #region Skill_Action
 
-    public void Fist_AirCombo()
+    public void Start_ApproachToTarget(GameObject target)
     {
-        // 1. 하이킥
-        bSkillAction = true;
-        animator.SetInteger(SkillNumberHash, 1);
-        animator.SetTrigger(SkillActionHash);
-        useSkillID = 4;
-        index = useSkillID;
-       
-        //3. 공격 입력 받음 
-
-        //4. 입력 받는 것에 따라 추가 공격 3연타 
+        StartCoroutine(ApproachToTarget(target));
     }
 
-    private GameObject ChaseAirboneEnemy()
-    {
-        if (hittedList.Count == 0)
-            return null;
-
-        float minDistance = float.MaxValue;
-        GameObject target = null;
-        foreach (GameObject obj in hittedList)
-        {
-            float distance = obj.transform.position.y - transform.position.y;
-            if(distance <= 1.0f)
-                continue;
-
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                target = obj;
-            }
-        }
-                
-        return target; 
-    }
-
-
-    private IEnumerator QuickApproachToTarget(GameObject target)
+    Vector3 debugPos = Vector3.zero;
+    private IEnumerator ApproachToTarget(GameObject target)
     {
         if (target == null && bSkillAction == false)
             yield break;
 
-        Vector3 startPosition = transform.position;
+        Vector3 startPosition = rootObject.transform.position;
         Vector3 targetPosition = target.transform.position;
-        Vector3 direction = (target.transform.position - transform.position).normalized;
-        float dist = Vector3.Distance(startPosition, targetPosition);
 
-        float xzOffset = dist /*- distanceToStop*/;
-        Vector3 stopPosition = startPosition +
-            new Vector3(direction.x * xzOffset, direction.y * dist, direction.z * xzOffset);
+        Vector3 stopPosition = targetPosition + (startPosition - targetPosition).normalized * 1.5f;
+        debugPos = stopPosition;
 
         float elapsedTime = 0.0f;
-        const float snapDuration = 0.1f;
+        const float snapDuration = 0.25f;
         while (elapsedTime < snapDuration)
         {
-            //transform.position = Vector3.Slerp(startPosition, stopPosition, elapsedTime / snapDuration);
-            Vector3 targetPos = Vector3.Slerp(startPosition, stopPosition, elapsedTime / snapDuration);
-            Vector3 moveDirection = targetPos - transform.position;
+            Vector3 targetPos = Vector3.Lerp(startPosition, stopPosition, (elapsedTime / snapDuration));
 
-            transform.position = moveDirection;
-            //Debug.Log($" final {stopPosition}");
+            rootObject.transform.position = targetPos;
             elapsedTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
 
         }
-        transform.position = stopPosition;
+        rootObject.transform.position = stopPosition;
+    }
+
+    public GameObject GetperceptFrontViewNearEnemy()
+    {
+        Vector3 position = rootObject.transform.position;
+
+        int layerMask = 1 << LayerMask.NameToLayer("Enemy");
+        Collider[] colliders = Physics.OverlapSphere(position, 20.0f, layerMask);
+
+        GameObject candidate = null;
+        float angle = -2.0f;
+        foreach (Collider collider in colliders)
+        {
+            if (collider.gameObject == this.rootObject)
+                continue;
+
+            Vector3 forward = rootObject.transform.forward;
+            Vector3 position2 = collider.gameObject.transform.position;
+
+            Vector3 direction = position2 - position;
+            direction.Normalize();
+
+            float dot = Vector3.Dot(direction, forward);
+            if (dot < 0.5f || dot < angle)
+                continue;
+
+            angle = dot;
+            candidate = collider.gameObject;
+            Debug.Log("적 감지  " + candidate.name);
+        }
+
+        return candidate;
+        //if (candidate != null)
+        //{
+        //    if (Physics.Linecast(position, candidate.transform.position, out RaycastHit hit))
+        //    {
+        //        if (hit.transform.gameObject == candidate)
+        //        {
+        //            Debug.Log("대상 간에 장애물 없음 날아감!");
+        //            StartCoroutine(QuickApproachToTarget(hit.transform.gameObject));
+        //        }
+        //    }
+        //}
+    }
+
+    public override void Begin_SkillAction()
+    {
+        base.Begin_SkillAction();
+
+        if (currSkillData == null)
+            return;
+
+        switch (currSkillData.skillName)
+        {
+            case "PowerSpike":
+            Debug.Log("스킬 씀?");
+            // PerceptFrontViewNearEnemy();
+            break;
+        }
+
     }
 
 
@@ -193,5 +195,13 @@ public class Fist : Melee
     }
     #endregion
 
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
 
+        Gizmos.DrawWireSphere(debugPos, 0.5f);
+    }
+
+#endif
 }

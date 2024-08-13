@@ -60,8 +60,6 @@ public class WeaponComponent : MonoBehaviour
         animator = GetComponent<Animator>();
         state = GetComponent<StateComponent>();
         skill = GetComponent<SkillComponent>();
-        if(skill !=null)
-            skill.OnEndSkillAction += End_DoAction;
         target = GetComponent<TargetComponent>();
 
         Debug.Assert(state != null, $"{gameObject.name} has not");
@@ -350,4 +348,21 @@ public class WeaponComponent : MonoBehaviour
 
         //warp.MoveToPosition = position;
     }
+
+    public void PlaySkillEffect(SkillData skillData)
+    {
+        weaponTable[type].Play_SkillEffect(skillData);
+    }
+
+    public void BeginSkillAction()
+    {
+        weaponTable[type].Begin_SkillAction();
+    }
+
+    public void EndSkillAction()
+    {
+        End_DoAction();
+        weaponTable[type].End_SkillAciton();
+    }
+
 }

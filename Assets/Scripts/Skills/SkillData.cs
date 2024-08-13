@@ -43,8 +43,9 @@ public class SkillData : ScriptableObject
     public bool bCanMove;
     public GameObject Particle;             // 스킬 파티클 
     public float cooldown;                  // 쿨다운 시간
+    public float skillRange;                // 스킬 범위 
     public string animationName;            // 스킬 애니메이션 이름
-
+    public string skillMainSound;           // 스킬에 주요 사운드 없으면 비움 
     public float repeatDelayTime = 0.0f ;           // 스킬 위력 반복 시간 
 
     public SkillActionData[] skillActions;
@@ -57,8 +58,9 @@ public class SkillData : ScriptableObject
         s.Particle = Particle;
         s.weaponType = weaponType;
         s.cooldown = cooldown;
+        s.skillRange = skillRange;
         s.animationName = animationName;
-        
+        s.skillMainSound = skillMainSound;
         s.repeatDelayTime = repeatDelayTime;
 
         s.skillActions = new SkillActionData[skillActions.Length];

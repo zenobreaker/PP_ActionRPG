@@ -16,11 +16,10 @@ public class SkillComponent : MonoBehaviour
 
     private List<SkillData> currentSkillDatas = new List<SkillData>();
     private SkillData currentSkill; 
+    public SkillData CurrSkill { get => currentSkill; }
     private Dictionary<WeaponType, List<SkillData>> skillDataTable;
     private Dictionary<string, float> skillCooldownTimerTable;
     private Dictionary<string, string> skillInputTable;
-
-    public event Action OnEndSkillAction;
 
     private void Awake()
     {
@@ -82,7 +81,6 @@ public class SkillComponent : MonoBehaviour
         if (skillInputTable.ContainsKey(skillInput))
         {
             UseSkill(skillInputTable[skillInput], weapon);
-            OnEndSkillAction += weapon.EndSkillAction;
         }
 
     }
@@ -153,27 +151,26 @@ public class SkillComponent : MonoBehaviour
             weapon.DoSkillAction(currentSkill);
     }
 
-  
 
-    private void Begin_SkillAction()
+    public void Play_SkillEffect()
     {
         if (currentSkill == null)
             return;
         if (weapon == null)
-            return; 
-
-        Weapon currentWeapon = weapon.GetEquippedWeapon();
-        if(currentWeapon == null) 
             return;
 
-        currentWeapon.Begin_SkillAction(currentSkill);
-
+        weapon?.PlaySkillEffect(currentSkill);
     }
 
-    private void End_SkillAction()
+    public void Begin_SkillAction()
     {
+        weapon?.BeginSkillAction();   
+    }
+
+    public void End_SkillAction()
+    {
+        weapon?.EndSkillAction();
         currentSkill = null;
-        OnEndSkillAction?.Invoke();
     }
 
     private void OnSetSkillData()
