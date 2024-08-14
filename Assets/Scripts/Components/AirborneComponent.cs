@@ -200,7 +200,7 @@ public class AirborneComponent : MonoBehaviour
         rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
         rigidbody.drag = 0;
         rigidbody.isKinematic = false;
-        // 이전에 움직임이 있으면 잠시 멈추기 
+        // 이전s에 움직임이 있으면 잠시 멈추기 
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 

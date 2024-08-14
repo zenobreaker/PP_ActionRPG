@@ -170,7 +170,7 @@ public class LaunchComponent : MonoBehaviour
         {
             rigidbody.mass = originMass /** 0.05f*/;
             fm = ForceMode.Impulse;
-            launch = rigidbody.mass * distanace;
+            launch = rigidbody.mass * distanace * 2.5f;
             Debug.Log($"air launcher => {launch}");
         }
 
