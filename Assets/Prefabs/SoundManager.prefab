@@ -464,6 +464,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 2952fb3a6f350e34087e6b80c1ff59e7, type: 3}
   - soundName: PowerSpike
     clip: {fileID: 8300000, guid: da98090c367eca74ea79c80ab7a38d5f, type: 3}
+  - soundName: Sword_Horizontal_Slash
+    clip: {fileID: 8300000, guid: 2bbef62ea7893414b972e04259faef5c, type: 3}
+  - soundName: Sword_Continuous_Slash
+    clip: {fileID: 8300000, guid: e5608d1ec5a31404eb62dcb40501c151, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}
