@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a741315af6fc59649b5a991e5bfa6536, type: 3}
+  m_Name: Getsugatenshou
+  m_EditorClassIdentifier: 
+  skillName: Getsugatenshou
+  weaponType: 3
+  bCanMove: 0
+  Particle: {fileID: 4085083844379223635, guid: 900cedede682b2644969b6905fb6fd49, type: 3}
+  cooldown: 5
+  skillRange: 3
+  animationName: Hammer_Skill1
+  skillMainSound: Getsugatenshou
+  repeatDelayTime: 0.1
+  skillActions:
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
+    Distance: 12
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 1, z: 0}
+    impulseSettings: {fileID: 11400000, guid: 605f675a43ab8264ca81fa7227124860, type: 2}
+    effectSoundName: Sword_Slash
+    HitImpactIndex: 0
+    hitSoundName: Sword_Imapct
+    HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  - bDownable: 1
+    bLauncher: 0
+    Power: 10
+    Distance: 0
+    heightValue: 3
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 1, z: 0}
+    impulseSettings: {fileID: 11400000, guid: 605f675a43ab8264ca81fa7227124860, type: 2}
+    effectSoundName: Sword_Slash
+    HitImpactIndex: 0
+    hitSoundName: Sword_Imapct
+    HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  - bDownable: 1
+    bLauncher: 0
+    Power: 10
+    Distance: 0
+    heightValue: 3
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 1, z: 0}
+    impulseSettings: {fileID: 11400000, guid: 605f675a43ab8264ca81fa7227124860, type: 2}
+    effectSoundName: Sword_Slash
+    HitImpactIndex: 0
+    hitSoundName: Sword_Imapct
+    HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  EffectParticle: {fileID: 3506193529601828011, guid: c64c734e54d727c4ba431adbebe1c2ac, type: 3}
+  additionalPos: {x: 0, y: 0, z: 0}

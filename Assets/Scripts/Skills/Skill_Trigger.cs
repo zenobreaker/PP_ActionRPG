@@ -4,77 +4,65 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Skill_Trigger : MonoBehaviour
+public abstract class Skill_Trigger : MonoBehaviour
 {
-    private SkillData skillData;
-    private GameObject rootObject;
+    protected SkillData skillData;
+    protected GameObject rootObject;
     private List<Collider> hittedList = new List<Collider>();
 
     public event Action<Collider, SkillActionData> OnSkillHit;
 
-    public void SetRootObject(GameObject rootObject)
+    public virtual void SetRootObject(GameObject rootObject)
     {
         this.rootObject = rootObject;
     }
-    public void SetSkillData(SkillData skillData)
+    public virtual void SetSkillData(SkillData skillData)
     {
         this.skillData = skillData;
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnEnable()
     {
-        if (other.gameObject == rootObject)
-            return;
 
-        hittedList.Add(other);
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void Update()
     {
-        hittedList.Remove(other);
+
     }
 
-
-    public void ExecuteSkill()
+    protected virtual void OnTriggerEnter(Collider other)
     {
-        Play_SkillMainSound();
-        StartCoroutine(Apply_Skill());
+
     }
 
-    private IEnumerator Apply_Skill()
+    public abstract void ExecuteSkill();
+
+    
+
+    protected void ApplyOnSkillHit(Collider collider, SkillActionData actionData)
     {
-
-        for (int i = 0; i < skillData.skillActions.Length; i++)
-        {
-            Collider[] colliders = Physics.OverlapSphere(this.transform.position, 5.0f);
-
-            foreach (Collider collider in colliders)
-            {
-                if (collider.gameObject == rootObject)
-                    continue;
-
-                //var target = colliders.ToList().Find(x => x == collider);
-                
-                Debug.Log("skill count " + i);
-                
-                SoundManager.Instance.PlaySFX(skillData.skillActions[i].effectSoundName);
-
-                OnSkillHit?.Invoke(collider, skillData.skillActions[i]);
-            }
-
-            yield return new WaitForSeconds(skillData.repeatDelayTime);
-        }
-
+        OnSkillHit?.Invoke(collider, actionData);
     }
 
     //TODO: 스킬 사운드 처리는 언제할까
-    private void Play_SkillMainSound()
+    protected  void Play_SkillMainSound()
     {
         if (skillData == null)
             return;
 
         SoundManager.Instance.PlaySFX(skillData.skillMainSound);
+    }
+
+    protected void Play_SkillEffectParticle()
+    {
+        if (skillData == null)
+            return;
+
+        if (skillData.EffectParticle == null)
+            return; 
+
+        Instantiate<GameObject>(skillData.EffectParticle, transform.position, transform.rotation);
     }
 
 
@@ -123,6 +111,18 @@ public class Skill_Trigger : MonoBehaviour
     //{
     //    OnSkillHit?.Invoke(other, skillData.skillActions[i]);
     //}
+
+#if UNITY_EDITOR
+    public void OnDrawGizmosSelected()
+    {
+        if (skillData == null) return;
+
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawWireSphere(transform.position, skillData.skillRange);
+    }
+
+#endif
 
 }
 

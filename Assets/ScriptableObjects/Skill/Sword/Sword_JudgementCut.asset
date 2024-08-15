@@ -17,7 +17,7 @@ MonoBehaviour:
   bCanMove: 0
   Particle: {fileID: 1011191742018456, guid: 5ddce4a94a63ce14b9f717142ff9ba41, type: 3}
   cooldown: 10
-  skillRange: 0
+  skillRange: 5
   animationName: Sword_Skill1
   skillMainSound: Sword_Horizontal_Slash
   repeatDelayTime: 0.1
@@ -92,4 +92,5 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  EffectParticle: {fileID: 0}
   additionalPos: {x: 0, y: 0, z: 0}

@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Skill_Trigger_Melee : Skill_Trigger
+{
+    public override void ExecuteSkill()
+    {
+        Play_SkillMainSound();
+        Play_SkillEffectParticle();
+        StartCoroutine(Apply_Skill());
+    }
+
+    protected IEnumerator Apply_Skill()
+    {
+
+        for (int i = 0; i < skillData.skillActions.Length; i++)
+        {
+            Collider[] colliders = Physics.OverlapSphere(this.transform.position, skillData.skillRange);
+
+            foreach (Collider collider in colliders)
+            {
+                if (collider.gameObject == rootObject)
+                    continue;
+
+                //var target = colliders.ToList().Find(x => x == collider);
+
+                Debug.Log("skill count " + i);
+
+                SoundManager.Instance.PlaySFX(skillData.skillActions[i].effectSoundName);
+
+                ApplyOnSkillHit(collider, skillData.skillActions[i]);
+            }
+
+            yield return new WaitForSeconds(skillData.repeatDelayTime);
+        }
+
+    }
+}

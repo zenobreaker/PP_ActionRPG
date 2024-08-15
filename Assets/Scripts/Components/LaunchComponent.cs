@@ -123,11 +123,16 @@ public class LaunchComponent : MonoBehaviour
 
         float distance = Vector3.Distance(attacker.transform.localPosition, transform.localPosition);
 
-        // 공격자와의 거리가 밀리는 거리와의 차이가 크거나 같다면 밀리지 않는다.
-        if (distance >= data.Distance)
+        //TODO: 좀 짜치지만..
+        SkillActionData skillData = data as SkillActionData;
+        if (skillData == null)
         {
-            //Debug.Log("Too far");
-            return false;
+            // 공격자와의 거리가 밀리는 거리와의 차이가 크거나 같다면 밀리지 않는다.
+            if (distance >= data.Distance)
+            {
+                //Debug.Log("Too far");
+                return false;
+            }
         }
 
         return true;

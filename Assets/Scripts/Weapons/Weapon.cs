@@ -262,7 +262,7 @@ public abstract class Weapon : MonoBehaviour
             // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
             hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
-            damage?.OnDamage(transform.gameObject, this, hitPoint, skillData);
+            damage?.OnDamage(rootObject, this, hitPoint, skillData);
             // hit Sound Play
             SoundManager.Instance.PlaySFX(skillData.hitSoundName);
 

@@ -49,11 +49,12 @@ public class SkillData : ScriptableObject
     public float repeatDelayTime = 0.0f ;           // 스킬 위력 반복 시간 
 
     public SkillActionData[] skillActions;
+    public GameObject EffectParticle;       // 스킬 이펙트 
     public Vector3 additionalPos;           // 이펙트 프리팹 생성 위치
 
     public SkillData DeepCopy()
     {
-        SkillData s = new SkillData();
+        SkillData s = ScriptableObject.CreateInstance<SkillData>();
         s.skillName = skillName;
         s.Particle = Particle;
         s.weaponType = weaponType;
@@ -67,6 +68,7 @@ public class SkillData : ScriptableObject
         for(int i = 0; i < skillActions.Length; i++)
             s.skillActions[i] = skillActions[i].DeepCopy();
 
+        s.EffectParticle = EffectParticle;
         s.additionalPos = additionalPos;
         return s;
 
