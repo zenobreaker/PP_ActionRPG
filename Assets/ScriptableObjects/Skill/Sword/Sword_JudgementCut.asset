@@ -34,7 +34,21 @@ MonoBehaviour:
     HitImpactIndex: 0
     hitSoundName: Sword_Continuous_Slash
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+  - bDownable: 1
+    bLauncher: 0
+    Power: 1
+    Distance: 1
+    heightValue: 0.2
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.1, z: 0}
+    impulseSettings: {fileID: 11400000, guid: aa6213658e4f287498b3bcc57cc79639, type: 2}
+    effectSoundName: Sword_Slash
+    HitImpactIndex: 0
+    hitSoundName: Sword_Continuous_Slash
+    HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
   - bDownable: 1
     bLauncher: 0
@@ -62,7 +76,7 @@ MonoBehaviour:
     HitImpactIndex: 0
     hitSoundName: Sword_Continuous_Slash
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
   - bDownable: 1
     bLauncher: 0
@@ -76,21 +90,8 @@ MonoBehaviour:
     HitImpactIndex: 0
     hitSoundName: Sword_Continuous_Slash
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-  - bDownable: 1
-    bLauncher: 0
-    Power: 1
-    Distance: 1
-    heightValue: 0.2
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.1, z: 0}
-    impulseSettings: {fileID: 11400000, guid: aa6213658e4f287498b3bcc57cc79639, type: 2}
-    effectSoundName: Sword_Slash
-    HitImpactIndex: 0
-    hitSoundName: Sword_Continuous_Slash
-    HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
   EffectParticle: {fileID: 0}
-  additionalPos: {x: 0, y: 0, z: 0}
+  additionalPos: {x: 0, y: 1, z: 0}
+  bSameOwner: 1

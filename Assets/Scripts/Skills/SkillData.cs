@@ -51,6 +51,7 @@ public class SkillData : ScriptableObject
     public SkillActionData[] skillActions;
     public GameObject EffectParticle;       // 스킬 이펙트 
     public Vector3 additionalPos;           // 이펙트 프리팹 생성 위치
+    public bool bSameOwner;                 // 주체자가 누구인가
 
     public SkillData DeepCopy()
     {
@@ -70,6 +71,7 @@ public class SkillData : ScriptableObject
 
         s.EffectParticle = EffectParticle;
         s.additionalPos = additionalPos;
+        s.bSameOwner = bSameOwner;
         return s;
 
     }

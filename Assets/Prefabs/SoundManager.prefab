@@ -732,6 +732,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 2bbef62ea7893414b972e04259faef5c, type: 3}
   - soundName: Sword_Continuous_Slash
     clip: {fileID: 8300000, guid: e5608d1ec5a31404eb62dcb40501c151, type: 3}
+  - soundName: Mage_Explosion
+    clip: {fileID: 8300000, guid: b753faf6c6023e1429ac1054a7c50e0f, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}

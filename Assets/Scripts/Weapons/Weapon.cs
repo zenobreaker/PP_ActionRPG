@@ -229,13 +229,17 @@ public abstract class Weapon : MonoBehaviour
 
         if (currentSkill.Particle == null)
             return;
+        
+        Vector3 forward = rootObject.transform.forward * currentSkill.additionalPos.z;
+        Vector3 upward = rootObject.transform.up * currentSkill.additionalPos.y;
+        Vector3 right = rootObject.transform.right * currentSkill.additionalPos.x;
 
-        Vector3 position = transform.position + currentSkill.additionalPos;
+        Vector3 position = rootObject.transform.localPosition +forward + upward + right;
         GameObject obj = Instantiate<GameObject>(currentSkill.Particle, position, rootObject.transform.rotation);
         if (obj.TryGetComponent<Skill_Trigger>(out Skill_Trigger trigger))
         {
-            trigger.SetRootObject(rootObject);
             trigger.SetSkillData(currentSkill.DeepCopy());
+            trigger.SetRootObject(rootObject);
             trigger.OnSkillHit += OnSkillHit;
             trigger.ExecuteSkill();
         }
@@ -258,7 +262,7 @@ public abstract class Weapon : MonoBehaviour
             Vector3 hitPoint = Vector3.zero;
 
             // 월드 상 좌표 
-            hitPoint = other.ClosestPoint(other.transform.position);
+            hitPoint = other.transform.position + skillData.HitParticlePositionOffset;
             // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
             hitPoint = other.transform.InverseTransformPoint(hitPoint);
 

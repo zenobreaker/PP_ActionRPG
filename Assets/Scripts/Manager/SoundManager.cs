@@ -46,6 +46,7 @@ public class SoundManager : MonoBehaviour
     public float sfxVolume;
     public float bgmVolume;
 
+    private AudioSource currentSfxPlayer;
 
     private Dictionary<string, AudioClip> sfxSoundTable = new Dictionary<string, AudioClip>();
 
@@ -83,7 +84,6 @@ public class SoundManager : MonoBehaviour
         bgmPlayer.clip = bgmSounds[random].clip;
         bgmPlayer.Play();
     }
-
     public void PlaySFX(string soundName)
     {
         if (string.IsNullOrEmpty(soundName))
@@ -92,16 +92,27 @@ public class SoundManager : MonoBehaviour
         if (sfxSoundTable == null)
             return;
 
-        if(sfxSoundTable.TryGetValue(soundName, out AudioClip clip))
+
+        if (sfxSoundTable.TryGetValue(soundName, out AudioClip clip))
         {
             AudioSource audioSource = GetNotPlayingAudioSource();
             if (audioSource == null)
             {
                 Debug.Log($"Auido Source All Playing");
+                //AudioSource source = FindExistingAudioSource(clip);
+
+                ////source.Stop();
+                //source.clip = null;
+                //source.clip = clip;
+                //source.Play();
+                //TODO: 더 좋은 방법이 떠오르면 수정하기 
+                currentSfxPlayer.clip = clip;
+                currentSfxPlayer.Play();
                 return;
             }
             audioSource.clip = clip;
             audioSource.Play();
+            currentSfxPlayer = audioSource;
         }
     }
 
@@ -118,6 +129,18 @@ public class SoundManager : MonoBehaviour
         return null; 
     }
 
+    private AudioSource FindExistingAudioSource(AudioClip clip)
+    {
+        foreach (AudioSource source in sfxPlayers)
+        {
+            if(/*source.isPlaying && */source.clip == clip)
+            {
+                return source;
+            }
+        }
+
+        return null;
+    }
 
     private void Old_Code(string _soundName)
     {

@@ -13,6 +13,11 @@ public class Skill_PlanetCrash : Skill_Trigger_Projectile
         
     }
 
+    public override void ExecuteSkill()
+    {
+
+    }
+
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
@@ -23,7 +28,10 @@ public class Skill_PlanetCrash : Skill_Trigger_Projectile
             var effectPrefab = Instantiate<GameObject>(EffectPrefab, transform.position, transform.rotation);
             if(effectPrefab.TryGetComponent<Skill_Trigger>(out Skill_Trigger st))
             {
+                st.SetSkillData(skillData);
+                st.SetRootObject(rootObject);
                 st.OnSkillHit += ApplyOnSkillHit;
+                st.ExecuteSkill();
             }
 
             Destroy(this.gameObject);

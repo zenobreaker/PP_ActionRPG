@@ -15,6 +15,11 @@ public abstract class Skill_Trigger : MonoBehaviour
     public virtual void SetRootObject(GameObject rootObject)
     {
         this.rootObject = rootObject;
+        if(skillData != null)
+        {
+            if (skillData.bSameOwner == false)
+                rootObject = this.gameObject;
+        }
     }
     public virtual void SetSkillData(SkillData skillData)
     {
