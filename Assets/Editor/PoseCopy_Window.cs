@@ -254,22 +254,13 @@ internal class PoseCopy_Window : EditorWindow
         }
 
         // Materials 복사
-        //Material[] originalMaterials = original.sharedMaterials;
-        //Material[] newMaterials = new Material[originalMaterials.Length];
-        //for (int i = 0; i < originalMaterials.Length; i++)
-        //{
-        //    if (originalMaterials[i] != null)
-        //    {
-        //        newMaterials[i] = new Material(originalMaterials[i]);
-        //    }
-        //}
-        //target.sharedMaterials = newMaterials;
         Material[] originalMaterials = original.sharedMaterials;
         Material[] newMaterials = new Material[originalMaterials.Length];
         for (int i = 0; i < originalMaterials.Length; i++)
         {
             if (originalMaterials[i] != null)
             {
+                //  newMaterials[i] = new Material(originalMaterials[i]);
                 // 공유 머티리얼을 복사할 필요 없이 바로 설정
                 newMaterials[i] = originalMaterials[i];
             }
@@ -332,17 +323,6 @@ internal class PoseCopy_Window : EditorWindow
     {
         if (original.sharedMaterials != null)
         {
-            //Material[] originalMaterials = original.sharedMaterials;
-            //Material[] newMaterials = new Material[originalMaterials.Length];
-            //for (int i = 0; i < originalMaterials.Length; i++)
-            //{
-            //    if (originalMaterials[i] != null)
-            //    {
-            //        newMaterials[i] = new Material(originalMaterials[i]);
-            //    }
-            //}
-            //target.sharedMaterials = newMaterials;
-
             Material[] originalMaterials = original.sharedMaterials;
             Material[] newMaterials = new Material[originalMaterials.Length];
             for (int i = 0; i < originalMaterials.Length; i++)
@@ -350,6 +330,7 @@ internal class PoseCopy_Window : EditorWindow
                 if (originalMaterials[i] != null)
                 {
                     // 공유 머티리얼을 복사할 필요 없이 바로 설정
+                    //newMaterials[i] = new Material(originalMaterials[i]);
                     newMaterials[i] = originalMaterials[i];
                 }
             }
