@@ -11,10 +11,13 @@ public class Skill_Trigger_Melee : Skill_Trigger
         StartCoroutine(Apply_Skill());
     }
 
-    protected IEnumerator Apply_Skill()
+    protected virtual IEnumerator Apply_Skill()
     {
+        int maxCount = skillData.skillActions.Length;
 
-        for (int i = 0; i < skillData.skillActions.Length; i++)
+        ShouldLoopCount(ref maxCount);
+
+        for (int i = 0; i < maxCount; i++)
         {
             Collider[] colliders = Physics.OverlapSphere(this.transform.position, skillData.skillRange);
 
@@ -22,8 +25,6 @@ public class Skill_Trigger_Melee : Skill_Trigger
             {
                 if (collider.gameObject == rootObject)
                     continue;
-
-                //var target = colliders.ToList().Find(x => x == collider);
 
                 Debug.Log("skill count " + i);
 
@@ -35,5 +36,10 @@ public class Skill_Trigger_Melee : Skill_Trigger
             yield return new WaitForSeconds(skillData.repeatDelayTime);
         }
 
+    }
+
+    public virtual void ShouldLoopCount(ref int maxCount)
+    {
+        
     }
 }

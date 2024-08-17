@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Extend_TransformHelpers
@@ -13,6 +14,20 @@ public static class Extend_TransformHelpers
         }
 
         return null;
+    }
+
+    public static GameObject[] FindChildrenByComponentType<T>(this Transform transform) where T : Component
+    {
+        T[] trasnforms = transform.GetComponentsInChildren<T>();
+
+        List<GameObject> gameObjects = new List<GameObject>(); 
+
+        foreach(T t in trasnforms)
+        {
+            gameObjects.Add(t.gameObject);
+        }
+
+        return gameObjects.ToArray();
     }
 }
 
