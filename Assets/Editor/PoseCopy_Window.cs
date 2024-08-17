@@ -220,6 +220,7 @@ internal class PoseCopy_Window : EditorWindow
                 var properties = component.GetType().GetProperties();
                 foreach (var property in properties)
                 {
+                    // 특정 프로퍼티는 그대로 복사하면 문제가 발생하니 예외 
                     if (property.CanWrite &&
                         property.PropertyType != typeof(Material) &&
                         property.PropertyType != typeof(Material[]) &&
@@ -231,13 +232,6 @@ internal class PoseCopy_Window : EditorWindow
                             property.SetValue(newComponent, property.GetValue(component));
                         }
                     }
-                }
-
-                // SkinnedMeshRenderer 사용하는 컴포넌트의 처리
-                if (component is SkinnedMeshRenderer renderer)
-                {
-                    SkinnedMeshRenderer newRenderer = (SkinnedMeshRenderer)newComponent;
-                    CopySkinnedMeshRenderer(renderer, newRenderer);
                 }
             }
         }
