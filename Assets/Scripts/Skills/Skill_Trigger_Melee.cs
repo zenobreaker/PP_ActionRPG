@@ -17,23 +17,17 @@ public class Skill_Trigger_Melee : Skill_Trigger
 
         ShouldLoopCount(ref maxCount);
 
+        yield return new WaitForSeconds(skillData.DelayTime);
+
         for (int i = 0; i < maxCount; i++)
         {
             Collider[] colliders = Physics.OverlapSphere(this.transform.position, skillData.skillRange);
 
-            foreach (Collider collider in colliders)
-            {
-                if (collider.gameObject == rootObject)
-                    continue;
+            SoundManager.Instance.PlaySFX(skillData.skillActions[i].effectSoundName);
 
-                Debug.Log("skill count " + i);
+            ApplyOnSkillHitWithColliders(colliders, skillData.skillActions[i]);
 
-                SoundManager.Instance.PlaySFX(skillData.skillActions[i].effectSoundName);
-
-                ApplyOnSkillHit(collider, skillData.skillActions[i]);
-            }
-
-            yield return new WaitForSeconds(skillData.repeatDelayTime);
+            yield return new WaitForSeconds(skillData.skillActions[i].HitDelayTime);
         }
 
     }

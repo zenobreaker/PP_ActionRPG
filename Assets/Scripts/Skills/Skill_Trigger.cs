@@ -11,6 +11,7 @@ public abstract class Skill_Trigger : MonoBehaviour
     private List<Collider> hittedList = new List<Collider>();
 
     public event Action<Collider, SkillActionData> OnSkillHit;
+    public event Action OnSkillSpecialEvent;
 
     public virtual void SetRootObject(GameObject rootObject)
     {
@@ -43,7 +44,16 @@ public abstract class Skill_Trigger : MonoBehaviour
 
     public abstract void ExecuteSkill();
 
-    
+    protected virtual void ApplyOnSkillHitWithColliders(Collider[] colliders, SkillActionData data)
+    {
+        foreach (Collider collider in colliders)
+        {
+            if (collider.gameObject == rootObject)
+                continue;
+
+            ApplyOnSkillHit(collider, data);
+        }
+    }
 
     protected void ApplyOnSkillHit(Collider collider, SkillActionData actionData)
     {
@@ -68,6 +78,11 @@ public abstract class Skill_Trigger : MonoBehaviour
             return; 
 
         Instantiate<GameObject>(skillData.EffectParticle, transform.position, transform.rotation);
+    }
+
+    protected void ActivateSpecialEvent()
+    {
+        OnSkillSpecialEvent?.Invoke();
     }
 
 

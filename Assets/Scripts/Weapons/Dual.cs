@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class Dual : Melee
     {
         DualLeft, DualRight, Max, Dual = 2,
     };
+
+    public event Action OnStarward;
 
     protected override void Reset()
     {
@@ -97,5 +100,38 @@ public class Dual : Melee
         }
 
         base.SetParticleObject(index);
+    }
+
+
+    public override void Play_SkillEffect(SkillData currentSkill)
+    {
+        base.Play_SkillEffect(currentSkill);
+
+        if (currSkillData == null)
+            return;
+
+        switch (currSkillData.skillName)
+        {
+            case "Starward":
+            animator.speed = 0.0f;
+            break;
+        }
+
+    }
+
+    protected override void OnSkillSpecialEvent()
+    {
+        base.OnSkillSpecialEvent();
+
+        if (currSkillData == null)
+            return;
+
+        switch (currSkillData.skillName)
+        {
+            case "Starward":
+            OnStarward?.Invoke();
+            animator.speed = 1.0f;
+            break;
+        }
     }
 }

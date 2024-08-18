@@ -241,6 +241,7 @@ public abstract class Weapon : MonoBehaviour
             trigger.SetSkillData(currentSkill.DeepCopy());
             trigger.SetRootObject(rootObject);
             trigger.OnSkillHit += OnSkillHit;
+            trigger.OnSkillSpecialEvent += OnSkillSpecialEvent;
             trigger.ExecuteSkill();
         }
     }
@@ -276,6 +277,12 @@ public abstract class Weapon : MonoBehaviour
         }
 
     }
+
+    protected virtual void OnSkillSpecialEvent()
+    {
+
+    }
+
     #endregion
 
     public virtual void Play_Particle(AnimationEvent e)

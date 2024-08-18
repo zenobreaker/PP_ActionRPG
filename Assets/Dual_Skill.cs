@@ -9,11 +9,18 @@ public class Dual_Skill : StateMachineBehaviour
 
     private Dual dual;
     private GameObject[] models;
-    private GameObject holster; 
+    private GameObject holster;
+    private GameObject dualLeft;
+    private GameObject dualRight;
+
+    private float originAnimSpeed;
+    private bool bStarward;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
+
+        originAnimSpeed = animator.speed;
 
         GameObject gameObject = animator.gameObject;
 
@@ -33,9 +40,16 @@ public class Dual_Skill : StateMachineBehaviour
         switch(skillName)
         {
             case "Starward":
+            bStarward = true;
+            dual.OnStarward += () => { 
+                animator.speed = originAnimSpeed;
+                bStarward = false; 
+            };
             models = gameObject.transform.FindChildrenByComponentType<SkinnedMeshRenderer>();
             //TODO: 이건 나중에 처리하자
             holster = gameObject.transform.FindChildByName("Holster_Sword").gameObject;
+            dualLeft = gameObject.transform.FindChildByName("DualLeft").gameObject;
+            dualRight = gameObject.transform.FindChildByName("DualRight").gameObject;
             break;
         }
 
@@ -50,13 +64,17 @@ public class Dual_Skill : StateMachineBehaviour
         {
             case "Starward":
             // 캐릭터의 모델을 일시적으로 안보이게 한다. 
-            if(stateInfo.normalizedTime > 0.1f && stateInfo.normalizedTime < 0.31f)
+            if(stateInfo.normalizedTime > 0.13f && stateInfo.normalizedTime < 0.31f &&
+                bStarward)
             {
                 foreach(var model in models)
                 {
                     model.SetActive(false);
                 }
                 holster?.SetActive(false);
+                dualRight?.SetActive(false);
+                dualLeft?.SetActive(false);
+                animator.speed = 0.0f;
             }    
             else if(stateInfo.normalizedTime > 0.31f)
             {
@@ -65,8 +83,9 @@ public class Dual_Skill : StateMachineBehaviour
                     model.SetActive(true);
                 }
                 holster?.SetActive(true);
+                dualRight?.SetActive(true);
+                dualLeft?.SetActive(true);
             }
-
             break;
         }
     }

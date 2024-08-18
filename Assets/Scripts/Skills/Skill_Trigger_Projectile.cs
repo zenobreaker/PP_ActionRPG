@@ -16,7 +16,7 @@ public class Skill_Trigger_Projectile : Skill_Trigger
     [SerializeField] protected Projectile_Diection prDirection = Projectile_Diection.None;
 
     protected float currentTime;
-    protected float currApplyTime;
+    protected float currHitDelayTime;
     protected Vector3 direction; 
 
     protected override void OnEnable()
@@ -53,7 +53,7 @@ public class Skill_Trigger_Projectile : Skill_Trigger
         if (skillData == null)
             return;
 
-        currApplyTime = skillData.repeatDelayTime;
+        currHitDelayTime = skillData.skillActions[0].HitDelayTime;
     }
 
     protected override void Update()
@@ -63,7 +63,7 @@ public class Skill_Trigger_Projectile : Skill_Trigger
         transform.Translate(moveSpeed * Time.deltaTime * direction);
         currentTime -= Time.deltaTime;
 
-        currApplyTime -= Time.deltaTime;
+        currHitDelayTime -= Time.deltaTime;
 
         Update_Apply_Skill();
 
@@ -73,25 +73,17 @@ public class Skill_Trigger_Projectile : Skill_Trigger
 
     private void Update_Apply_Skill()
     {
-        if (currApplyTime > 0.0f)
+        if (currHitDelayTime > 0.0f)
         {
             return;
         }
 
         Collider[] colliders = Physics.OverlapSphere(this.transform.position, skillData.skillRange);
 
-        foreach (Collider collider in colliders)
-        {
-            if (collider.gameObject == rootObject)
-                continue;
 
-            SoundManager.Instance.PlaySFX(skillData.skillActions[0].effectSoundName);
-
-            //OnSkillHit?.Invoke(collider, skillData.skillActions[0]);
-            ApplyOnSkillHit(collider, skillData.skillActions[0]);
-        }
-
-        currApplyTime = skillData.repeatDelayTime;
+        ApplyOnSkillHitWithColliders(colliders, skillData.skillActions[0]);
+        
+        currHitDelayTime = skillData.skillActions[0].HitDelayTime;
 
         if (bDestroyer)
             Destroy(gameObject);

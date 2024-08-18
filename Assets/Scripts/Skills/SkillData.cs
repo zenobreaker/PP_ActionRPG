@@ -7,6 +7,8 @@ using static UnityEngine.ParticleSystem;
 [Serializable]
 public class SkillActionData : ActionData
 {
+    public float HitDelayTime;
+
     public SkillActionData DeepCopy()
     {
         SkillActionData skill = new SkillActionData();
@@ -31,6 +33,8 @@ public class SkillActionData : ActionData
         skill.HitParticlePositionOffset = HitParticlePositionOffset;
         skill.HitParticleSacleOffset = HitParticleSacleOffset;
 
+        skill.HitDelayTime = HitDelayTime;
+
         return skill;
     }
 }
@@ -46,7 +50,7 @@ public class SkillData : ScriptableObject
     public float skillRange;                // 스킬 범위 
     public string animationName;            // 스킬 애니메이션 이름
     public string skillMainSound;           // 스킬에 주요 사운드 없으면 비움 
-    public float repeatDelayTime = 0.0f ;           // 스킬 위력 반복 시간 
+    public float DelayTime = 0.0f;           // 스킬 시전 시간 
 
     public SkillActionData[] skillActions;
     public GameObject EffectParticle;       // 스킬 이펙트 
@@ -63,7 +67,7 @@ public class SkillData : ScriptableObject
         s.skillRange = skillRange;
         s.animationName = animationName;
         s.skillMainSound = skillMainSound;
-        s.repeatDelayTime = repeatDelayTime;
+        s.DelayTime = DelayTime;
 
         s.skillActions = new SkillActionData[skillActions.Length];
         for(int i = 0; i < skillActions.Length; i++)
