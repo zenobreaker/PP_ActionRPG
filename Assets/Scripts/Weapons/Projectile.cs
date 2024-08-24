@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField]
-    private float force = 1000.0f;
+    [SerializeField] private float force = 1000.0f;
+    [SerializeField] private float life = 10.0f;
 
     private new Rigidbody rigidbody;
     private new Collider collider;
@@ -26,7 +26,7 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, 10.0f);
+        Destroy(gameObject, life);
 
         rigidbody.AddForce(transform.forward * force);
     }

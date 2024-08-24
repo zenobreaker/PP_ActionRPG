@@ -125,7 +125,7 @@ public class LaunchComponent : MonoBehaviour
 
         //TODO: 좀 짜치지만..
         SkillActionData skillData = data as SkillActionData;
-        if (skillData == null)
+        if (skillData == null && causer is not Gun)
         {
             // 공격자와의 거리가 밀리는 거리와의 차이가 크거나 같다면 밀리지 않는다.
             if (distance >= data.Distance)

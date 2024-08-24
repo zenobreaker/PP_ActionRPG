@@ -1,11 +1,15 @@
 using Cinemachine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Melee : Weapon
 {
-    private bool bEnable;
-    private bool bExist;
+    protected bool bEnable;
+    protected bool bExist;
 
 
     [SerializeField] protected bool isAnimating = false;
@@ -40,11 +44,10 @@ public class Melee : Weapon
     protected Transform[] particleTransforms;
     protected GameObject[] trailParticles;
 
-    [SerializeField] AnimationCurve myCurve;
-
     protected Transform slashTransform;
     protected AIController aiController;
 
+    public event Action<GameObject> OnHitTarget;
 
     protected override void Awake()
     {
@@ -81,8 +84,6 @@ public class Melee : Weapon
                 listener = virtualCamera.GetComponent<CinemachineImpulseListener>();
         }
 
-        myCurve.AddKey(0, 1);
-        myCurve.AddKey(1, 0);
         //Debug.Log($"{rootObject.name} = {name}");
         End_Collision();
     }
@@ -113,14 +114,70 @@ public class Melee : Weapon
         
     }
 
+    private Coroutine rotateCoroutine;
     public virtual void End_Collision()
     {
         foreach (Collider collider in colliders)
             collider.enabled = false;
 
+        float angle = -2.0f; 
+        GameObject candidate = null;
+
+        foreach (GameObject hit in hittedList)
+        {
+            Vector3 direction = hit.transform.position - rootObject.transform.position;
+            direction.Normalize();
+
+            Vector3 forward = rootObject.transform.forward;
+
+            float dot = Vector3.Dot(direction, forward);
+            if (dot < 0.75f || dot < angle)
+                continue;
+
+            angle = dot; 
+            candidate = hit;
+        }
+
+        if(candidate != null)
+        {
+            Vector3 direction = candidate.transform.position - rootObject.transform.position;
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            targetRotation.x = rootObject.transform.rotation.x;
+            targetRotation.z = rootObject.transform.rotation.z;
+            if (rotateCoroutine != null)
+                StopCoroutine(rotateCoroutine);
+            rotateCoroutine = StartCoroutine(RotateToTarget(targetRotation));
+        }
+
+
         hittedList.Clear();
 
         DeleteParticle();
+    }
+
+    IEnumerator RotateToTarget(Quaternion rotation)
+    {
+        // 회전 속도
+        float rotationSpeed = 5.0f;
+        float elapasedTime = 0.0f;
+        float duration = 0.1f;
+        // 목표 각도에 도달할 때까지 루프를 실행
+        while (elapasedTime < duration)
+        {
+            elapasedTime += Time.deltaTime;
+            // 현재 회전을 목표 회전을 향해 보간합니다.
+            rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, rotation, (elapasedTime * rotationSpeed)/duration);
+            float differ = Quaternion.Angle(rootObject.transform.rotation, rotation);
+            if(differ < 2.0f )
+            {
+                rootObject.transform.rotation = rotation;
+                yield break; 
+            }
+
+            // 다음 프레임을 기다립니다.
+            yield return null;
+        }
     }
 
     // 파티클 삭제 
@@ -173,22 +230,20 @@ public class Melee : Weapon
 
     public override void DoAction(int comboIndex , bool bNext = false)
     {
+
         if (listener != null)
         {
             listener.m_ReactionSettings.m_SecondaryNoise = null;
         }
 
         comboIndex %= (doActionDatas.Length);
-       //Debug.Log($"doing combo : {comboIndex}");
         bExist = bNext;
         if (isAnimating)
         {
-         //  Debug.Log($"dont combo : {comboIndex}");
             return;
         }
 
         index = comboIndex;
-        //Debug.Log($"doing combo name: {comboObjData.comboDatas[comboIndex].ComboName}");
         isAnimating = true; 
         animator.Play(comboObjData.comboDatas[comboIndex].ComboName);
 
@@ -207,7 +262,6 @@ public class Melee : Weapon
         if (state.IdleMode == false)
             return;
 
-        Debug.Log($"{rootObject.name},  id : {useSkillID} ");
         base.DoSubAction();
     }
 
@@ -335,7 +389,21 @@ public class Melee : Weapon
         //temp.transform.localPosition = hitPoint;
         //temp.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
         //Debug.Log($"{rootObject.name} : current data {doActionDatas[index].dataID}");
+
+
+        //if (moving != null)
+        //{
+        //    // 밀리타격일 때만 작업 전방에 맞앗고 가장 가까운놈에게 카메라 돌리기 
+        //    Vector3 direction = other.gameObject.transform.position - rootObject.transform.position;
+        //    Quaternion q = Quaternion.FromToRotation(rootObject.transform.forward, direction.normalized);
+
+        //    // 피치가 0값이라 회전완료후 정면이다 나중에 팔로우타겟을 가져와서 세팅을 하고 전달해야할 것 
+        //    rootObject.transform.rotation *= Quaternion.Euler(0, q.eulerAngles.y, 0);
+        //    moving.Rotation = rootObject.transform.rotation;
+        //}
+
         damagable.OnDamage(rootObject, this, hitPoint, doActionDatas[index]);
+        OnHitTarget?.Invoke(other.gameObject);
         if (aiController == null)
             Play_Impulse();
     }

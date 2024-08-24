@@ -134,7 +134,7 @@ public abstract class AIController : MonoBehaviour
         // 공격할 때도 처리 안함
         bCheck |= (ActionMode == true);
         bCheck |= (DamagedMode == true);
-        bCheck |= (enemy.DownCondition);
+        bCheck |= (state.DownCondition);
         if (state != null)
         {
             bCheck |= state.DeadMode;

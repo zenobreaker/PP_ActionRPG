@@ -5,13 +5,26 @@ using UnityEngine;
 
 public class SkillDataManager : MonoBehaviour
 {
+    public enum SkillSlot
+    {
+        NONE, Skill1, Skill2, Skill3, 
+    };
+
+    [Serializable]
+    public class SkillSlotPairClass
+    {
+        public SkillData skillData;
+        public SkillSlot slotNumber;
+    }
+
     private static SkillDataManager instance;
     public static SkillDataManager Instance { get { return instance; } }
 
     public List<SkillData> skillDatas;
     
     private Dictionary<WeaponType, List<SkillData>> skillDataTable;
-    
+    [SerializeField] private List<SkillSlotPairClass> skillSlotList;
+
     public event Action OnSetSkillData;
 
     private void Awake()
@@ -45,6 +58,16 @@ public class SkillDataManager : MonoBehaviour
         if (skillDataTable.ContainsKey(type))
             return skillDataTable[type];
         return new List<SkillData>();
+    }
+
+    public SkillSlot GetSkillSlotBySkillData(SkillData skillData)
+    {
+        SkillSlotPairClass pair = skillSlotList.Find(x => x.skillData == skillData);
+
+        if (pair != null)
+            return pair.slotNumber;
+
+        return SkillSlot.NONE;
     }
 
 }

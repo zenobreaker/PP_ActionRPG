@@ -27,6 +27,7 @@ public class SkillComponent : MonoBehaviour
         {
             {"Skill1", "" },
             {"Skill2", "" },
+            {"Skill3", "" }
         };
 
         animator = GetComponent<Animator>();
@@ -216,13 +217,22 @@ public class SkillComponent : MonoBehaviour
         {
             currentSkillDatas = skillDataTable[newType];
 
-            if (skillDataTable[newType].Count > 0)
+            //TODO: 사실 그렇게 좋은 건 아니라고 본다
+            foreach(SkillData skillData in currentSkillDatas)
             {
-                if (skillDataTable[newType].Count == 1)
+                SkillDataManager.SkillSlot slot = SkillDataManager.Instance.GetSkillSlotBySkillData(skillData);
+                if (slot == SkillDataManager.SkillSlot.NONE)
+                    continue; 
+
+                if(slot == SkillDataManager.SkillSlot.Skill1)
                     skillInputTable["Skill1"] = skillDataTable[newType][0].skillName;
-                if (skillDataTable[newType].Count % 2 == 0)
-                    skillInputTable["Skill2"] = skillDataTable[newType][1].skillName;
+                //else if(slot == SkillDataManager.SkillSlot.Skill2)
+                //    skillInputTable["Skill2"] = skillDataTable[newType][1].skillName;
+                //else if(slot == SkillDataManager.SkillSlot.Skill3)
+                //    skillInputTable["Skill3"] = skillDataTable[newType][2].skillName;
+
             }
+            
         }
     }
 

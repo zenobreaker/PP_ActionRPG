@@ -54,7 +54,7 @@ public class AIController_Tower : AIController
     {
         bool bCheck = false;
         bCheck |= state.DeadMode;
-        bCheck |= enemy.DownCondition;
+        bCheck |= state.DownCondition;
         if (bCheck)
         {
             Debug.Log("is Dead");

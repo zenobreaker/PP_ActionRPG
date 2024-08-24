@@ -33,6 +33,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Evade",
+                    "type": "Button",
+                    "id": "8ae24ca1-1bbc-461f-9cf6-9eec4dabd920",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Run",
                     "type": "Button",
                     "id": "97e46142-68f3-4920-bbbd-ad34bb966274",
@@ -123,9 +132,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Evade",
+                    "name": "Gun",
                     "type": "Button",
-                    "id": "8ae24ca1-1bbc-461f-9cf6-9eec4dabd920",
+                    "id": "a31d5807-b77e-4187-931e-136057bdb37a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -265,17 +274,6 @@
                 },
                 {
                     "name": "",
-                    "id": "cfa793d3-8ad1-4795-a7ec-5fd5212a8a3a",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Evade",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "12bd4958-23a7-4fb5-946b-2cfd546d4edb",
                     "path": "<Keyboard>/5",
                     "interactions": "",
@@ -337,6 +335,39 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Skill2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1ba5c8f-bdc8-40ea-91df-de72e184a10f",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Gun",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92a63237-b8b9-47c3-9245-de17092dcf7c",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Action2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cfa793d3-8ad1-4795-a7ec-5fd5212a8a3a",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Evade",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

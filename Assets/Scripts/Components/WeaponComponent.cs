@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public enum WeaponType
 {
-    Unarmed = 0, Fist = 1, Sword, Hammer, FireBall, Dual, Warp, MAX,
+    Unarmed = 0, Fist = 1, Sword, Hammer, FireBall, Dual, Gun, Warp, MAX,
 }
 
 public class WeaponComponent : MonoBehaviour
@@ -34,6 +34,7 @@ public class WeaponComponent : MonoBehaviour
     public bool HammerMode { get => type == WeaponType.Hammer; }
     public bool FireBallMode { get => type == WeaponType.FireBall; }
     public bool DualMode { get => type == WeaponType.Dual; }
+    public bool GunMode { get => type == WeaponType.Gun; }
     public bool WarpMode { get => type == WeaponType.Warp; }
 
     public bool IsEquippingMode()
@@ -143,6 +144,14 @@ public class WeaponComponent : MonoBehaviour
         SetMode(WeaponType.Dual);
     }
 
+
+    public void SetGunMode()
+    {
+        if (state.IdleMode == false)
+            return;
+
+        SetMode(WeaponType.Gun);
+    }
 
 
     public void SetUnarmedMode()
@@ -277,6 +286,11 @@ public class WeaponComponent : MonoBehaviour
         weaponTable[type].Begin_DoAction();
         //Debug.Log("Call first?");
         OnBeginDoAction?.Invoke();
+    }
+
+    private void Begin_DoSubAction()
+    {
+        weaponTable[type].Begin_SubAction();
     }
 
     public void End_DoAction()

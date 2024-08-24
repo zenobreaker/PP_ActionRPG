@@ -127,6 +127,13 @@ public class GroundedComponent : MonoBehaviour
         OnCharacterGround?.Invoke();
     }
 
+    public void OnAirial()
+    {
+        rigidbody.useGravity = true;
+        rigidbody.isKinematic = false;
+        bDistanceCheck = true;
+        checkOnPosition = transform.position;
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()

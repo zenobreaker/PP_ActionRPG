@@ -68,6 +68,11 @@ public class Player
             weapon.SetDualMode();
         };
 
+        actionMap.FindAction("Gun").started += (context) =>
+        {
+            weapon.SetGunMode();
+        };
+
 
         actionMap.FindAction("Action").started += (context) =>
         {
@@ -99,6 +104,10 @@ public class Player
 
     }
 
+    protected override void Update()
+    {
+        base.Update();
+    }
 
     protected override void OnAnimatorMove()
     {
@@ -205,6 +214,4 @@ public class Player
         state.SetIdleMode();
     }
 
-
-  
 }

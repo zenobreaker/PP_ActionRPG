@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 
@@ -72,7 +73,7 @@ public abstract class Weapon : MonoBehaviour
 {
     [SerializeField] protected WeaponType type;
     [SerializeField] protected DoActionData[] doActionDatas;
-
+    [SerializeField] protected DoActionData[] subActionDatas;
     public WeaponType Type { get => type; }
 
     private bool bEquipping;
@@ -87,6 +88,9 @@ public abstract class Weapon : MonoBehaviour
 
     protected static readonly int SkillNumberHash = Animator.StringToHash("SkillNumber");
     protected static readonly int SkillActionHash = Animator.StringToHash("SkillAction");
+
+    protected bool isSubAction = false; 
+    public bool SubAction { get => isSubAction; }
 
     protected virtual void Reset()
     {
@@ -155,29 +159,54 @@ public abstract class Weapon : MonoBehaviour
     public virtual void DoAction(int comboIndex = 0, bool bNext = false)
     {
         state.SetActionMode();
-
+ 
         CheckStop(0);
     }
 
     public virtual void DoSubAction()
     {
-        state.SetActionMode();
+        if (subActionDatas.Length <= 0)
+            return;
 
+        state.SetActionMode();
+   
         CheckStop(0);
+
+        //TODO: Test
+        //Begin_SubAction();
     }
+
 
     public virtual void Begin_DoAction()
     {
 
     }
-
-
+    
     public virtual void End_DoAction()
     {
         state.SetIdleMode();
         currentComboCount = 0;
         Move();
+        
     }
+
+  
+
+    public virtual void Begin_SubAction()
+    {
+        
+    }
+
+    public virtual void End_SubAction()
+    {
+        state.SetIdleMode();
+        isSubAction = false;
+        animator.SetBool("SubActionMode", false);
+        Move();
+    }
+
+
+
 
     public virtual void Play_Impulse()
     {
@@ -351,7 +380,7 @@ public abstract class Weapon : MonoBehaviour
         
     }
 
-
-
+    
+  
 }
 

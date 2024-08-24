@@ -22,6 +22,7 @@ public class AirborneComponent : MonoBehaviour
 
     private new Rigidbody rigidbody;
     private NavMeshAgent agent;
+    private Animator animator;
 
     private StateComponent state;
     private GroundedComponent ground;
@@ -30,8 +31,6 @@ public class AirborneComponent : MonoBehaviour
     private bool bSuperArmor = false;
     private StateType prevType;
 
-    private float originDrag;
-    private float originMass;
     private Coroutine airCoroutine;
     private Coroutine useGravityCoroutine;
 
@@ -41,12 +40,13 @@ public class AirborneComponent : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
-        originDrag = rigidbody.drag;
-        originMass = rigidbody.mass;
+
+        animator = GetComponent<Animator>();
 
         state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
         state.OnStateTypeChanging += OnStateTypeChanging;
+        state.OnStateTypeChanged += OnStateTypeChanged;
 
         ground = GetComponent<GroundedComponent>();
         Debug.Assert(ground != null);
@@ -77,12 +77,26 @@ public class AirborneComponent : MonoBehaviour
     {
         this.prevType = prevType;
     }
+
+    private void OnStateTypeChanged(StateType prevType, StateType newType)
+    {
+        if (newType == StateType.Airborne && 
+            state.DownCondition == false)
+        {
+            animator.SetBool("Airial", true);
+        }
+        else
+            animator.SetBool("Airial", false);
+    }
+
     private void OnGround()
     {
         otherCollider?.SetAirStateCollider(false);
 
         if (agent != null)
             agent.enabled = true;
+        
+        state.SetIdleMode();
     }
 
     private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
@@ -109,6 +123,8 @@ public class AirborneComponent : MonoBehaviour
 
         BeginDoAir(data);
 
+        if (causer.SubAction)
+            DoAirFreeze(0.75f);
       //  DoAirborneLaunch(attacker, causer, data);
     }
 
@@ -227,4 +243,27 @@ public class AirborneComponent : MonoBehaviour
     }
 
     #endregion
+
+
+    Coroutine airFreezeCoroutine;
+    public void DoAirFreeze(float delay)
+    {
+        if (state.AirborneMode == false)
+            return;
+
+        if (ground.IsGround)
+            return;
+
+        if (airFreezeCoroutine != null)
+            StopCoroutine(airFreezeCoroutine);
+    
+        airFreezeCoroutine = StartCoroutine(AirFreeze(delay));
+    }
+
+    private IEnumerator AirFreeze(float delay)
+    {
+        rigidbody.isKinematic = true;
+        yield return new WaitForSeconds(delay);
+        rigidbody.isKinematic = false;
+    }
 }

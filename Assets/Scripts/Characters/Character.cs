@@ -12,17 +12,8 @@ public abstract class Character
     IStoppable,
     ISlowable
 {
-    //TODO: 이 값들은 따로 빼주기 
-    private enum CharacterCondition
-    {
-        None, Down, Max,
-    }
-    private CharacterCondition myCondition;
-
-    public bool NoneCondition { get => myCondition == CharacterCondition.None; }
-    public bool DownCondition { get => myCondition == CharacterCondition.Down; }
-    public void SetNoneConditon() { myCondition = CharacterCondition.None; }
-    public void SetDownCondition() { myCondition = CharacterCondition.Down; }
+   
+   
 
     protected Animator animator;
     protected new Rigidbody rigidbody;
@@ -100,7 +91,7 @@ public abstract class Character
             return;
 
         state.SetIdleMode();
-        SetDownCondition();
+       
         downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
     }
 
@@ -128,8 +119,8 @@ public abstract class Character
 
         animator.SetTrigger("GetUp");
 
-        //TODO: 일단 여기 호출
-        SetNoneConditon();
+        // 일어나면 컨디션을 변경
+        state.SetNoneConditon();
     }
 
     public virtual void ApplySlow(float duration, float slowFactor)

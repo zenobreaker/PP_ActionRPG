@@ -14,6 +14,7 @@ public class StateComponent : MonoBehaviour
     public event Action<StateType, StateType> OnStateTypeChanged;
     public event Action<StateType> OnStateTypeChanging; // 이전 상태에 대한 이벤트 콜
 
+   
     public bool IdleMode { get => type == StateType.Idle; }
     public bool EquipMode { get => type == StateType.Equip; }
     public bool ActionMode { get => type == StateType.Action; }
@@ -29,6 +30,20 @@ public class StateComponent : MonoBehaviour
     public void SetDamagedMode() => ChangeType(StateType.Damaged);
     public void SetDeadMode() => ChangeType(StateType.Dead);
     public void SetAirborneMode() =>ChangeType(StateType.Airborne);
+
+
+    private enum ConditionType
+    {
+        None, Down, Max,
+    }
+
+    private ConditionType myCondition;
+
+    public bool NoneCondition { get => myCondition == ConditionType.None; }
+    public bool DownCondition { get => myCondition == ConditionType.Down; }
+    public void SetNoneConditon() { myCondition = ConditionType.None; }
+    public void SetDownCondition() { myCondition = ConditionType.Down; }
+
 
     private void ChangeType(StateType type)
     {

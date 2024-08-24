@@ -99,15 +99,15 @@ public class SoundManager : MonoBehaviour
             if (audioSource == null)
             {
                 Debug.Log($"Auido Source All Playing");
-                //AudioSource source = FindExistingAudioSource(clip);
+                AudioSource source = FindExistingAudioSource(clip);
 
-                ////source.Stop();
-                //source.clip = null;
-                //source.clip = clip;
-                //source.Play();
+                //source.Stop();
+                source.clip = null;
+                source.clip = clip;
+                source.Play();
                 //TODO: 더 좋은 방법이 떠오르면 수정하기 
-                currentSfxPlayer.clip = clip;
-                currentSfxPlayer.Play();
+                //currentSfxPlayer.clip = clip;
+                //currentSfxPlayer.Play();
                 return;
             }
             audioSource.clip = clip;

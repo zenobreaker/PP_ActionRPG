@@ -127,85 +127,72 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   doActionDatas:
-  - dataID: 1
-    bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+  - bDownable: 0
     bLauncher: 0
     Power: 10
     Distance: 4
     heightValue: 0
     StopFrame: 5
-    airConditionTime: 2
     impulseDirection: {x: -0.2, y: 0.25, z: 0}
     impulseSettings: {fileID: 11400000, guid: 34bf35ef5ccf1db488c40cbd5f718ca6, type: 2}
-    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
     effectSoundName: Sword_Slash
     HitImpactIndex: 0
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-  - dataID: 2
     bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
+  - bDownable: 0
     bLauncher: 0
     Power: 10
     Distance: 10
     heightValue: 0
     StopFrame: 5
-    airConditionTime: 2
     impulseDirection: {x: 0.25, y: 0.2, z: 0}
     impulseSettings: {fileID: 11400000, guid: 76b5ac7843fb45540be356275006723c, type: 2}
-    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
     effectSoundName: Sword_Slash
     HitImpactIndex: 1
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-  - dataID: 3
     bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
+  - bDownable: 0
     bLauncher: 0
     Power: 10
     Distance: 15
     heightValue: 0
     StopFrame: 8
-    airConditionTime: 2
     impulseDirection: {x: 0.1, y: 0.25, z: 0}
     impulseSettings: {fileID: 11400000, guid: 693748b6266cc9749a129b80cee3a191, type: 2}
-    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
     effectSoundName: Sword_Slash
     HitImpactIndex: 2
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1.2, y: 1.2, z: 1.2}
-  - dataID: 4
     bCanMove: 0
-    bUpper: 0
-    bDownable: 1
+    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
+  - bDownable: 1
     bLauncher: 0
     Power: 15
     Distance: 10
     heightValue: 0
     StopFrame: 8
-    airConditionTime: 2
     impulseDirection: {x: 0.53, y: 0.22, z: 0}
     impulseSettings: {fileID: 11400000, guid: aa6213658e4f287498b3bcc57cc79639, type: 2}
-    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
     effectSoundName: Sword_Slash
     HitImpactIndex: 1
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1.5, y: 1.5, z: 1.5}
+    bCanMove: 0
+    Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 4626d0966bfb0304f906846fa073cbe9, type: 2}
-  bDebugMode: 0
   index: 0
   slashTransformName: Slash_Transform
   startPosObj: {fileID: 5206477538750415318}
@@ -222,6 +209,23 @@ MonoBehaviour:
     m_RotationOrder: 4
   holsterName: Holster_Sword
   handName: Hand_Sword
+  subActionDatas:
+  - bDownable: 0
+    bLauncher: 0
+    Power: 0
+    Distance: 0
+    heightValue: 5
+    StopFrame: 0
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
+    HitImpactIndex: 0
+    hitSoundName: 
+    HitParticle: {fileID: 0}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 0, y: 0, z: 0}
+    bCanMove: 0
+    Particle: {fileID: 0}
 --- !u!114 &4428589776670971191
 MonoBehaviour:
   m_ObjectHideFlags: 0

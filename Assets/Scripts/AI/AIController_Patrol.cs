@@ -54,7 +54,7 @@ public class AIController_Patrol : AIController
     {
         bool bCheck = false;
         bCheck |= state.DeadMode;
-        bCheck |= enemy.DownCondition;
+        bCheck |= state.DownCondition;
         if (bCheck)
         {
             Debug.Log("is Dead");
@@ -147,7 +147,7 @@ public class AIController_Patrol : AIController
         bCheck &= WaitMode;
         bCheck &= StrafeState;
         bCheck &= !state.DeadMode;
-        bCheck &= !enemy.DownCondition;
+        bCheck &= !state.DownCondition;
         bCheck &= sideStep != null;
         if (bCheck == false)
             return;
@@ -161,7 +161,7 @@ public class AIController_Patrol : AIController
         bCheck &= WaitMode;
         bCheck &= BackStepState;
         bCheck &= !state.DeadMode;
-        bCheck &= !enemy.DownCondition;
+        bCheck &= !state.DownCondition;
         if (bCheck == false)
             return;
 

@@ -142,7 +142,7 @@ public class AIController_Boss : AIController
         if (state.DeadMode)
             return;
 
-        if (enemy.DownCondition)
+        if (state.DownCondition)
         {
             Debug.Log("is Down");
             return;

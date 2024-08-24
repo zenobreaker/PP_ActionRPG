@@ -162,7 +162,7 @@ public class Enemy :
             }
             else
             {
-
+                state.SetDownCondition();
                 // 다운 상태 기술을 맞으면 관련된 값이 변경된다. 
                 animator.SetBool("IsDownCondition", true);
 
