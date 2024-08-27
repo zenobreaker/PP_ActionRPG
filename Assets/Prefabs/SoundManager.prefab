@@ -734,6 +734,12 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: e5608d1ec5a31404eb62dcb40501c151, type: 3}
   - soundName: Mage_Explosion
     clip: {fileID: 8300000, guid: b753faf6c6023e1429ac1054a7c50e0f, type: 3}
+  - soundName: Gun_Ready
+    clip: {fileID: 8300000, guid: 2da8806846522404eb73994687c67c59, type: 3}
+  - soundName: Gun_Fire
+    clip: {fileID: 8300000, guid: cdcd9bf3be008e24fb5d94524b2b14df, type: 3}
+  - soundName: Gun_Impact
+    clip: {fileID: 8300000, guid: 2da8806846522404eb73994687c67c59, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}

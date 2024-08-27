@@ -339,14 +339,20 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
+    protected void Stop()
+    {
+        PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
+
+        if (moving != null)
+            moving.Stop();
+    }
+
+
     protected void CheckStop(int index)
     {
         if (doActionDatas[index].bCanMove == false)
         {
-            PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
-
-            if (moving != null)
-                moving.Stop();
+            Stop();
         }
     }
     protected void CheckStop(int index, SkillData skill)
@@ -356,10 +362,7 @@ public abstract class Weapon : MonoBehaviour
 
         if (skill.bCanMove == false)
         {
-            PlayerMovingComponent moving = rootObject.GetComponent<PlayerMovingComponent>();
-
-            if (moving != null)
-                moving.Stop();
+            Stop();
         }
     }
 

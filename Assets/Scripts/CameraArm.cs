@@ -25,6 +25,8 @@ public class CameraArm : MonoBehaviour
     [SerializeField] private float zoomLerp = 1.0f;
     [SerializeField] private Vector2 zoomRange = new Vector2(1, 3);
     private float zoomDistance;
+    [SerializeField] private CinemachineVirtualCamera vcamera;
+    [SerializeField] private CinemachineVirtualCamera rifleCamera;
     private Cinemachine3rdPersonFollow tpsFollowCamera;
 
     [SerializeField] private GameObject target;
@@ -73,8 +75,8 @@ public class CameraArm : MonoBehaviour
             cutscene.OnCutSceneEnd += OffCameraAnim;
         }
 
-        CinemachineVirtualCamera camera = GetComponentInChildren<CinemachineVirtualCamera>();
-        tpsFollowCamera = camera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        vcamera = GetComponentInChildren<CinemachineVirtualCamera>();
+        tpsFollowCamera = vcamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
 
         if (tpsFollowCamera != null)
             zoomDistance = tpsFollowCamera.CameraDistance;
@@ -192,13 +194,49 @@ public class CameraArm : MonoBehaviour
         rotation.eulerAngles = new Vector3(angles.x, rotation.eulerAngles.y, 0);
         // 회전량 최종 삽입 
         this.transform.rotation = rotation;
-
-        //rotation = Quaternion.Lerp(this.transform.rotation, rotation, mouseRotationLerp * Time.deltaTime);
-        //Quaternion afterRotation = Quaternion.Euler(angles.x, rotation.eulerAngles.y, 0); ;
-        //rotation = Quaternion.Euler(angles.x, rotation.eulerAngles.y, 0);
-        //this.transform.rotation = Quaternion.Euler(angles.x, rotation.eulerAngles.y, 0); 
     }
 
+    public Quaternion GetRotation ()
+    {
+        return rotation;
+    }
+
+    public void TurnOnCamera()
+    {
+        if (vcamera == null)
+            return;
+        vcamera.gameObject.SetActive(true);
+    }
+
+    public void TurnOffCamera()
+    {
+        if (vcamera == null) 
+            return;
+
+        vcamera.gameObject.SetActive(false);
+    }
+
+    public void SetSnipeMode(GameObject snipeObj)
+    {
+        if (rifleCamera == null)
+            return;
+
+        rifleCamera.gameObject.SetActive(true);
+        rifleCamera.transform.position = snipeObj.transform.position;
+        //rifleCamera.transform.rotation = snipeObj.transform.rotation;
+
+        TurnOffCamera();
+    }
+
+    public void EndSnipeMode()
+    {
+        TurnOnCamera();
+
+        if (rifleCamera == null)
+            return;
+
+        rifleCamera.gameObject.SetActive(false);
+    }
 
 #if UNITY_EDITOR
     private void OnGUI()

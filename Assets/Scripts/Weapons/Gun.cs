@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Gun : Melee
@@ -18,6 +17,9 @@ public class Gun : Melee
     [SerializeField] private float perceptionRange = 5.0f;
     // 총기 오브젝트
     [SerializeField] private GameObject[] gunObjects;
+    [SerializeField] private ScopeUI scopeUI;
+
+    private RifleGun rifleGun; 
 
     private Transform leftMuzleTrasnform;
     private Transform rightMuzleTrasnform;
@@ -38,11 +40,13 @@ public class Gun : Melee
     {
         base.Awake();
 
+        scopeUI = FindObjectOfType<ScopeUI>();
+
         leftMuzleTrasnform = rootObject.transform.FindChildByName(leftMuzzleTransformName);
         rightMuzleTrasnform = rootObject.transform.FindChildByName(rightMuzzleTransformName);
 
         rifleHandTransform = rootObject.transform.FindChildByName(rifleHandTransformName);
-
+        
         for (int i = 0; i < 2; i++)
         {
             Transform gun = gunObjects[i].transform;
@@ -66,7 +70,7 @@ public class Gun : Melee
         // 라이플 장착 
         if (gunObjects.Length == 3)
         {
-
+            rifleGun = gunObjects[2].transform.GetComponent<RifleGun>(); 
             Transform rifle = gunObjects[2].transform;
             rifle.localPosition = Vector3.zero;
             rifle.localRotation = Quaternion.identity;
@@ -109,10 +113,13 @@ public class Gun : Melee
         isSubAction = !isSubAction;
 
         animator.SetBool("SubActionMode", isSubAction);
+        Stop();
+
         if (isSubAction == false)
         {
             Equip_HandGun();
             Equip_Rifle();
+            Move();
         }
     }
 
@@ -122,7 +129,7 @@ public class Gun : Melee
 
     }
 
-
+   
     public override void Begin_Equip()
     {
         base.Begin_Equip();
@@ -131,26 +138,41 @@ public class Gun : Melee
         Equip_Rifle();
     }
 
+
+    public override void End_Equip()
+    {
+        base.End_Equip();
+
+        if(isSubAction)
+        {
+            SetSnipeMode();
+        }
+    }
+
     public override void Unequip()
     {
         base.Unequip();
 
         Debug.Assert(gunObjects != null);
-        foreach (GameObject go in gunObjects)
-            go.SetActive(false);
+        //foreach (GameObject go in gunObjects)
+        //    go.SetActive(false);
 
-        if (gunObjects.Length == 3)
-        {
-            rifleHolsterTransform.DetachChildren();
-            gunObjects[2].transform.localPosition = Vector3.zero;
-            gunObjects[2].transform.localRotation = Quaternion.identity;
-
-            gunObjects[2].transform.SetParent(rifleHolsterTransform, false);
-        }
+        for (int i = 0; i < 2; i++)
+            gunObjects[i].SetActive(false);
+        
+        isSubAction = false;
+        animator.SetBool("SubActionMode", isSubAction);
+        Equip_Rifle();
     }
 
     public override void Play_Particle(AnimationEvent e)
     {
+        if (isSubAction)
+        {
+
+            return;
+        }
+
         Transform transform = leftMuzleTrasnform;
         if (e.intParameter == 1)
             transform = rightMuzleTrasnform;
@@ -162,6 +184,13 @@ public class Gun : Melee
     public override void Begin_Collision(AnimationEvent e)
     {
         base.Begin_Collision(e);
+
+        if(isSubAction)
+        {
+            CreateRifleBullet();
+
+            return;
+        }
 
         Transform transform = leftMuzleTrasnform;
         if (e.intParameter == 1)
@@ -288,16 +317,48 @@ public class Gun : Melee
             gunObjects[2].transform.localRotation = Quaternion.identity;
 
             gunObjects[2].transform.SetParent(rifleHolsterTransform, false);
+
+            EndSnimpeMode();
         }
     }
 
     private void Shoot_Rifle()
     {
+        scopeUI.Shoot_Snipe();
+
         animator.SetBool("IsAction", true);
     }
 
     private void CreateRifleBullet()
     {
+        GameObject scope = rifleGun.GetScopeObj();
 
+        SoundManager.Instance.PlaySFX(gunShootSound);
+        Instantiate<GameObject>(particlePrefabs[0], scope.transform.position, scope.transform.rotation);
+
+        GameObject obj = Instantiate<GameObject>(doActionDatas[index].Particle, scope.transform.position, scope.transform.rotation);
+        if (obj.TryGetComponent<Projectile>(out var projectile))
+        {
+            projectile.OnProjectileHit += OnProjectileHit;
+        }
+    }
+
+    // 스나이프 모드
+    private void SetSnipeMode()
+    {
+        if (rifleGun == null)
+            return;
+
+        rifleGun.SetSnipeMode();
+        scopeUI?.SetDrawSnipeUI();
+    }
+
+    private void EndSnimpeMode()
+    {
+        if (rifleGun == null)
+            return; 
+
+        rifleGun.EndSnipeMode();
+        scopeUI?.EndDrawSnipeUI();
     }
 }
