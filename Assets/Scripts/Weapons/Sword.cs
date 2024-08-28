@@ -277,9 +277,9 @@ public class Sword : Melee
     private IEnumerator Play_DownFall(Rigidbody rigid)
     {
         rigid.isKinematic = false;
-        float elapsedTime = 0.0f;
-        float duration = 0.25f;
-        float targetPosY = 3f;
+        //float elapsedTime = 0.0f;
+        //float duration = 0.25f;
+        //float targetPosY = 3f;
 
         while (ground.IsGround == false)
         {

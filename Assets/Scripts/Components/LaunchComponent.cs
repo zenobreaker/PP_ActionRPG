@@ -206,6 +206,12 @@ public class LaunchComponent : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        GroundedComponent ground = GetComponent<GroundedComponent>();
+        if(ground != null)
+        {
+            ground.OnAirial();
+        }
     }
 
     #endregion

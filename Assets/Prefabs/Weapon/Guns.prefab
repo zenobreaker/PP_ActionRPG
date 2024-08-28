@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6572412871648487698}
   - component: {fileID: 5960436619135904885}
+  - component: {fileID: 7691991989611839774}
   m_Layer: 0
   m_Name: Guns
   m_TagString: Untagged
@@ -275,7 +276,23 @@ MonoBehaviour:
     HitParticleSacleOffset: {x: 1.2, y: 1.2, z: 1.2}
     bCanMove: 0
     Particle: {fileID: 621980410761430292, guid: 0b32f9d26027151468b46b0466786ddd, type: 3}
-  subActionDatas: []
+  subActionDatas:
+  - bDownable: 1
+    bLauncher: 1
+    Power: 0
+    Distance: 5
+    heightValue: 0.01
+    StopFrame: 5
+    impulseDirection: {x: 0, y: 0.15, z: 0.7}
+    impulseSettings: {fileID: 11400000, guid: 5cce4d174639e424f89bf3251c664f73, type: 2}
+    effectSoundName: Gun_Rifle_Reload
+    HitImpactIndex: 0
+    hitSoundName: Gun_Impact
+    HitParticle: {fileID: 9195378185894143248, guid: afa8ef8c069267a4c9ad04dbaa91a1f2, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 2, y: 2, z: 2}
+    bCanMove: 0
+    Particle: {fileID: 621980410761430292, guid: 12c9990378319b34990fb18d4aea72f3, type: 3}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 5eda65086095d1f43a48392fe99c8070, type: 2}
   index: 0
@@ -290,13 +307,70 @@ MonoBehaviour:
   rightMuzzleTransformName: Hand_Gun_Right_Muzzle
   rifleHolsterTransformName: Holster_Rifle
   rifleHandTransformName: Hand_Gun_Rifle
-  rifleMuzzleTransformName: Rifle_Muzzle
-  gunShootSound: Gun_Fire
   perceptionRange: 5
+  Equip_HandGun_SoundName: Equip_HandGun
+  Equip_Rifle_SoundName: Equip_Rifle
+  gunShootSound: Gun_Fire
+  rifleShootSound: Gun_Rifle_Fire
   gunObjects:
   - {fileID: 3739502576483023687}
   - {fileID: 7480779206178482562}
   - {fileID: 3701238853533795740}
+  scopeUI: {fileID: 0}
+  rifleMaxAmmo: 3
+--- !u!114 &7691991989611839774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4359761958674035541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}
 --- !u!1 &7313588275628250617
 GameObject:
   m_ObjectHideFlags: 0

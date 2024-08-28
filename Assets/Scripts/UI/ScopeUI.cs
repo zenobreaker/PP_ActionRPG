@@ -7,11 +7,19 @@ public class ScopeUI : MonoBehaviour
     [SerializeField] private RectTransform mainImage;
     [SerializeField] private RectTransform background;
     [SerializeField] private Image scopeUI;
+    [SerializeField] private Image lockOnScopeImage;
 
     [SerializeField] private float reboundPosY = 5.0f;
     [SerializeField] private float reboundTime = 0.5f;
     private Vector2 originSize;
     private float originAlpha;
+
+    [SerializeField] private GameObject ammoParent;
+    [SerializeField] private AmmoUI ammo;
+    private AmmoUI[] ammoUIs;
+    private int maxAmmo;
+    private int curr_Ammo;
+    private bool bSnipe = false;
 
     private void Awake()
     {
@@ -20,27 +28,57 @@ public class ScopeUI : MonoBehaviour
 
     private void Awake_ResetUI()
     {
-
         originSize = mainImage.sizeDelta;
 
-        background.sizeDelta = new Vector2(Screen.width, Screen.height); 
+        background.sizeDelta = new Vector2(Screen.width*1.5f, Screen.height *1.5f); 
 
         originAlpha = scopeUI.color.a;
         Color color = scopeUI.color;
         color.a = 0;
         scopeUI.color = color;
         scopeUI.gameObject.SetActive(false);
+        
+        lockOnScopeImage.gameObject.SetActive(false);
     }
 
-    public void SetDrawSnipeUI()
+    public void SetDrawSnipeUI(int ammoCount = 0)
     {
         StartCoroutine(Draw_SnipeUI());
+        
+        DrawRifleAmmo(ammoCount);
+    }
+
+    private void DrawRifleAmmo(int ammoCount = 0)
+    {
+        if (ammoParent == null)
+            return;
+
+        curr_Ammo = maxAmmo = ammoCount;
+        ammoUIs ??= new AmmoUI[ammoCount];
+
+        if (ammoParent.transform.childCount <= 0)
+        {
+            for (int i = 0; i < ammoCount; i++)
+            {
+                ammoUIs[i] = Instantiate<AmmoUI>(ammo, ammoParent.transform);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < ammoCount; i++)
+                ammoUIs[i].Redraw();
+        }
     }
 
     public void EndDrawSnipeUI()
     {
         mainImage.gameObject.SetActive(false);
         scopeUI.gameObject.SetActive(false);
+        ammoParent.SetActive(false);
+
+        bSnipe = false; 
+
+        LockOff_AdditiveScope();
     }
 
 
@@ -82,15 +120,28 @@ public class ScopeUI : MonoBehaviour
         }
         color.a = originAlpha; 
         scopeUI.color = color;
-        
+
+        // 4. ÃÑ¾Ë ÀÌ¹ÌÁö ÄÑÁü
+        ammoParent.SetActive(true);
+
+        bSnipe = true; 
     }
 
 
     public void Shoot_Snipe()
     {
         StartCoroutine(Vibreate_ShootDelay());
+
+        Use_Ammo();
     }
 
+    public void Use_Ammo()
+    {
+        if (curr_Ammo <= 0)
+            return;
+        int index = maxAmmo - (curr_Ammo--);
+        ammoUIs[index].Use_Ammo();
+    }
 
     private IEnumerator Vibreate_ShootDelay()
     {
@@ -101,6 +152,8 @@ public class ScopeUI : MonoBehaviour
         float elapsedTime = 0.0f;
         float duration = reboundTime;
         Vector2 moveUp = Vector2.zero;
+        
+        bSnipe = false;
 
         while (elapsedTime < duration)
         {
@@ -124,6 +177,25 @@ public class ScopeUI : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        bSnipe = true; 
         mainImage.anchoredPosition = new Vector2(originX, originY);
+    }
+
+
+
+    public void LockOn_AdditiveScope()
+    {
+        if (bSnipe == false)
+        {
+            LockOff_AdditiveScope();
+            return;
+        }
+
+        lockOnScopeImage.gameObject.SetActive(true);
+    }
+
+    public void LockOff_AdditiveScope()
+    {
+        lockOnScopeImage.gameObject.SetActive(false);
     }
 }

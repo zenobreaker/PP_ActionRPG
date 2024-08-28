@@ -265,5 +265,6 @@ public class AirborneComponent : MonoBehaviour
         rigidbody.isKinematic = true;
         yield return new WaitForSeconds(delay);
         rigidbody.isKinematic = false;
+        
     }
 }

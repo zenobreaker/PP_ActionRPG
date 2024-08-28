@@ -2,6 +2,7 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
+using static Cinemachine.CinemachineTargetGroup;
 using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
@@ -47,7 +48,11 @@ public class CameraArm : MonoBehaviour
         // 마우스를 화면 중앙에 고정하고 잠급니다.
         Cursor.lockState = CursorLockMode.Locked;
 
-      
+
+        if (target == null)
+            target = FindObjectOfType<Player>().gameObject;
+
+
         Awake_BindPlayerInput();
     }
     private void Awake_BindPlayerInput()
@@ -174,7 +179,7 @@ public class CameraArm : MonoBehaviour
     void RotateCinemachine()
     {
         rotation *= Quaternion.AngleAxis(inputLook.x * mouseSensitivity.x * cameraRotSpeed, Vector3.up);
-        rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y* cameraRotSpeed, Vector3.right);
+        rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y * cameraRotSpeed, Vector3.right);
         this.transform.rotation = rotation;
 
         //회전 축 제한하기 
@@ -188,7 +193,7 @@ public class CameraArm : MonoBehaviour
             angles.x = limitPitchAngle.x;
         else if (xAngle > 180.0f && xAngle < limitPitchAngle.y)
             angles.x = limitPitchAngle.y;
-        
+
         //  회전량 보정 
         rotation = Quaternion.Lerp(this.transform.rotation, rotation, mouseRotationLerp * Time.deltaTime);
         rotation.eulerAngles = new Vector3(angles.x, rotation.eulerAngles.y, 0);
@@ -196,9 +201,14 @@ public class CameraArm : MonoBehaviour
         this.transform.rotation = rotation;
     }
 
-    public Quaternion GetRotation ()
+    public Vector3 GetRifleForward()
     {
-        return rotation;
+        return rifleCamera.transform.forward;
+    }
+
+    public GameObject GetRifleCameraObj()
+    {
+        return rifleCamera.transform.gameObject;
     }
 
     public void TurnOnCamera()

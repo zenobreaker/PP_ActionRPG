@@ -6,7 +6,7 @@ public class RifleGun : MonoBehaviour
 {
     [SerializeField] private GameObject scopeObject;
     [SerializeField] private CameraArm cameraArm;
-
+    [SerializeField] private GameObject rifleMuzzle; 
 
 
     private void Start()
@@ -16,7 +16,17 @@ public class RifleGun : MonoBehaviour
 
     public GameObject GetScopeObj()
     {
-        return cameraArm.gameObject;
+        return scopeObject;
+    }
+
+    public GameObject GetCameraObj()
+    {
+        return cameraArm.GetRifleCameraObj();
+    }
+
+    public GameObject GetMuzzleObj()
+    {
+        return rifleMuzzle;
     }
 
     public void SetSnipeMode()

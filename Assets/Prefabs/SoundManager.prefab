@@ -740,6 +740,14 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: cdcd9bf3be008e24fb5d94524b2b14df, type: 3}
   - soundName: Gun_Impact
     clip: {fileID: 8300000, guid: 2da8806846522404eb73994687c67c59, type: 3}
+  - soundName: Equip_HandGun
+    clip: {fileID: 8300000, guid: 4cf1f012609850b448a70ab1a5441625, type: 3}
+  - soundName: Equip_Rifle
+    clip: {fileID: 8300000, guid: 9e72f9105019bc74280e1e9d8e6d0029, type: 3}
+  - soundName: Gun_Rifle_Fire
+    clip: {fileID: 8300000, guid: 8d81f025075a2da43a24fd73d4fef3b1, type: 3}
+  - soundName: Gun_Rifle_Reload
+    clip: {fileID: 8300000, guid: eb686ab4d96813e4d886d83603ff98c0, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}

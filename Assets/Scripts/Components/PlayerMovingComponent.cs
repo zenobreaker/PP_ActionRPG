@@ -31,7 +31,7 @@ public class PlayerMovingComponent : MonoBehaviour
 
     private float walkToRunRatio = 2.0f;
     private bool bCanMove = true;
-    private bool bTargetMode = false; 
+    //private bool bTargetMode = false; 
 
     private Animator animator;
     private CameraArm cameraArm;
