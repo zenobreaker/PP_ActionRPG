@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class MeshTrail : MonoBehaviour
@@ -30,12 +32,19 @@ public class MeshTrail : MonoBehaviour
 
     #endregion
 
+    private float originRate;
+    private Material originMat;
+
     private void Awake()
     {
+        originRate = meshRefreshRate;
+        originMat = material;
+
         player = GetComponent<Player>();
         Debug.Assert(player != null, "No Player");
 
         player.OnEvadeState += StartActiveTrail;
+
     }
 
     public void StartActiveTrail()
@@ -46,9 +55,48 @@ public class MeshTrail : MonoBehaviour
         bTrailActive = true; 
 
         StartCoroutine(Start_MeshTrail(activeTime));
-
     }
 
+
+    public void StartActiveTrail(float time)
+    {
+        if (bTrailActive == true)
+            return;
+
+        bTrailActive = true;
+
+        StartCoroutine(Start_MeshTrail(time));
+    }
+
+
+    public void StartActiveTrail(float time, float rate)
+    {
+        originRate = meshRefreshRate;
+        meshRefreshRate = rate;
+
+        StartActiveTrail(time);
+    }
+
+    public void StartActiveTrail(float time, float rate, Material material , bool bForce = false)
+    {
+        if (material != null)
+        {
+            originMat = this.material;
+            this.material = material;
+        }
+        if (bForce == true)
+            bTrailActive = false; 
+
+        StartActiveTrail(time, rate);
+    }
+
+    
+
+    private void ReturnOriginData()
+    {
+        meshRefreshRate = originRate;
+        material = originMat;
+    }
 
     private IEnumerator Start_MeshTrail(float activeTime)
     {
@@ -59,6 +107,7 @@ public class MeshTrail : MonoBehaviour
 
             if (skinnedMeshRenderers == null)
                 skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            GameObject parent = new GameObject();
 
             for (int i = 0; i < skinnedMeshRenderers.Length; i++)
             {
@@ -74,7 +123,7 @@ public class MeshTrail : MonoBehaviour
 
                 // Mesh 클래스를 생성 후 
                 Mesh mesh = new Mesh();
-                // skinnedMeshRenderers리스트에 추가한다. 
+                // mesh에 skinnedMeshRenderers에 mesh를 그대로 생성한다.
                 skinnedMeshRenderers[i].BakeMesh(mesh);
 
                 // 메쉬 필터에 방금 생성한 메쉬 정보를 대입한다. 
@@ -83,15 +132,18 @@ public class MeshTrail : MonoBehaviour
 
                 StartCoroutine(AnimateMaterialFloat(mr.material, 0, shaderVarRate, shaderVarRefreshRate));
 
-                // 일정 시간이 지나면 해당 오브젝트 삭제 
-                //TODO: 오브젝트 풀링으로 처리하기 
-                Destroy(obj, destroyDelayTime);
+                obj.transform.SetParent(parent.transform);
             }
+
+            // 일정 시간이 지나면 해당 오브젝트 삭제 
+            //TODO: 오브젝트 풀링으로 처리하기 
+            Destroy(parent, destroyDelayTime);
 
             yield return new WaitForSeconds(meshRefreshRate);
         }
 
         bTrailActive = false;
+        ReturnOriginData();
     }
 
     // 참조된 이름으로 머테리얼의 속성에 접근해서 goal 값으로 변경하는 코루틴 
@@ -99,12 +151,20 @@ public class MeshTrail : MonoBehaviour
     {
         float valueToAnimate = mat.GetFloat(shaderVarRef);
 
+        float elapsedTime = 0.0f; 
+        float duration = refreshRate; 
         while (valueToAnimate > goal)
         {
-            valueToAnimate -= rate;
+            //valueToAnimate -= rate;
+            valueToAnimate = Mathf.Lerp(valueToAnimate, goal, elapsedTime / duration);
             mat.SetFloat(shaderVarRef, valueToAnimate);
-            yield return new WaitForSeconds(refreshRate);
+
+            elapsedTime += Time.deltaTime * rate;
+            //yield return new WaitForSeconds(refreshRate);
+            yield return null;
         }
 
     }
+
+ 
 }

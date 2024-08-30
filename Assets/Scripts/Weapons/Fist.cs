@@ -1,9 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.UIElements;
 
 public class Fist : Melee
 {
+    #region SubAction
+    [SerializeField] private Material subActionTrailMaterial;
+    [SerializeField] private float subActionMeshRate = 0.25f;
+    #endregion
+
+    private PlayableDirector subActionDirector;
+    [SerializeField] private PlayableAsset subActionPlayableAsset; 
+
     private enum PartType
     {
         LeftHand, RightHand, LeftFoot, RightFoot, Max,
@@ -55,6 +65,10 @@ public class Fist : Melee
 
             t.SetParent(parent, false);
         }
+
+        subActionDirector = rootObject.GetComponent<PlayableDirector>();
+        Debug.Assert(subActionDirector != null);
+        subActionDirector.stopped += OnSubActionPlay;
     }
 
 
@@ -93,6 +107,101 @@ public class Fist : Melee
         //    return;
 
     }
+
+    public override void DoSubAction()
+    {
+        if (isSubAction)
+            return; 
+
+        base.DoSubAction();
+        if (subActionDirector == null)
+            return;
+
+        isSubAction = true;
+        subActionDirector.playableAsset = subActionPlayableAsset;
+        subActionDirector.Play();
+    }
+
+    public override void Begin_SubAction()
+    {
+        base.Begin_SubAction();
+       
+    }
+
+    public override void End_DoAction()
+    {
+        base.End_DoAction();
+        isSubAction = false; 
+    }
+
+
+    private void OnSubActionPlay(PlayableDirector playableDirector)
+    {
+        animator.Play("Sub_Fist_Combo");
+        if (playableDirector == subActionDirector)
+        {
+            //TODO: 아.. 좀 복잡하긴 한데;
+            if (rootObject.TryGetComponent<MeshTrail>(out var meshTrail))
+            {
+                AnimatorClipInfo[] clipInfos = animator.GetCurrentAnimatorClipInfo(0);
+                float length = clipInfos[0].clip.length;
+                meshTrail.StartActiveTrail(length, subActionMeshRate, subActionTrailMaterial, true);
+            }
+        }
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        if(isSubAction)
+        {
+            if (other.gameObject == rootObject)
+                return;
+
+            if (hittedList.Contains(other.gameObject) == true)
+                return;
+
+            if (other.CompareTag(this.rootObject.tag))
+                return;
+
+            hittedList.Add(other.gameObject);
+
+            IDamagable damagable = other.GetComponent<IDamagable>();
+
+            // hit Sound Play
+            SoundManager.Instance.PlaySFX(doActionDatas[index].hitSoundName);
+
+            if (damagable == null)
+                return;
+
+
+            Vector3 hitPoint = Vector3.zero;
+
+            Collider enabledCollider = null;
+            foreach (Collider collider in colliders)
+            {
+                if (collider.enabled)
+                {
+                    enabledCollider = collider;
+                    break;
+                }
+            }
+
+
+            // 월드 상 좌표 
+            hitPoint = enabledCollider.ClosestPoint(other.transform.position);
+            // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
+            hitPoint = other.transform.InverseTransformPoint(hitPoint);
+
+            damagable.OnDamage(rootObject, this, hitPoint, doActionDatas[index]);
+            if (aiController == null)
+                Play_Impulse();
+
+            return; 
+        }
+
+        base.OnTriggerEnter(other);
+    }
+
 
     #region Skill_Action
 
