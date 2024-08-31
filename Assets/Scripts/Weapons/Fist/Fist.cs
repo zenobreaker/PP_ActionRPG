@@ -9,10 +9,13 @@ public class Fist : Melee
     #region SubAction
     [SerializeField] private Material subActionTrailMaterial;
     [SerializeField] private float subActionMeshRate = 0.25f;
+    private GameObject subObject;
     #endregion
 
     private PlayableDirector subActionDirector;
-    [SerializeField] private PlayableAsset subActionPlayableAsset; 
+    [SerializeField] private PlayableAsset subActionPlayableAsset;
+
+
 
     private enum PartType
     {
@@ -126,12 +129,41 @@ public class Fist : Melee
     {
         base.Begin_SubAction();
        
+        if(isSubAction)
+        {
+            Vector3 position = rootObject.transform.position + Vector3.up;
+            subObject = Instantiate<GameObject>(subActionDatas[0].Particle, position,
+                rootObject.transform.localRotation);
+            
+
+            return; 
+        }
     }
 
-    public override void End_DoAction()
+    public override void End_SubAction()
     {
-        base.End_DoAction();
-        isSubAction = false; 
+        Destroy(subObject, 0.5f);
+        base.End_SubAction();
+    }
+
+
+    public override void Play_Particle(AnimationEvent e)
+    {
+        if (isSubAction)
+        {
+            if (subObject != null)
+            {
+                if (subObject.TryGetComponent<Fist_SubAction_Strike>(out Fist_SubAction_Strike result))
+                {
+                    result.OnSubActionHit += OnSubActionHit;
+                    result.Apply_Effect(rootObject);
+                }
+            }
+
+            return;
+        }
+
+        base.Play_Particle(e);
     }
 
 
@@ -150,57 +182,35 @@ public class Fist : Melee
         }
     }
 
-    protected override void OnTriggerEnter(Collider other)
+    private void OnSubActionHit(Collider other)
     {
-        if(isSubAction)
-        {
-            if (other.gameObject == rootObject)
-                return;
+        if (other.gameObject == rootObject)
+            return;
 
-            if (hittedList.Contains(other.gameObject) == true)
-                return;
+        if (other.CompareTag(this.rootObject.tag))
+            return;
 
-            if (other.CompareTag(this.rootObject.tag))
-                return;
+        IDamagable damagable = other.GetComponent<IDamagable>();
 
-            hittedList.Add(other.gameObject);
+        // hit Sound Play
+        SoundManager.Instance.PlaySFX(subActionDatas[0].hitSoundName);
 
-            IDamagable damagable = other.GetComponent<IDamagable>();
+        if (damagable == null)
+            return;
 
-            // hit Sound Play
-            SoundManager.Instance.PlaySFX(doActionDatas[index].hitSoundName);
+        Vector3 hitPoint = Vector3.zero;
 
-            if (damagable == null)
-                return;
+        // 월드 상 좌표 
+        hitPoint = other.transform.position;
+        // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
+        hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
+        damagable.OnDamage(rootObject, this, hitPoint, subActionDatas[0]);
+        if (aiController == null)
+            Play_Impulse(subActionDatas[0]);
 
-            Vector3 hitPoint = Vector3.zero;
-
-            Collider enabledCollider = null;
-            foreach (Collider collider in colliders)
-            {
-                if (collider.enabled)
-                {
-                    enabledCollider = collider;
-                    break;
-                }
-            }
-
-
-            // 월드 상 좌표 
-            hitPoint = enabledCollider.ClosestPoint(other.transform.position);
-            // 역행열 곱해서 월드 상 좌표를 소거해서 로컬좌표로 변환
-            hitPoint = other.transform.InverseTransformPoint(hitPoint);
-
-            damagable.OnDamage(rootObject, this, hitPoint, doActionDatas[index]);
-            if (aiController == null)
-                Play_Impulse();
-
-            return; 
-        }
-
-        base.OnTriggerEnter(other);
     }
+
 
 
     #region Skill_Action

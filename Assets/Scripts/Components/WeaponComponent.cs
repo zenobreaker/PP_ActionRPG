@@ -293,6 +293,11 @@ public class WeaponComponent : MonoBehaviour
         weaponTable[type].Begin_SubAction();
     }
 
+    private void End_DoSubAction()
+    {
+        weaponTable[type].End_SubAction();
+    }
+
     public void End_DoAction()
     {
         animator.SetBool("IsAction", false);

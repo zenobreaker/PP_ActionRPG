@@ -7871,6 +7871,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2748871628438746721, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
+      propertyPath: sfxSounds.Array.size
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2748871628438746721, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
+      propertyPath: sfxSounds.Array.data[18].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: ea498c36ce14ef743bc8ed4569cdeafb, type: 3}
+    - target: {fileID: 2748871628438746721, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
+      propertyPath: sfxSounds.Array.data[19].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 30f07714343eb6c46ac55eeda11040d3, type: 3}
+    - target: {fileID: 2748871628438746721, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
+      propertyPath: sfxSounds.Array.data[18].soundName
+      value: Fist_SubAction_Effect
+      objectReference: {fileID: 0}
+    - target: {fileID: 2748871628438746721, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
+      propertyPath: sfxSounds.Array.data[19].soundName
+      value: Dash_Sound
+      objectReference: {fileID: 0}
     - target: {fileID: 2748871628438746727, guid: a764f867cbbc3ad45a921ea6e8ac7b6e, type: 3}
       propertyPath: m_Name
       value: SoundManager

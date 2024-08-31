@@ -354,16 +354,16 @@ MonoBehaviour:
     Distance: 0
     heightValue: 0
     StopFrame: 0
-    impulseDirection: {x: 0, y: 0, z: 0}
-    impulseSettings: {fileID: 0}
+    impulseDirection: {x: 0, y: 0.025, z: 0.025}
+    impulseSettings: {fileID: 11400000, guid: a04e4113b6699344c8b49aa4f1499c35, type: 2}
     effectSoundName: 
     HitImpactIndex: 0
     hitSoundName: 
-    HitParticle: {fileID: 0}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
-    HitParticleSacleOffset: {x: 0, y: 0, z: 0}
+    HitParticle: {fileID: 5024009746357069194, guid: ec3f674830402cc45bce805cf6493db7, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 1, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
     bCanMove: 0
-    Particle: {fileID: 0}
+    Particle: {fileID: 6436963888938637340, guid: 7345f2bac093bf24a84a538f3b00cce7, type: 3}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: efbd23f3bdf9d234b8a9b7e0feb46e81, type: 2}
   index: 0

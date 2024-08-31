@@ -91,6 +91,8 @@ public class DashComponent : MonoBehaviour
         moving.Stop();
         //AdjustingAnimation(true);
 
+        SoundManager.Instance.PlaySFX("Dash_Sound");
+
         while (distance > 0)
         {
             transform.Translate(direction.normalized * dashSpeed * Time.fixedDeltaTime);
