@@ -1678,6 +1678,31 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1101 &-5777288000841897738
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: SubActionMode
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 4547520181041300892}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.7890625
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1107 &-5736285909686785167
 AnimatorStateMachine:
   serializedVersion: 6
@@ -1711,7 +1736,7 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 2065721648167743091}
-    m_Position: {x: 330, y: -80, z: 0}
+    m_Position: {x: 370, y: -80, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: -7435276691848021387}
     m_Position: {x: 620, y: -60, z: 0}
@@ -2787,10 +2812,10 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 5159708630287603640}
-    m_Position: {x: 330, y: -30, z: 0}
+    m_Position: {x: 330, y: -100, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: -3741239059049908857}
-    m_Position: {x: 480, y: -150, z: 0}
+    m_Position: {x: 560, y: -130, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
@@ -2951,7 +2976,7 @@ AnimatorStateMachine:
     m_Position: {x: 580, y: 50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4547520181041300892}
-    m_Position: {x: 260, y: 50, z: 0}
+    m_Position: {x: 260, y: 60, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -3705,7 +3730,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Gun_Combo2
-  m_Speed: 0.04
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -4325059427316782633}
@@ -6370,6 +6395,7 @@ AnimatorState:
   - {fileID: 2174558292749267443}
   - {fileID: -9186291753541029599}
   - {fileID: 692404988636202540}
+  - {fileID: -5777288000841897738}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0

@@ -199,7 +199,7 @@ public class Sword : Melee
     // 서브 액션 실행
     IEnumerator Play_ArroundBreak()
     {
-        animator.Play("Unarmed.Sword.Sub.Sword_Upper");
+        animator.Play("Sword.Sub.Sword_Upper");
 
         Collider[] colliders = Physics.OverlapSphere(this.transform.position,
             3, (1 << LayerMask.NameToLayer("Enemy")));

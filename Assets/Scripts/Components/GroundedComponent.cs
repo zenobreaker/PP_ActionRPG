@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// ¶¥¿¡ ´ê¾ÆÀÖ´ÂÁö È®ÀÎÇØÁÖ´Â ÄÄÆ÷³ÍÆ® 
+/// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® 
 /// </summary>
 public class GroundedComponent : MonoBehaviour
 {
@@ -72,7 +72,6 @@ public class GroundedComponent : MonoBehaviour
             if ((groundLayer & (1 << layer)) == 0)
                 continue;
 
-            Debug.Log($"¶¥ Ã¼Å© ÀÖ´Â µí {candidate.gameObject.name}");
             bGround = true;
             bDistanceCheck = false;
             Change_RigidBodyToGround();
@@ -97,7 +96,6 @@ public class GroundedComponent : MonoBehaviour
         if (bDistanceCheck == false)
             return;
 
-        // ÇöÀç °ª¿¡¼­ Ã¼Å©¸¦ ½ÃÀÛÇÑ °ªÀ» »« °ªÀÌ ÃøÁ¤ ±æÀÌº¸´Ù Å©°Å³ª °°´Ù¸é °øÁß ÆÇÁ¤
         float y = transform.position.y - checkOnPosition.y;
 
         if (y >= distance)

@@ -36,7 +36,7 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
     Power: 1
@@ -51,7 +51,7 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
     Power: 1
@@ -66,7 +66,7 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
     Power: 1
@@ -81,7 +81,7 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
     Power: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
     HitParticle: {fileID: 8075519040631877681, guid: 21621f9d5314ae44e9078576247598a3, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.1
   EffectParticle: {fileID: 0}
   additionalPos: {x: 0, y: 1, z: 0}
   bSameOwner: 1

@@ -84,8 +84,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.48172754
-        functionName: Begin_DoAction
+      - time: 0.03654485
+        functionName: Begin_DoSubAction
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9283215
+        functionName: End_DoSubAction
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
         floatParameter: 0
@@ -93,13 +100,6 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9800665
         functionName: End_DoAction
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.03654485
-        functionName: Begin_SubAction
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
         floatParameter: 0

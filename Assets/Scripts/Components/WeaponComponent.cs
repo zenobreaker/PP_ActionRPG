@@ -21,7 +21,7 @@ public class WeaponComponent : MonoBehaviour
     private WeaponType type = WeaponType.Unarmed;
     public WeaponType Type { get => type; }
 
-    public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // ¹«±â ±³Ã¼ ÀÌº¥Æ®
+    public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½Ìºï¿½Æ®
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
    
     public event Action OnEndEquip;
@@ -65,7 +65,7 @@ public class WeaponComponent : MonoBehaviour
 
         Debug.Assert(state != null, $"{gameObject.name} has not");
         weaponTable = new Dictionary<WeaponType, Weapon>();
-        // ¹«±â Å×ÀÌºí ÃÊ±âÈ­ 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ê±ï¿½È­ 
         for (int i = 0; i < (int)WeaponType.MAX; i++)
             weaponTable.Add((WeaponType)i, null);
 
@@ -79,7 +79,7 @@ public class WeaponComponent : MonoBehaviour
             obj.name = weapon.Type.ToString();
             //weapon?.PerpareWeapon();
 
-            // ¹«±â ³Ö±â 
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ 
             weaponTable[weapon.Type] = weapon;
         }
 
@@ -109,14 +109,14 @@ public class WeaponComponent : MonoBehaviour
         SetMode(WeaponType.Fist);
     }
 
-    // Ä® ÀåÂø
+    // Ä® ï¿½ï¿½ï¿½ï¿½
     public void SetSwordMode()
     {
         if (state.IdleMode == false)
             return;
 
 
-        SetMode(WeaponType.Sword);// Ä® ÀåÂøÇÒ °Å´Ï Ä®Å¸ÀÔÀ» ÁØ´Ù
+        SetMode(WeaponType.Sword);// Ä® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ Ä®Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½
     }
 
     public void SetHammerMode()
@@ -170,21 +170,21 @@ public class WeaponComponent : MonoBehaviour
 
     private void SetMode(WeaponType type)
     {
-        // °°Àº Å¸ÀÔÀº ÀåÂøÇìÁ¦
+        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (this.type == type)
         {
             SetUnarmedMode();
 
             return;
         }
-        // ´Ù¸¥ ¹«±â¸¦ ³¢°í ÀÖ´Ù¸é
+        // ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
         else if (UnarmedMode == false)
         {
-            // ¸ðµå À¯Áö 
+            // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
             weaponTable[this.type].Unequip();
 
         }
-        // ÀåÂøÇÏ·Á´Â ¹«±â°¡ ¾øÀ¸¸é ÇØÁ¦
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (weaponTable[type] == null)
         {
             SetUnarmedMode();
@@ -194,7 +194,7 @@ public class WeaponComponent : MonoBehaviour
         animator.SetBool("IsEquipping", true);
         animator.SetInteger("WeaponType", (int)type);
 
-        // ÀåÂø 
+        // ï¿½ï¿½ï¿½ï¿½ 
         weaponTable[type].Equip();
 
         ChangeType(type);
@@ -221,7 +221,7 @@ public class WeaponComponent : MonoBehaviour
     }
 
 
-    // ÀÌº¥Æ® ÄÝ ¹æ½ÄÀº SendMessage ±â¹ÝÀÌ´Ù ÀÌ°Ç ¸®ÇÃ·º¼Ç ÀÌ¿ëÇÏ´Ï±î..
+    // ï¿½Ìºï¿½Æ® ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ SendMessage ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï´Ï±ï¿½..
     public void Begin_Equip()
     {
         weaponTable[type]?.Begin_Equip();
@@ -336,7 +336,7 @@ public class WeaponComponent : MonoBehaviour
 
     private void Play_DoAction_Particle(AnimationEvent e)
     {
-        // ¿©±â ¿Â´Ù´Â°Ç ¹«±â°¡ ÀÌ¹Ì ÀÌ ÀÌº¥Æ®¸¦ °®°í ÀÖ´Ù´Â ÀÇ¹Ì
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Â´Ù´Â°ï¿½ ï¿½ï¿½ï¿½â°¡ ï¿½Ì¹ï¿½ ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù´ï¿½ ï¿½Ç¹ï¿½
         weaponTable[type]?.Play_Particle(e);
     }
 

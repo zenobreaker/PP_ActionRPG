@@ -64,7 +64,7 @@ public class HealthPointComponent : MonoBehaviour
 
     public void Update()
     {
-        // ºôº¸µå => Ç×»ó Ä«¸Þ¶ó¸¦ ¹Ù¶óº¸°Ô ÇÏ´Â UI
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ => ï¿½×»ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½Ù¶óº¸°ï¿½ ï¿½Ï´ï¿½ UI
         if (uiEnemyCanvas != null)
             uiEnemyCanvas.transform.rotation = Camera.main.transform.rotation;
 
