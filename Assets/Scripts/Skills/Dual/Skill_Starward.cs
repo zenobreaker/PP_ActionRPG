@@ -3,16 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//TODO: ±¸Á¶°¡ ¼öµ¿ÀûÀÎÁö ¸øÇÑ ¹®Á¦
-/// <summary>
-/// ÀÌ ½ºÅ³Àº ½ºÅ³ÀÇ µ¥ÀÌÅÍ Á¤º¸ Å©±â¿Í ÀÌÆåÆ® Å©±â°¡ ÀÏÄ¡ÇØ¾ß ÇÏ¸ç 
-/// ÃÖ¼Ò ¿ÀºêÁ§Æ® °³¼ö º¸´Ù µ¥ÀÌÅÍ Å©±â°¡ ¸¹¾Æ¼­ ¾ÈµÈ´Ù
-/// ¿ÜºÎ µ¥ÀÌÅÍ¸¦ ¼öÁ¤ÇÏ¸é ½ºÅ³ ·ÎÁ÷µµ ¼öÁ¤ÇØ¾ß ÇÏ´Â ±¸Á¶ÀÌ´Ù 
-/// </summary>
 
 public class Skill_Starward : Skill_Trigger_Melee
 {
-    [SerializeField] private GameObject[] effectObjs; // ½ºÅ³ ÀÌÆåÆ®µé 
+    [SerializeField] private GameObject[] effectObjs; // ì´í™íŠ¸ ì˜¤ë¸Œì íŠ¸ ë¦¬ìŠ¤íŠ¸ 
 
 
     public override void ExecuteSkill()
@@ -23,9 +17,6 @@ public class Skill_Starward : Skill_Trigger_Melee
         StartCoroutine(Play_Starward());
     }
 
-    /// <summary>
-    /// ÇØ´ç ½ºÅ³Àº 1È¸ ÀÌÆåÆ® ¶§ 2È¸ Å¸°İÀ» ½Ç½ÃÇÑ´Ù.
-    /// </summary>
     private IEnumerator Play_Starward()
     {
         yield return new WaitForSeconds(skillData.DelayTime);
@@ -98,7 +89,7 @@ public class Skill_Starward : Skill_Trigger_Melee
 
         yield return new WaitForSeconds(skillData.skillActions[max].HitDelayTime);
 
-        // ¸ğµç ¼öÇàÀ» ´Ù ÇßÀ¸¸é ÀÌ ½ºÅ³ ÀÌÆåÆ® »èÁ¦(È¤Àº diable) 
+        //TODO: ê¸°ëŠ¥ì´ ì¶©ì¡±ë˜ë©´ disable í•´ë„ ë ë“¯
         Destroy(gameObject);
     }
 }

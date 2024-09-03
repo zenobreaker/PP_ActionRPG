@@ -7,17 +7,17 @@ using static StateComponent;
 public class AirborneComponent : MonoBehaviour
 
 {
-    // ¾î¶² ÈûÀ¸·Î ÈûÀ¸·Î ¶ç¿ïÁö¿¡ ´ëÇÑ º¯¼ö 
+    // ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     [SerializeField] private ForceMode forceMode;
-    // ¶ç¿öÁú ¶§ °¡¼Óµµ°ª 
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ 
     [Range(1.0f, 100.0f)][SerializeField] private float acceleration = 1.0f;
-    // Ãß°¡ °¡¼Ó ¼öÄ¡ 
+    // ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ 
     [SerializeField] private float additionalAccel = 0.0f;
-    // °øÁß À¯Áö ½Ã°£ 
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ 
     [SerializeField] private float airMaintainTime = 0.0f;
-    // ÃÖ¼Ò ¶ç¿ì´Â ³ôÀÌ °ª
+    // ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     [SerializeField] private float minLaunchHeight = 0.1f;
-    // °¨¼Ò °è¼ö 
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 
     [SerializeField] private float heightReductionFactor = 0.5f;
 
     private new Rigidbody rigidbody;
@@ -117,7 +117,7 @@ public class AirborneComponent : MonoBehaviour
         if (result == false)
             return;
 
-        //TODO: µû·Î »©¾ßÇÔ
+        //TODO: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (grade == CharacterGrade.Boss)
             bSuperArmor = true;
 
@@ -129,7 +129,7 @@ public class AirborneComponent : MonoBehaviour
     }
 
     #region Air_Launch
-    // °øÁß »óÅÂ¿¡ ¸Â¾Ò´Ù¸é °ü·ÃµÈ ÄÄÆ÷³ÍÆ®³ª º¯¼öµéÀ» °ü¸® ÇÑ´Ù. 
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Â¾Ò´Ù¸ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. 
     private void DoAirborneLaunch(GameObject attacker, Weapon causer, ActionData data)
     {
         bool result = CheckAttackerAboutData(attacker, causer, data);
@@ -171,14 +171,14 @@ public class AirborneComponent : MonoBehaviour
 
     #region Airbone
 
-    // °øÁß¿¡ ¶ç¿ì±â
+    // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½
     private void BeginDoAir(ActionData data)
     {
         if (bSuperArmor)
             return;
 
-        // °øÁß »óÅÂÀÌ°í ¿©±â±îÁö ¿Ô´Ù¸é ÀÌÀü¿¡ È÷Æ®¸¦ ´çÇß´Ù´Â ÀÇ¹ÌÀÌ´Ù. 
-        // ÀÌ ±â´ÉÀÌ ½ÇÇöµÈ´Ù´Â °Ç °øÁß »óÅÂÀÏ ¼ö µµ ÀÖ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ß´Ù´ï¿½ ï¿½Ç¹ï¿½ï¿½Ì´ï¿½. 
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È´Ù´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
         float value = data.heightValue;
         if (data.heightValue == 0)
             value = additionalAccel;
@@ -188,45 +188,45 @@ public class AirborneComponent : MonoBehaviour
             value = Mathf.Max(reducedHeight, minLaunchHeight);
         }
 
-        Debug.Log($"°øÁß ÄÞº¸ ½Ç½Ã! {value} ·Î ¶ç¿ó´Ï´Ù.");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ ï¿½Þºï¿½ ï¿½Ç½ï¿½! {value} ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.");
 
 
-        // °øÁß¿¡ ¶° ÀÖ´Ù¸é ±»ÀÌ ÁøÇà ÁßÀÎ ÄÚ·çÆ¾À» Áö¿ï ÇÊ¿ä°¡ ¾ø´Ù. 
+        // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½. 
         if (airCoroutine != null)
             StopCoroutine(airCoroutine);
 
         airCoroutine = StartCoroutine(Change_Airbone(value));
     }
 
-    // °øÁß¿¡ ¶ç¿öÁö´Â ÄÚ·çÆ¾ 
+    // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½Æ¾ 
     private IEnumerator Change_Airbone(float distance)
     {
-        // ÇØ´ç Á¶°ÇÀº °øÁß ÄÞº¸ »óÅÂ¸é ¹æÇØµÇ´Ï Á¦°Å 
+        // ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þºï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ØµÇ´ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         //if (ground.IsGround == false)
         //    yield break;
         if (distance == 0)
             yield break;
 
-        Debug.Log($"³ôÀÌ ¶ç¿ï±î? {distance}");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½? {distance}");
         float startY = transform.localPosition.y;
         float endY = (transform.localPosition + (Vector3.up * distance)).y;
-        // ¸ñÇ¥ ³ôÀÌ 
+        // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ 
         float targetDistance = endY - startY;
 
         rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
         rigidbody.drag = 0;
         rigidbody.isKinematic = false;
-        // ÀÌÀüs¿¡ ¿òÁ÷ÀÓÀÌ ÀÖÀ¸¸é Àá½Ã ¸ØÃß±â 
+        // ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß±ï¿½ 
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 
-        // ½ºÅ×ÀÌÆ® º¯°æ 
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ 
         state?.SetAirborneMode();
 
         otherCollider?.SetAirStateCollider(true);
         OnAirborneChange?.Invoke();
 
-        // ¸ñÇ¥ ³ôÀÌ±îÁö ¿Ã¶ó°¬´ÂÁö ¸Å FixedUpdate¸¶´Ù Ã¼Å© 
+        // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¬´ï¿½ï¿½ï¿½ ï¿½ï¿½ FixedUpdateï¿½ï¿½ï¿½ï¿½ Ã¼Å© 
         while (targetDistance >= 0)
         {
             targetDistance = endY - transform.position.y;
@@ -235,9 +235,9 @@ public class AirborneComponent : MonoBehaviour
         }
 
 
-        // ¸ñÇ¥±îÁö ¶ç¿ü´Ù¸é °ü·ÃµÈ º¯¼öµé º¯°æ 
-        Debug.Log("´Ù ¶ç¿ü´ç");
-        // ÀÏÁ¤°Å¸®±îÁö ¿Ã¶ó°¡¸é ¸ØÃß°ÔÇÔ.
+        // ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
+        Debug.Log("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½");
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¡¸ï¿½ ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½.
         rigidbody.velocity = Vector3.zero;
         rigidbody.useGravity = true;
     }

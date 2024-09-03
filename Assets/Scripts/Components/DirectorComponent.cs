@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DirectorComponent : MonoBehaviour
 {
-    [SerializeField] private float bEanbleDistance; // ¿¬Ãâ Çã¿ë °Å¸® 
-    [SerializeField] private float bSightAngle;     // ¿¬Ãâ Çã¿ë °¢µµ
+    [SerializeField] private float bEanbleDistance; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ 
+    [SerializeField] private float bSightAngle;     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     
 
     private void Start()

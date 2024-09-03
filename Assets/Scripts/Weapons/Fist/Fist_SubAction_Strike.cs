@@ -65,7 +65,7 @@ public class Fist_SubAction_Strike : MonoBehaviour
     }
 
 
-    // ÀûÀ» Æ¯Á¤ ÁöÁ¡À¸·Î Á¡Á¡ ²ø°í¿À´Â È¿°ú
+    // ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
     private IEnumerator PulledEneyCoroutine(GameObject target)
     {
         if (target == null || rootObject == null)

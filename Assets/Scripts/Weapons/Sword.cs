@@ -103,11 +103,11 @@ public class Sword : Melee
 
         if (isSubAction)
         {
-            //TODO: Á» º¹ÀâÇÑµ¥..
+            //TODO: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½..
             rigid.drag = 0;
             if (rigid != null)
             {
-                // Àá±ñ °øÁßÀÏ °æ¿ì ¸ØÃã
+                // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 rigid.isKinematic = true;
             }
         }
@@ -120,10 +120,10 @@ public class Sword : Melee
 
         if (isSubAction)
         {
-            //TODO: Á» º¹ÀâÇÑµ¥..
+            //TODO: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½..
             if (rigid != null)
             {
-                // Àá±ñ °øÁßÀÏ °æ¿ì ¸ØÃã
+                // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 rigid.isKinematic = false;
                 rigid.velocity = new Vector3(0, -1.5f, 0);
             }
@@ -177,7 +177,7 @@ public class Sword : Melee
 
         Vector3 startPosition = rootObject.transform.position;
         Vector3 targetPosition = candidate.transform.position;
-        // ¸ñÇ¥ÁöÁ¡¿¡¼­ ¾î´À Á¤µµ ¶³¾îÁø °÷¿¡ À§Ä¡ 
+        // ì •ì§€ ì§€ì  
         Vector3 stopPosition = targetPosition + (startPosition - targetPosition).normalized * 1.5f;
         while (elapsedTime < durtaion)
         {
@@ -196,7 +196,7 @@ public class Sword : Melee
         StartCoroutine(Play_ArroundBreak());
     }
 
-    // Àû ÁÖº¯ Å¸°İ ÈÄ ¿À¸£±â 
+    // ì„œë¸Œ ì•¡ì…˜ ì‹¤í–‰
     IEnumerator Play_ArroundBreak()
     {
         animator.Play("Unarmed.Sword.Sub.Sword_Upper");
@@ -206,7 +206,7 @@ public class Sword : Melee
 
         foreach (Collider collider in colliders)
         {
-            // µ¥¹ÌÁö ÁÖ±â
+            // ë°ë¯¸ì§€ë¥¼ ì£¼ëŠ” ëŒ€ìƒ í™•ì¸ 
             IDamagable damge = collider.GetComponent<IDamagable>();
             if (damge != null)
             {
@@ -214,7 +214,7 @@ public class Sword : Melee
             }
         }
 
-        // ¶ç¿ì±â 
+        // ì²´ê³µ
         {
           
             ground.OnAirial();
@@ -250,7 +250,7 @@ public class Sword : Melee
     }
 
 
-    // ³«ÇÏ °ø°İ
+    // ë‚™í•˜ ê³µê²© 
     public void DoPlayDownFall()
     {
         bAirComboFinish = true;

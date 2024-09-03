@@ -64,7 +64,7 @@ public class Dual : Melee
     {
         //base.Begin_Collision(e);
 
-        // ÀÚ±â °ø°İ¸¸ È°¼ºÈ­ ºÎ¸ğ´Â Äİ ¾ÈÇÔ
+        // ë¶€ìœ„ë³„ ë¬´ê¸° íƒ€ì… í™•ì¸
         if ((PartType)e.intParameter == PartType.Dual)
         {
             for (int i = 0; i < (int)PartType.Max; i++)

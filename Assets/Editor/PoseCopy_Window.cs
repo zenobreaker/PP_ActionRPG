@@ -40,7 +40,7 @@ internal class PoseCopy_Window : EditorWindow
         poseData = CreateInstance<PoseData>();
         serializedObject = new SerializedObject(poseData);
 
-        // SerializedProperty °¡Á®¿À±â
+        // SerializedProperty 
         targetObjectProperty = serializedObject.FindProperty("TargetObject");
         previousTargetObject = targetObjectProperty.objectReferenceValue;
 
@@ -58,13 +58,13 @@ internal class PoseCopy_Window : EditorWindow
         }
 
 
-        // °ªÀÌ º¯°æµÇ¾ú´ÂÁö Ã¼Å©
+        //
         if (previousTargetObject != targetObjectProperty.objectReferenceValue)
         {
             Debug.Log("TargetObject has changed!");
             previousTargetObject = targetObjectProperty.objectReferenceValue;
 
-            serializedObject.ApplyModifiedProperties(); // ¼öÁ¤ »çÇ×À» ¹İ¿µ
+            serializedObject.ApplyModifiedProperties(); //  ê°’ ì ìš© 
 
             ApplyValuesToAnimator();
         }
@@ -72,11 +72,11 @@ internal class PoseCopy_Window : EditorWindow
 
         if (clips == null || clips.Length == 0)
         {
-            EditorGUILayout.HelpBox("Animator¿¡ ¾Ö´Ï¸ŞÀÌ¼Ç Å¬¸³ÀÌ ¾ø½À´Ï´Ù.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Animatorê°€ ìˆëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ê³ ë¥´ì…”ì•¼í•©ë‹ˆë‹¤..", MessageType.Warning);
             return;
         }
 
-        // ¾Ö´Ï¸ŞÀÌ¼Ç Å¬¸³ ¼±ÅÃ µå·Ó´Ù¿î
+        // 
         string[] clipNames = new string[clips.Length];
         for (int i = 0; i < clips.Length; i++)
         {
@@ -85,7 +85,7 @@ internal class PoseCopy_Window : EditorWindow
 
         selectedClipIndex = EditorGUILayout.Popup("Select Animation", selectedClipIndex, clipNames);
 
-        // ÇÁ·¹ÀÓ ¼±ÅÃ ½½¶óÀÌ´õ
+        // 
         frame = EditorGUILayout.Slider("Frame", frame, 0, clips[selectedClipIndex].length * clips[selectedClipIndex].frameRate);
 
         if (GUILayout.Button("Play Selected Frame"))
@@ -93,7 +93,7 @@ internal class PoseCopy_Window : EditorWindow
             PlaySelectedFrame();
         }
 
-        // º¹»ç¹öÆ° 
+        // 
         {
             if (GUILayout.Button("Copy and Create New"))
             {
@@ -109,10 +109,10 @@ internal class PoseCopy_Window : EditorWindow
     {
         if (animator != null && clips != null && clips.Length > 0)
         {
-            // Æ¯Á¤ ÇÁ·¹ÀÓÀ¸·Î ÀÌµ¿ÇÏ¿© ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            // 
             float normalizedTime = frame / (clips[selectedClipIndex].length * clips[selectedClipIndex].frameRate);
             animator.Play(clips[selectedClipIndex].name, 0, normalizedTime);
-            animator.Update(0); // °­Á¦·Î Animator »óÅÂ¸¦ ¾÷µ¥ÀÌÆ®ÇÏ¿© ÇÁ·¹ÀÓÀ» Áï½Ã ¹İ¿µ
+            animator.Update(0); // Animator 
         }
     }
 
@@ -136,22 +136,22 @@ internal class PoseCopy_Window : EditorWindow
 
     private void CopyTransformWithChildren(GameObject original)
     {
-        // ¿øº» ¿ÀºêÁ§Æ® º¹»ç
+        //
         GameObject newObject = new GameObject(original.name + "_Copy");
 
-        // ¿øº»ÀÇ Æ®·£½ºÆû °ªÀ» º¹»ç
+        // 
         CopyTransformValues(original.transform, newObject.transform);
 
-        // ÄÄÆ÷³ÍÆ® º¹»ç 
+        // 
         CopyComponents(original, newObject);
 
-        // ÇÏÀ§ ¿ÀºêÁ§Æ® º¹»ç
+        // 
         foreach (Transform child in original.transform)
         {
             CopyChildTransforms(child, newObject.transform);
         }
 
-        // ½ºÅ²µå¸Ş½ÃÃ³¸® 
+        // 
         foreach (Transform child in newObject.transform)
         {
             if (child == null)
@@ -166,7 +166,7 @@ internal class PoseCopy_Window : EditorWindow
             }
         }
 
-        // Hierarchy Ã¢¿¡¼­ »õ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃµÈ »óÅÂ·Î ¼³Á¤
+        // Hierarchy 
         Selection.activeGameObject = newObject;
 
         Debug.Log("Created a new GameObject with children: " + newObject.name);
@@ -186,41 +186,41 @@ internal class PoseCopy_Window : EditorWindow
 
     }
 
-    // ÄÄÆ÷³ÍÆ® º¹»ç
+    // 
     void CopyComponents(GameObject original, GameObject target)
     {
-        // ¿øº» ¿ÀºêÁ§Æ®ÀÇ ¸ğµç ÄÄÆ÷³ÍÆ®¸¦ ¼øÈ¸
+        // 
         foreach (var component in original.GetComponents<Component>())
         {
-            // Component¸¦ º¹»çÇÏ°í Å¸°Ù ¿ÀºêÁ§Æ®¿¡ Ãß°¡
-            if (component is Transform) continue; // Transform ÄÄÆ÷³ÍÆ®´Â º¹»çÇÏÁö ¾ÊÀ½
-            if (component is Animator) continue; // Animator ÄÄÆ÷³ÍÆ®´Â º¹»çÇÏÁö ¾ÊÀ½
+            // Componentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½
+            if (component is Transform) continue; // Transform ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            if (component is Animator) continue; // Animator ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Component newComponent = target.AddComponent(component.GetType());
 
-            // MeshRenderer º¹»ç
+            // MeshRenderer ï¿½ï¿½ï¿½ï¿½
             if (component is MeshRenderer)
             {
                 CopyMeshRenderer(component as MeshRenderer, newComponent as MeshRenderer);
             }
-            // MeshFilter º¹»ç
+            // MeshFilter ï¿½ï¿½ï¿½ï¿½
             else if (component is MeshFilter)
             {
                 CopyMeshFilter(component as MeshFilter, newComponent as MeshFilter);
             }
             else
             {
-                // ¿øº» ÄÄÆ÷³ÍÆ®ÀÇ ¸ğµç ÇÊµå °ªÀ» º¹»ç
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Êµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 var fields = component.GetType().GetFields();
                 foreach (var field in fields)
                 {
                     field.SetValue(newComponent, field.GetValue(component));
                 }
 
-                // ¿øº» ÄÄÆ÷³ÍÆ®ÀÇ ¸ğµç ÇÁ·ÎÆÛÆ¼ °ªÀ» º¹»ç
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 var properties = component.GetType().GetProperties();
                 foreach (var property in properties)
                 {
-                    // Æ¯Á¤ ÇÁ·ÎÆÛÆ¼´Â ±×´ë·Î º¹»çÇÏ¸é ¹®Á¦°¡ ¹ß»ıÇÏ´Ï ¿¹¿Ü 
+                    // Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ 
                     if (property.CanWrite &&
                         property.PropertyType != typeof(Material) &&
                         property.PropertyType != typeof(Material[]) &&
@@ -239,15 +239,15 @@ internal class PoseCopy_Window : EditorWindow
 
     private void CopySkinnedMeshRenderer(SkinnedMeshRenderer original, SkinnedMeshRenderer target)
     {
-        // Mesh º¹»ç
+        // Mesh ï¿½ï¿½ï¿½ï¿½
         if (original.sharedMesh != null)
         {
-            // ÇÁ¸®ÆÕÈ­½Ã ºüÁö¹Ç·Î 
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ 
             //Mesh newMesh = Instantiate(original.sharedMesh);
             target.sharedMesh = original.sharedMesh;
         }
 
-        // Materials º¹»ç
+        // Materials ï¿½ï¿½ï¿½ï¿½
         Material[] originalMaterials = original.sharedMaterials;
         Material[] newMaterials = new Material[originalMaterials.Length];
         for (int i = 0; i < originalMaterials.Length; i++)
@@ -255,29 +255,29 @@ internal class PoseCopy_Window : EditorWindow
             if (originalMaterials[i] != null)
             {
                 //  newMaterials[i] = new Material(originalMaterials[i]);
-                // °øÀ¯ ¸ÓÆ¼¸®¾óÀ» º¹»çÇÒ ÇÊ¿ä ¾øÀÌ ¹Ù·Î ¼³Á¤
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½
                 newMaterials[i] = originalMaterials[i];
             }
         }
         target.sharedMaterials = newMaterials;
 
 
-        // Bone ¹è¿­ º¹»ç
-        // Bones º¹»ç
+        // Bone ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½
+        // Bones ï¿½ï¿½ï¿½ï¿½
         Transform[] originalBones = original.bones;
         Transform[] newBones = new Transform[originalBones.Length];
         for (int i = 0; i < originalBones.Length; i++)
         {
-            // ¿øº»ÀÇ Bones TransformÀ» º¹»çº»ÀÇ TransformÀ¸·Î ¸ÅÇÎ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Bones Transformï¿½ï¿½ ï¿½ï¿½ï¿½çº»ï¿½ï¿½ Transformï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (originalBones[i] != null)
             {
-                // »õ·Î º¹»çµÈ °ÔÀÓ ¿ÀºêÁ§Æ®ÀÇ ÀÚ½ÄÀ¸·Î ¿øº» TransformÀÌ Á¸ÀçÇØ¾ß ÇÕ´Ï´Ù.
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Õ´Ï´ï¿½.
                 newBones[i] = target.transform.parent.FindChildByName(originalBones[i].name);
             }
         }
         target.bones = newBones;
 
-        // rootBone ¼³Á¤
+        // rootBone ï¿½ï¿½ï¿½ï¿½
         if (original.rootBone != null)
         {
 
@@ -286,26 +286,26 @@ internal class PoseCopy_Window : EditorWindow
     }
 
 
-    // ÀÚ½Ä Æ®·£½ºÆû º¹»ç
+    // ï¿½Ú½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     void CopyChildTransforms(Transform originalChild, Transform newParent)
     {
         GameObject newChild = new GameObject(originalChild.name);
 
-        // »õ·Î¿î ÀÚ½Ä ¿ÀºêÁ§Æ®ÀÇ Æ®·£½ºÆû °ªÀ» ¼³Á¤
+        // ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         newChild.transform.SetParent(newParent);
         CopyTransformValues(originalChild, newChild.transform);
 
-        // ¿øº» ÀÚ½ÄÀÇ ÄÄÆ÷³ÍÆ® º¹»ç 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ 
         CopyComponents(originalChild.gameObject, newChild);
 
-        // Àç±ÍÀûÀ¸·Î ÀÚ½ÄµéÀÇ Æ®·£½ºÆûµµ º¹»ç
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½Äµï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in originalChild)
         {
             CopyChildTransforms(child, newChild.transform);
         }
     }
 
-    // Æ®·£½ºÆû °ªÀ» º¹»çÇÏ´Â ÇÔ¼ö
+    // Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     void CopyTransformValues(Transform source, Transform target)
     {
         target.position = source.position;
@@ -323,7 +323,7 @@ internal class PoseCopy_Window : EditorWindow
             {
                 if (originalMaterials[i] != null)
                 {
-                    // °øÀ¯ ¸ÓÆ¼¸®¾óÀ» º¹»çÇÒ ÇÊ¿ä ¾øÀÌ ¹Ù·Î ¼³Á¤
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½
                     //newMaterials[i] = new Material(originalMaterials[i]);
                     newMaterials[i] = originalMaterials[i];
                 }

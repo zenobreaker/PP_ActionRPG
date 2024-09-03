@@ -79,7 +79,7 @@ public class Fist : Melee
     {
         //base.Begin_Collision(e);
 
-        // ÀÚ±â °ø°Ý¸¸ È°¼ºÈ­ ºÎ¸ð´Â ÄÝ ¾ÈÇÔ
+        // ï¿½Ú±ï¿½ ï¿½ï¿½ï¿½Ý¸ï¿½ È°ï¿½ï¿½È­ ï¿½Î¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         string estring = e.stringParameter;
         if (estring != "")
         {
@@ -108,6 +108,7 @@ public class Fist : Melee
         //if (particlePrefabs.Length == 0 ||
         //    (index >= 0 && index <= particlePrefabs.Length - 1))
         //    return;
+        // ë‚´ ì£¼ì„..
 
     }
 
@@ -172,7 +173,7 @@ public class Fist : Melee
         animator.Play("Sub_Fist_Combo");
         if (playableDirector == subActionDirector)
         {
-            //TODO: ¾Æ.. Á» º¹ÀâÇÏ±ä ÇÑµ¥;
+            //TODO: ï¿½ï¿½.. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½Ñµï¿½;
             if (rootObject.TryGetComponent<MeshTrail>(out var meshTrail))
             {
                 AnimatorClipInfo[] clipInfos = animator.GetCurrentAnimatorClipInfo(0);
@@ -200,9 +201,9 @@ public class Fist : Melee
 
         Vector3 hitPoint = Vector3.zero;
 
-        // ¿ùµå »ó ÁÂÇ¥ 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ 
         hitPoint = other.transform.position;
-        // ¿ªÇà¿­ °öÇØ¼­ ¿ùµå »ó ÁÂÇ¥¸¦ ¼Ò°ÅÇØ¼­ ·ÎÄÃÁÂÇ¥·Î º¯È¯
+        // ï¿½ï¿½ï¿½à¿­ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
         damagable.OnDamage(rootObject, this, hitPoint, subActionDatas[0]);
@@ -272,7 +273,7 @@ public class Fist : Melee
 
             angle = dot;
             candidate = collider.gameObject;
-            Debug.Log("Àû °¨Áö  " + candidate.name);
+            Debug.Log("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½  " + candidate.name);
         }
 
         return candidate;
@@ -282,7 +283,7 @@ public class Fist : Melee
         //    {
         //        if (hit.transform.gameObject == candidate)
         //        {
-        //            Debug.Log("´ë»ó °£¿¡ Àå¾Ö¹° ¾øÀ½ ³¯¾Æ°¨!");
+        //            Debug.Log("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½!");
         //            StartCoroutine(QuickApproachToTarget(hit.transform.gameObject));
         //        }
         //    }
@@ -299,7 +300,7 @@ public class Fist : Melee
         switch (currSkillData.skillName)
         {
             case "PowerSpike":
-            Debug.Log("½ºÅ³ ¾¸?");
+            Debug.Log("ï¿½ï¿½Å³ ï¿½ï¿½?");
             // PerceptFrontViewNearEnemy();
             break;
         }

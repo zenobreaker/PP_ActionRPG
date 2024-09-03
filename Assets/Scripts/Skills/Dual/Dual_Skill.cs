@@ -10,6 +10,7 @@ public class Dual_Skill : StateMachineBehaviour
     private Dual dual;
     private GameObject[] models;
     private GameObject holster;
+    private GameObject rifleHolster;
     private GameObject dualLeft;
     private GameObject dualRight;
 
@@ -46,8 +47,9 @@ public class Dual_Skill : StateMachineBehaviour
                 bStarward = false; 
             };
             models = gameObject.transform.FindChildrenByComponentType<SkinnedMeshRenderer>();
-            //TODO: ÀÌ°Ç ³ªÁß¿¡ Ã³¸®ÇÏÀÚ
+            //TODO: ìž„ì‹œë¡œ ì´ë ‡ê²Œ í•¨..
             holster = gameObject.transform.FindChildByName("Holster_Sword").gameObject;
+            rifleHolster = gameObject.transform.FindChildByName("Holster_Rifle").gameObject;
             dualLeft = gameObject.transform.FindChildByName("DualLeft").gameObject;
             dualRight = gameObject.transform.FindChildByName("DualRight").gameObject;
             break;
@@ -63,7 +65,7 @@ public class Dual_Skill : StateMachineBehaviour
         switch (skillName)
         {
             case "Starward":
-            // Ä³¸¯ÅÍÀÇ ¸ðµ¨À» ÀÏ½ÃÀûÀ¸·Î ¾Èº¸ÀÌ°Ô ÇÑ´Ù. 
+            // ì¼ì • êµ¬ê°„ì— ë„ë‹¬í–ˆëŠ”ì§€ ê²€ì‚¬ 
             if(stateInfo.normalizedTime > 0.13f && stateInfo.normalizedTime < 0.31f &&
                 bStarward)
             {
@@ -72,6 +74,7 @@ public class Dual_Skill : StateMachineBehaviour
                     model.SetActive(false);
                 }
                 holster?.SetActive(false);
+                rifleHolster?.SetActive(false);
                 dualRight?.SetActive(false);
                 dualLeft?.SetActive(false);
                 animator.speed = 0.0f;
@@ -83,6 +86,7 @@ public class Dual_Skill : StateMachineBehaviour
                     model.SetActive(true);
                 }
                 holster?.SetActive(true);
+                rifleHolster?.SetActive(true);
                 dualRight?.SetActive(true);
                 dualLeft?.SetActive(true);
             }
@@ -102,6 +106,7 @@ public class Dual_Skill : StateMachineBehaviour
             model.SetActive(true);
         }
         holster?.SetActive(true);
+        rifleHolster?.SetActive(true);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

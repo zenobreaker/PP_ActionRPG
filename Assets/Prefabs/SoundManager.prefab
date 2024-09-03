@@ -748,6 +748,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 8d81f025075a2da43a24fd73d4fef3b1, type: 3}
   - soundName: Gun_Rifle_Reload
     clip: {fileID: 8300000, guid: eb686ab4d96813e4d886d83603ff98c0, type: 3}
+  - soundName: Fist_SubAction_Effect
+    clip: {fileID: 8300000, guid: ea498c36ce14ef743bc8ed4569cdeafb, type: 3}
+  - soundName: Dash_Sound
+    clip: {fileID: 8300000, guid: 30f07714343eb6c46ac55eeda11040d3, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}
