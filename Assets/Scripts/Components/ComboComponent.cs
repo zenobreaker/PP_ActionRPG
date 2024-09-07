@@ -21,35 +21,40 @@ public class ComboComponent : MonoBehaviour
 
     #endregion
 
+    class InputElement
+    {
+        public string InputType; // ì…ë ¥ íƒ€ì…
+        public float TimeStamp;  // ì…ë ¥ì´ ë°œìƒˆí•œ ì‹œê°„
+        public bool bNext;
+    }
+
     private Queue<KeyCode> uiQueue;
-    private Queue<int> comboQueue;
-    [SerializeField] private float inputLimitTime = 1.0f; // ÀÌ ÃÊ¾È¿¡ ÀÔ·ÂÇÏ¸é Å¥¿¡ »ğÀÔ
+    private float maxQueueTime = 1.0f;
+    private Queue<InputElement> inputQueue;
+    [SerializeField] private float inputLimitTime = 1.0f; // ì…ë ¥ ì œí•œ ì‹œê°„ 
     [SerializeField] private float queueCleanTime = 1.0f;
     private float currLimitTime;
-    private bool bCanInput = true;  // ÀÔ·Â Á¦ÇÑÀ» °Å´Â ÇÃ·¡±×
-    private bool bNextable = false; // ´ÙÀ½ ÄŞº¸¸¦ ÃëÇÒ Å¸ÀÌ¹ÖÀÎÁö Ã¼Å©
-    //private bool bRemainTiming = false; // ÀÔ·Â ÈÄ ´ÙÀ½ ÀÔ·Â¿¡ ³²Àº ½Ã°£ Ã¼Å© 
-    private int comboCount;
+    private bool bEnable = true;  // ì…ë ¥ ê°€ëŠ¥ ì—¬ë¶€ 
+    private bool bExist = false;  // ì…ë ¥í•œ ë‹¤ìŒ ë‚´ìš©ì´ ì¡´ì¬í•˜ëŠ”ê°€ì— ëŒ€í•œ ì—¬ë¶€
+    private bool bNextable = false; // ë‹¤ìŒ ì½¤ë³´ ì—¬ë¶€ 
+    private bool bDoingAction = false; // ì•¡ì…˜ ì¤‘ì¸ì§€ ì—¬ë¶€
 
     private WeaponComponent weapon;
     private SO_Combo currComboObj;
 
-    private Coroutine coroutine_ChangeLimitTime;
-    private Coroutine coroutine_LimitInputCombo;
-   // public event Action OnClearInputQueue;
-    public event Action OnInputCombo;
+    private Coroutine comboableCoroutine;
 
     private void Awake()
     {
         weapon = GetComponent<WeaponComponent>();
         Debug.Assert(weapon != null);
-        weapon.OnBeginDoAction += DoNextCombo;
         weapon.OnWeaponTypeChanged_Combo += OnWeaponTypeChanged_Combo;
+        weapon.OnBeginDoAction += OnBeginDoAction;
+        weapon.OnEndDoAction += OnEndDoAction;
 
-        comboQueue = new Queue<int>();
+
         uiQueue = new Queue<KeyCode>();
-        comboCount = 0;
-
+        inputQueue = new Queue<InputElement>();
 
         uiCanvas = GameObject.Find(canvasName).GetComponent<Canvas>();
         Debug.Assert(uiCanvas != null);
@@ -64,17 +69,10 @@ public class ComboComponent : MonoBehaviour
             return;
 
         currComboObj = comboData;
-        currComboObj.SetOnFinishCombo(OnClearQueue);
+        
+        ResetCombo();
     }
 
-    private void SetTimeData(ComboData data)
-    {
-        if (data == null)
-            return;
-
-        this.inputLimitTime = data.comboInputLimitTime;
-        this.queueCleanTime = data.comboQueueLimitTime;
-    }
 
     #region UI Draw & Create & Destroy
     private void Create_ComboUI()
@@ -106,6 +104,12 @@ public class ComboComponent : MonoBehaviour
     #endregion
 
 
+    private void Update()
+    {
+        if (currLimitTime > 0)
+            currLimitTime -= Time.deltaTime;
+    }
+
     private void Test_PrintQueue()
     {
         string str = "Queue List : ";
@@ -117,142 +121,113 @@ public class ComboComponent : MonoBehaviour
         Debug.Log($"{str}");
     }
 
-    private void Execute()
+    private void ExecuteAttack(ref InputElement inputElement)
     {
-        if (comboQueue.Count == 0)
+
+        bDoingAction = true; 
+
+        bNextable = false;
+        if (bExist)
+            bNextable = true;
+
+        currLimitTime = 0.5f; 
+        bExist = false;
+        weapon.DoAction(bNextable);
+    }
+
+    private void ExecuteNextAttackFromQueue()
+    {
+        if(inputQueue.Count < 1) 
             return;
 
-        int combo = comboQueue.Dequeue();
-        weapon.DoAction(combo);
+        var inputData = inputQueue.Dequeue();
+        ExecuteAttack(ref inputData);
     }
 
-    public void InputCombo(KeyCode keyCode)
-    {
-        Create_ComboUI();
-        // ÀÔ·Â ½Ã°£ ³»¿¡ Å¥¿¡ ³Ö¾ú´Ù¸é invoke ´ë»óÀÚ´Â ´ÙÀ½ Çàµ¿À» ÃëÇÏ°Ô?
-        SetLimitTime();
-        comboQueue.Enqueue(comboCount++);
-        uiQueue.Enqueue(keyCode);
 
-        // Æ¯Á¤ Å¸ÀÌ¹Ö 
-        // Ã³À½ Å¥´Â ¹Ù·Î µ¿ÀÛÀ» ¼öÇàÇÑ´Ù. 
-        if (bCanInput)
+    public void InputCombo_Test(KeyCode keycode)
+    {
+        //TODO: ì…ë ¥ í ì¡°ê±´ ë³€ê²½ ê³µê²©ì¤‘ì¼ ë•Œ íì— ë„£ê³  ì…ë ¥ë°›ìœ¼ë©´ ì‹¤í–‰í•˜ê³ ..
+
+        // ì…ë ¥ ì œí•œ ì‹œê°„ ê´€ë¦¬ 
+        if (comboableCoroutine != null)
+            comboableCoroutine = StartCoroutine(ComboableCoroutine());
+
+        // íì— ìˆëŠ” ë‹¤ìŒ ê³µê²© ì‹¤í–‰ 
+        if (bEnable)
+            bExist = true;
+
+        if (currLimitTime <= 0) // í˜„ì¬ ì…ë ¥ ì¿¨íƒ€ì„ì´ ëë‚œ ê²½ìš° 
         {
-            bCanInput = false;
-            bNextable = false;
-            //Debug.Log("Input Call do a");
-            Execute();
+            if(inputQueue.Count == 0) // íê°€ ë¹„ì–´ìˆìœ¼ë©´
+            {
+                // ê³µê²© ì‹¤í–‰ 
+                float currentTime = Time.time;
+                var inputElement = new InputElement
+                {
+                    InputType = keycode.ToString(),
+                    TimeStamp = currentTime,
+                    bNext = bExist, // í•„ìš”ì— ì˜í•˜ì—¬ ì…ë ¥ ìœ ì§€ì‹œê°„ì„ ê³„ì‚° í›„ ì¶”ê°€ 
+                };
+                ExecuteAttack(ref inputElement);
+            }
+            else
+            {
+                ExecuteNextAttackFromQueue();
+            }
+
         }
-        else if (bNextable)
+        else 
         {
-            //Debug.Log("Input timing over call");
-            bNextable = false;
-            Execute();
-        }
-
-        // ÄŞº¸ ÀÔ·Â Á¦ÇÑ Å¸ÀÌ¸Ó¸¦ µ¹¸°´Ù. - ÀÌ¹Ì ÄŞº¸Å¥ Á¦ÇÑ Å¸ÀÌ¸Ó¸¦ µ¹¸°´Ù¸é ´õ µ¹¸®Áö ¾ÊÀ½
-        if (coroutine_LimitInputCombo != null)
-            StopCoroutine(coroutine_LimitInputCombo);
-
-        coroutine_LimitInputCombo = StartCoroutine(Coroutine_LimitInputCombo());
-
-    }
-
-
-    private void OnClearQueue()
-    {
-        CleanQueue("OnClearQueue");
-    }
-
-    private void CleanQueue(string debug = "CleanQueue")
-    {
-        //Test_PrintQueue();
-
-        DestroyComboUIObjs();
-
-        comboCount = 0;
-        uiQueue.Clear();
-        comboQueue.Clear();
-        bCanInput = true;
-        SetComboCount(0, debug);
-        coroutine_LimitInputCombo = null;
-    }
-
-    // Å¥ ÃÊ±âÈ­
-    private IEnumerator Coroutine_LimitInputCombo()
-    {
-        yield return new WaitForSeconds(queueCleanTime);
-        CleanQueue();
-    }
-
-    // Á¦ÇÑ ½Ã°£ ¼³Á¤
-    private void SetLimitTime()
-    {
-        if (currComboObj != null)
-        {
-            ComboData data = currComboObj.GetComboDataByRewind(comboCount);
-            SetTimeData(data);
+            // ê³µê²©ì´ ì§„í–‰ ì¤‘ì´ë¼ë©´ ì…ë ¥ì„ íì— ì¶”ê°€í•œë‹¤.
+            // í ì…ë ¥ 
+            float currentTime = Time.time;
+            inputQueue.Enqueue(new InputElement
+            {
+                InputType = keycode.ToString(),
+                TimeStamp = currentTime,
+                bNext = bExist, // í•„ìš”ì— ì˜í•˜ì—¬ ì…ë ¥ ìœ ì§€ì‹œê°„ì„ ê³„ì‚° í›„ ì¶”ê°€ 
+            });
         }
 
-        // ³²Àº ½Ã°£ Ã¼Å© 
-        //bRemainTiming = true;
-
-        currLimitTime = inputLimitTime;
-
-        if (coroutine_ChangeLimitTime != null)
-            StopCoroutine(coroutine_ChangeLimitTime);
-
-        coroutine_ChangeLimitTime = StartCoroutine(Coroutine_ChangeLimitTime());
+        // ì…ë ¥ íë¥¼ ì •ë¦¬í•˜ì—¬ ì˜¤ë˜ëœ ì…ë ¥ì„ ì œê±°
+        //while (inputQueue.Count > 0 && (currentTime - inputQueue.Peek().TimeStamp) > maxQueueTime)
+        //{
+        //    inputQueue.Dequeue();
+        //}
     }
 
-   
-    // Á¦ÇÑ½Ã°£ º¯°æ ÄÚ·çÆ¾ 
-    private IEnumerator Coroutine_ChangeLimitTime()
+  
+    private IEnumerator ComboableCoroutine()
     {
-        while (currLimitTime > 0)
-        {
-            currLimitTime -= Time.deltaTime;
-            DrawInputGauge();
-            yield return null;
-        }
+        bEnable = true;
 
-        //Test_PrintQueue();
+        yield return new WaitForSeconds(inputLimitTime);
 
-        DestroyComboUIObjs();
-
-        //bRemainTiming = false;
-        comboCount = 0;
-        uiQueue.Clear();
-        comboQueue.Clear();
-        bCanInput = true;
-
-        SetComboCount(0, "Coroutine_ChangeLimitTime");
+        bEnable = false;
+       
     }
 
-    // ÀÌº¥Æ®¿¡ ÀÇÇØ¼­ Àü´Ş µÇ¸é µ¿ÀÛÀ» ¼öÇàÇÑ´Ù. 
-    private void DoNextCombo()
+    public void OnBeginDoAction()
     {
-        // Å¥¿¡ µî·ÏµÈ°Ô ÀÖ´Ù¸é ÇØ´ç ¾×¼ÇÀ» ½ÇÇà 
-        if (comboQueue.Count > 0)
+        if(inputQueue.Count > 0 )
         {
-            //Debug.Log("Combo comp call do a");
-            //int combo = comboQueue.Dequeue();
-            //weapon.DoAction(combo, true);
-            Execute();
-        }
-        // ¾øÀ¸¸é ÀÔ·Â ¹Ş¾Æ¼­ µ¿ÀÛÇÏ±â À§ÇÑ ÇÃ·¡±× 
-        else
-        {
-            bNextable = true;
+            ExecuteNextAttackFromQueue();
         }
     }
 
-    private void SetComboCount(int comboCount, string caller = "")
+    public void OnEndDoAction()
     {
-        this.comboCount = comboCount;
+        ResetCombo();
+    }
 
-        //if (caller != "")
-        //    Debug.Log("Caller : " + caller);
+    private void ResetCombo()
+    {
+        bEnable = false; 
+        comboableCoroutine = null; 
+
+        currLimitTime = 0;
+        inputQueue.Clear(); 
     }
 
 

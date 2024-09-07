@@ -70,7 +70,7 @@ public class Sword : Melee
         transform.SetParent(holsterTransform, false);
     }
 
-    public override void DoAction(int comboIndex, bool bNext = false)
+    public override void DoAction(bool bNext )
     {
         if(isSubAction)
         {
@@ -80,21 +80,22 @@ public class Sword : Melee
                 listener.m_ReactionSettings.m_SecondaryNoise = null;
             }
 
-            comboIndex %= (doActionDatas.Length);
             bExist = bNext;
             if (isAnimating)
             {
                 return;
             }
 
-            index = comboIndex;
             isAnimating = true;
 
+            
             animator.Play("Unarmed.Sword.Sub.Sword_Air_Combo"+ (index+1));
+            index++;
+            index %= (doActionDatas.Length);
             return; 
         }
 
-        base.DoAction(comboIndex, bNext);
+        base.DoAction(bNext);
     }
 
     public override void Begin_DoAction()

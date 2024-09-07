@@ -21,7 +21,6 @@ public class Gun : Melee
     [SerializeField] private string gunShootSound = "Gun_Fire";
     [SerializeField] private string rifleShootSound = "Gun_Rifle_Fire";
 
-    // ÃÑ±â ¿ÀºêÁ§Æ®
     [Header("Gun Objects")]
     [SerializeField] private GameObject[] gunObjects;
     [SerializeField] private ScopeUI scopeUI;
@@ -31,6 +30,7 @@ public class Gun : Melee
     private int curr_RifleAmmo;
 
     private RifleGun rifleGun;
+    private AnimState_Combo animStateCombo;
 
     private Transform leftMuzleTrasnform;
     private Transform rightMuzleTrasnform;
@@ -54,6 +54,8 @@ public class Gun : Melee
     {
         base.Awake();
 
+        animStateCombo = GetComponent<AnimState_Combo>();
+
         scopeUI = FindObjectOfType<ScopeUI>();
 
         leftMuzleTrasnform = rootObject.transform.FindChildByName(leftMuzzleTransformName);
@@ -67,12 +69,12 @@ public class Gun : Melee
             gun.localPosition = Vector3.zero;
             gun.localRotation = Quaternion.identity;
 
-            // ÀÌº¥Æ® 
+            // ï¿½Ìºï¿½Æ® 
             if (gun.TryGetComponent<Gun_Trigger>(out var trigger))
             {
                 trigger.RootObject = rootObject;
             }
-            // ÇÃ·¹ÀÌ¾î¿¡ ºÙÀÌ±â 
+            // ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ ï¿½ï¿½ï¿½Ì±ï¿½ 
             string partName = ((PartType)i).ToString();
             Transform parent = rootObject.transform.FindChildByName(partName);
             Debug.Assert(parent != null);
@@ -81,7 +83,7 @@ public class Gun : Melee
             gun.gameObject.SetActive(false);
         }
 
-        // ¶óÀÌÇÃ ÀåÂø 
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         if (gunObjects.Length == 3)
         {
             rifleGun = gunObjects[2].transform.GetComponent<RifleGun>();
@@ -89,7 +91,7 @@ public class Gun : Melee
             rifle.localPosition = Vector3.zero;
             rifle.localRotation = Quaternion.identity;
 
-            // ÀÌº¥Æ® 
+            // ï¿½Ìºï¿½Æ® 
             if (rifle.TryGetComponent<Gun_Trigger>(out var trigger))
             {
                 trigger.RootObject = rootObject;
@@ -135,17 +137,38 @@ public class Gun : Melee
         }
     }
 
-    public override void DoAction(int comboIndex = 0, bool bNext = false)
+    public override void DoAction()
     {
         if (isSubAction)
         {
-            // ¶óÀÌÇÃ »ç°İ 
+            // ë¼ì´í”Œ ìƒíƒœë©´ ë¼ì´í”Œ ë°œì‚¬
             Shoot_Rifle();
 
             return;
         }
+        
+        //if(index < doActionDatas.Length)
+        //    animStateCombo.Start_State();
+        base.DoAction();
 
-        base.DoAction(comboIndex, bNext);
+        if (rotateCoroutine != null)
+            StopCoroutine(rotateCoroutine);
+        GameObject target = CheckTarget();
+        rotateCoroutine = StartCoroutine(RotateToTarget(target));
+    }
+
+    public override void DoAction(bool bNext )
+    {
+        if (isSubAction)
+        {
+            // ë¼ì´í”Œ ìƒíƒœë©´ ë¼ì´í”Œ ë°œì‚¬
+            Shoot_Rifle();
+
+            return;
+        }
+        //if (index < doActionDatas.Length)
+        //    animStateCombo.Start_State();
+        base.DoAction(bNext);
 
         if (rotateCoroutine != null)
             StopCoroutine(rotateCoroutine);
@@ -193,12 +216,12 @@ public class Gun : Melee
 
         if (isSubAction)
         {
-            // ÃÑ¾Ë ¾øÀ¸¸é ½º³ªÀÌÇÁ ¸ğµå ÇØÁ¦ 
+            // í˜„ì¬ ë¼ì´í”Œ ì´ì•Œì´ ì—†ë‹¤ë©´
             if (curr_RifleAmmo <= 0)
             {
-                // ¶óÀÌÇÃ ÀåÂø ÇØÁ¦ 
+                // ë¼ì´í”Œ ì¥ì°© í•´ì œ 
                 Unequip_Rifle();
-                // ´Ù½Ã ÃÑ ÀåÂø 
+                // ìŒê¶Œì´ì„ ì¥ì°© 
                 Equip_HandGun();
                 return;
             }
@@ -354,13 +377,13 @@ public class Gun : Melee
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         float rotationSpeed = 5.0f;
 
-        // ¸ñÇ¥ °¢µµ¿¡ µµ´ŞÇÒ ¶§±îÁö ·çÇÁ¸¦ ½ÇÇà
+        // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         while (Quaternion.Angle(rootObject.transform.rotation, targetRotation) > 0.1f)
         {
-            // ÇöÀç È¸ÀüÀ» ¸ñÇ¥ È¸ÀüÀ» ÇâÇØ º¸°£ÇÕ´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
             rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
 
-            // ´ÙÀ½ ÇÁ·¹ÀÓÀ» ±â´Ù¸³´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½Ï´ï¿½.
             yield return null;
         }
         rootObject.transform.rotation = targetRotation;
@@ -442,14 +465,14 @@ public class Gun : Melee
 
         SoundManager.Instance.PlaySFX(rifleShootSound);
         
-        // ¸ÓÁñ ÀÌÆåÆ® 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® 
         if(muzzle != null && subActionDatas[0].Particle == null)
         {
             Instantiate<GameObject>(particlePrefabs[0], muzzle.transform.position, 
                 muzzle.transform.rotation);
         }
 
-        // Áøµ¿
+        // ï¿½ï¿½ï¿½ï¿½
         {
             Play_Impulse(subActionDatas[0]);
         }
@@ -486,13 +509,13 @@ public class Gun : Melee
         Instantiate<GameObject>(subActionDatas[0].HitParticle, point, rootObject.transform.rotation);
     }
 
-    // ½º³ªÀÌÇÁ ¸ğµå
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     private void SetSnipeMode()
     {
         if (rifleGun == null)
             return;
 
-        // ÃÑ¾Ë ÀåÀü
+        // ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½
         curr_RifleAmmo = rifleMaxAmmo;
         rifleGun.SetSnipeMode();
         scopeUI?.SetDrawSnipeUI(rifleMaxAmmo);

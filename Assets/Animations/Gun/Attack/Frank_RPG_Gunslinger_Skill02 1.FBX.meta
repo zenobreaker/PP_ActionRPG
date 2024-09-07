@@ -85,20 +85,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.039867137
-        functionName: Begin_Combo
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.22591366
-        functionName: End_Combo
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: 0.6251411
         functionName: Play_DoAction_Particle
         data: 
@@ -113,19 +99,33 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: 0.6744186
+      - time: 0.02657809
+        functionName: Begin_Combo
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.255814
+        functionName: End_Combo
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.6843854
         functionName: Begin_DoAction
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 1
         messageOptions: 0
-      - time: 0.96013296
+      - time: 0.9435216
         functionName: End_DoAction
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: bfbb013c146a9bd46893cfa864463e1b, type: 3}
         floatParameter: 0
-        intParameter: 0
+        intParameter: 1
         messageOptions: 0
       transformMask: []
       maskType: 3

@@ -22,6 +22,8 @@ public class Enemy :
     [SerializeField]
     private float changeColorTime = 0.15f;
 
+    [SerializeField] private string surfaceName; 
+
     private Color originColor;
     private Material skinMaterial;
 
@@ -40,7 +42,7 @@ public class Enemy :
     {
         base.Awake();
 
-        Transform surface = transform.FindChildByName("Alpha_Surface");
+        Transform surface = transform.FindChildByName(surfaceName);
         skinMaterial = surface.GetComponent<SkinnedMeshRenderer>().material;
         originColor = skinMaterial.color;
 

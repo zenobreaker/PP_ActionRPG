@@ -12,7 +12,7 @@ public class StateComponent : MonoBehaviour
     public StateType Type { get => type; }
 
     public event Action<StateType, StateType> OnStateTypeChanged;
-    public event Action<StateType> OnStateTypeChanging; // ÀÌÀü »óÅÂ¿¡ ´ëÇÑ ÀÌº¥Æ® Äİ
+    public event Action<StateType> OnStateTypeChanging; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½
 
    
     public bool IdleMode { get => type == StateType.Idle; }
@@ -50,11 +50,11 @@ public class StateComponent : MonoBehaviour
         if (this.type == type)
             return;
 
-        StateType prevType = this.type; // ÀÌÀü »óÅÂ ÀúÀå 
-        this.type = type; // Å¸ÀÔ ±³Ã¼ 
+        StateType prevType = this.type; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
+        this.type = type; // Å¸ï¿½ï¿½ ï¿½ï¿½Ã¼ 
 
         OnStateTypeChanging?.Invoke(prevType);
-        OnStateTypeChanged?.Invoke(prevType, type);  // ÀÌº¥Æ®°¡ ÀÖ´Ù¸é Äİ
+        OnStateTypeChanged?.Invoke(prevType, type);  // ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½
     }
 
 }

@@ -10,8 +10,8 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class SideStepComponent : MonoBehaviour
 {
-    [SerializeField] private float angleIncrement = 10.0f; // °¢µµ Áõ°¡·® 
-    [SerializeField] float totalAngle = 90.0f; // ¿øÈ£ ÀÌµ¿ ÃÖ´ë°¢ 
+    [SerializeField] private float angleIncrement = 10.0f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+    [SerializeField] float totalAngle = 90.0f; // ï¿½ï¿½È£ ï¿½Ìµï¿½ ï¿½Ö´ë°¢ 
     [SerializeField] float distance = 5.0f;
     private GameObject targetObj;
 
@@ -53,8 +53,8 @@ public class SideStepComponent : MonoBehaviour
         if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
             return;
 
-        //Debug.Log("µµÂø!");
-        // ÁöÁ¡¿¡ µµÂøÇÞÀ¸¸é ´ÙÀ½ ÁöÁ¡À¸·Î °¥±î? 
+        //Debug.Log("ï¿½ï¿½ï¿½ï¿½!");
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½? 
         DoNextPos(targetObj);
     }
 
@@ -152,7 +152,7 @@ public class SideStepComponent : MonoBehaviour
     private Vector3 GetNextPostion()
     {
         Vector3 goalPosition  = transform.position;
-        // ÀÌ¹Ì ÀÌµ¿ ÁßÀÌ¶ó¸é ½ÃÇàÇÏÁö¾ÊÀ½ 
+        // ï¿½Ì¹ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
         //float checkDistance = Vector3.Distance(transform.position, goalPosition);
         bool b = false;
         //b |= checkDistance <= 0.02f;
@@ -161,7 +161,7 @@ public class SideStepComponent : MonoBehaviour
         if (b)
             return goalPosition;
 
-        // ¿ÞÂÊ index --; // ¿À¸¥ÂÊ inde++; 
+        // ï¿½ï¿½ï¿½ï¿½ index --; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ inde++; 
         if (crossroads == 0)
             toIndex--;
         else
@@ -180,7 +180,7 @@ public class SideStepComponent : MonoBehaviour
         }
 
 
-        Debug.Log($"°í¸¥ À§Ä¡ {toIndex}");
+        Debug.Log($"ì¶”ì  ê²½ë¡œ  {toIndex}");
         goalPosition = sidePositionList[toIndex];
 
         return goalPosition;
@@ -191,7 +191,7 @@ public class SideStepComponent : MonoBehaviour
         if (sidePositionList.Count <= 0)
             return;
 
-        // ±× °÷ÀÌ °¥ ¼ö ÀÖ´ÂÁö °Ë»ç 
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ 
         path = new NavMeshPath();
         bool pathValid = navMeshAgent.CalculatePath(targetGoal, path);
 
@@ -206,7 +206,7 @@ public class SideStepComponent : MonoBehaviour
         }
         else
         {
-            Debug.Log("°æ·Î °è»ê ½ÇÆÐ.");
+            Debug.Log("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.");
         }
     }
 
@@ -216,7 +216,7 @@ public class SideStepComponent : MonoBehaviour
 
         // 0: Left , 1 : Right 
         crossroads = UnityEngine.Random.Range(0, 2);
-        Debug.Log(crossroads == 0 ? "¿ÞÂÊ" : "¿À¸¥ÂÊ");
+        Debug.Log(crossroads == 0 ? "ï¿½ï¿½ï¿½ï¿½" : "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         
         RemovePathList();
         SetSideMovePostionList(target);

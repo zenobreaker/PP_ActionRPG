@@ -21,7 +21,7 @@ public class WeaponComponent : MonoBehaviour
     private WeaponType type = WeaponType.Unarmed;
     public WeaponType Type { get => type; }
 
-    public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; // ���� ��ü �̺�Ʈ
+    public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; 
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
    
     public event Action OnEndEquip;
@@ -251,7 +251,7 @@ public class WeaponComponent : MonoBehaviour
     }
 
 
-    public void DoAction(int comboIndex = 0, bool bNext = false)
+    public void DoAction(bool bNext)
     {
         if (weaponTable[type] == null)
             return;
@@ -262,7 +262,7 @@ public class WeaponComponent : MonoBehaviour
             animator.SetBool("IsAction", true);
         }
 
-        weaponTable[type].DoAction(comboIndex, bNext);
+        weaponTable[type].DoAction(bNext);
     }
 
     public void DoSubAction()

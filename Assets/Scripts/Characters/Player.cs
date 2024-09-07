@@ -77,7 +77,7 @@ public class Player
         actionMap.FindAction("Action").started += (context) =>
         {
             //weapon.DoAction();
-            combo.InputCombo(KeyCode.Mouse0);
+            combo.InputCombo_Test(KeyCode.Mouse0);
         };
 
         actionMap.FindAction("Action2").started += (context) =>
@@ -116,7 +116,7 @@ public class Player
 
     private void OnNonForwardAttackAnim()
     {
-        // -z·Î ´­·¯Áö°í ÀÖ´Ù¸é 
+        // -zï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ 
         Vector3 position;
         position = animator.deltaPosition;
         position.y = 0.0f;
@@ -152,7 +152,7 @@ public class Player
 
         healthPoint.Damage(data.Power);
 
-        //TODO: ³»°¡ ´çÇÏ´Âµ¥ ÇÁ·¹ÀÓÀÌ ¸ØÃß¸é ÁÁÀº°¡?
+        //TODO: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
         // MovableStopper.Instance.Start_Delay(data.StopFrame);
 
 
@@ -168,20 +168,20 @@ public class Player
             state.SetDamagedMode();
             launch.DoHit(attacker, causer, data, false);
 
-            // ´Ù¿î ½ÃÅ°´Â °ø°ÝÀÎ°¡
+            // ï¿½Ù¿ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½
             if (data.bDownable == false)
             {
-                // ¾Æ´Ï¶ó¸é ÇØ´ç ÇÇ°Ý ÀÌº¥Æ®·Î ¾Ö´Ï¸ÞÀÌ¼Ç ½ÇÇà
+                // ï¿½Æ´Ï¶ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½Ç°ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
                 animator.SetInteger("ImpactIndex", data.HitImpactIndex);
                 animator.SetTrigger("Impact");
             }
             else
             {
 
-                // ´Ù¿î »óÅÂ ±â¼úÀ» ¸ÂÀ¸¸é °ü·ÃµÈ °ªÀÌ º¯°æµÈ´Ù. 
+                // ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. 
                 animator.SetBool("IsDownCondition", true);
 
-                // ´Ù¿î »óÅÂ°¡ ¾Æ´Ï¸é ´Ù¿î ¾Ö´Ï ½ÇÇà
+                // ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½Ù¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (animator.GetBool("IsDownCondition"))
                     animator.SetTrigger("Down_Trigger");
 

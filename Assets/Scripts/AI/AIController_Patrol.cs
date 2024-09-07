@@ -52,13 +52,15 @@ public class AIController_Patrol : AIController
 
     protected override void LateUpdate()
     {
-        bool bCheck = false;
+        bool bCheck = false; 
         bCheck |= state.DeadMode;
         bCheck |= state.DownCondition;
+        bCheck |= state.DamagedMode;
+
         if (bCheck)
         {
-            Debug.Log("is Dead");
             SetNavMeshStop(true);
+            
             return;
         }
 
@@ -101,7 +103,7 @@ public class AIController_Patrol : AIController
             return;
         }
 
-        // °ø°Ý Á¶°Ç 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         float temp = Vector3.Distance(transform.position, player.transform.position);
         if (temp < attackRange)
         {
@@ -167,9 +169,9 @@ public class AIController_Patrol : AIController
 
         Vector3 position = transform.position;
         Vector3 behindPos = -transform.forward;
-        // ¹Ú½º Ä³½ºÆ®ÀÇ ½ÃÀÛ À§Ä¡¸¦ µÚÂÊÀ¸·Î ¾à°£ ÀÌµ¿
-        Vector3 castStartPosition = position + behindPos * 0.5f; // Ä³¸¯ÅÍ À§Ä¡¿¡¼­ µÚ·Î 0.5f ¸¸Å­ ÀÌµ¿
-        // µÞÆí¿¡ °Ë»ç¸¦ ÇØ¼­ µÞ°ÉÀ½Áú ÇÒ ¼ö ÀÖ´ÂÁö °Ë»ç
+        // ï¿½Ú½ï¿½ Ä³ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½à°£ ï¿½Ìµï¿½
+        Vector3 castStartPosition = position + behindPos * 0.5f; // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½ 0.5f ï¿½ï¿½Å­ ï¿½Ìµï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ç¸¦ ï¿½Ø¼ï¿½ ï¿½Þ°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
         RaycastHit[] hits = Physics.BoxCastAll(castStartPosition, transform.lossyScale, behindPos,
             transform.rotation, 1.0f);
 
@@ -197,7 +199,7 @@ public class AIController_Patrol : AIController
 
     private Vector3 CalcBehindPosition()
     {
-        // ÇöÀç À§Ä¡¿Í µÚÂÊ ¹æÇâ °è»ê
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         Vector3 characterPosition = transform.position;
         Vector3 backwardDirection = -transform.forward * (navMeshAgent.stoppingDistance + 1.0f);
         Vector3 behindPosition = characterPosition + backwardDirection;
@@ -277,7 +279,7 @@ public class AIController_Patrol : AIController
         {
             Gizmos.color = Color.green;
             Vector3 boxSize = transform.lossyScale;
-            // Ä³¸¯ÅÍÀÇ µÚÂÊ À§Ä¡ °è»ê
+            // Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½
             Vector3 behindPosition = transform.position - transform.forward * navMeshAgent.stoppingDistance;
             Gizmos.DrawWireCube(behindPosition, boxSize);
 

@@ -41,7 +41,7 @@ public abstract class Character
 
     protected virtual void Start()
     {
-        // µî·Ï
+        // ï¿½ï¿½ï¿½
         Regist_MovableStopper();
         Regist_MovableSlower();
     }
@@ -101,10 +101,10 @@ public abstract class Character
         MovableSlower.Instance.Regist(this);
     }
 
-    // ÀÏ¾î³ª±â ½ÃÀÛ 
+    // ï¿½Ï¾î³ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
     protected IEnumerator Change_GetUpCondition()
     {
-        //TODO: ±â»ó ½Ã°£ °ª ¼³Á¤ÇÏ±â 
+        //TODO: ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ 
         //yield return new WaitForSecondsRealtime(3.0f);
         yield return new WaitForSeconds(3.0f);
         Begin_GetUp();
@@ -119,7 +119,7 @@ public abstract class Character
 
         animator.SetTrigger("GetUp");
 
-        // ÀÏ¾î³ª¸é ÄÁµð¼ÇÀ» º¯°æ
+        // ï¿½Ï¾î³ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         state.SetNoneConditon();
     }
 

@@ -8,16 +8,16 @@ using UnityEngine.AI;
 
 public class PatrolComponent : MonoBehaviour
 {
-    [SerializeField] private float radius = 10.0f; // ¼øÂû ¹İ°æ 
-    [SerializeField] private float goalDelay = 2.0f; // µµ´Ş ½Ã ´ë±â ½Ã°£ 
-    [SerializeField] private float goalDelayRandom = 0.5f; // goalDelay +( - ·£´ı ~ +·£´ı)
+    [SerializeField] private float radius = 10.0f; // ë°˜ê²½ 
+    [SerializeField] private float goalDelay = 2.0f; // ë„ì°© ì£¼ê¸° 
+    [SerializeField] private float goalDelayRandom = 0.5f; // goalDelay +( - ìµœì†Œ~ + ìµœëŒ€)
     [SerializeField] //private PatrolPoints patrolPoints;
                      //public bool HasPatrolPoints { get => patrolPoints != null; }
 
     #region Circular
     private Queue<Vector3> sidePositionQueue = new Queue<Vector3>();
-    [SerializeField] private float angleIncrement = 10.0f; // °¢µµ Áõ°¡·® 
-    [SerializeField] float totalAngle = 90.0f; // ¿øÈ£ ÀÌµ¿ ÃÖ´ë°¢ 
+    [SerializeField] private float angleIncrement = 10.0f; // ê°ë„ ê°’
+    [SerializeField] float totalAngle = 90.0f; // ìµœì¢… ì¸ì§€ ê°ë„ 
     //bool bCircularMode = false;
 
     #endregion
@@ -28,8 +28,8 @@ public class PatrolComponent : MonoBehaviour
     private bool bArrived = false;
     public bool Arrived { get => bArrived; set => bArrived = value; }
 
-    private Vector3 initPosition; // ½ÃÀÛÁöÁ¡
-    private Vector3 goalPosition; // ¸ñÇ¥ÁöÁ¡
+    private Vector3 initPosition; // ì‹œì‘ ìœ„ì¹˜
+    private Vector3 goalPosition; // ë„ì°© ìœ„ì¹˜
 
     private Coroutine coroutienPathRoutine;
     private NavMeshAgent navMeshAgent;
@@ -83,7 +83,7 @@ public class PatrolComponent : MonoBehaviour
 
         bArrived = true;
 
-        //TODO: Wait Mode ¶§ µ¹¸±±î
+        //TODO: Wait Mode ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         float waitTime = goalDelay + UnityEngine.Random.Range(-goalDelayRandom, goalDelayRandom);
 
         IEnumerator waitRoutine = WaitDelay(waitTime);
@@ -120,7 +120,7 @@ public class PatrolComponent : MonoBehaviour
 
         Vector3 prevGoalPosition = goalPosition;
 
-        // °¥ ¼ö ÀÖ´Â À§Ä¡°¡ ³ª¿Ã ¶§±îÁö µ¹¸°´Ù.
+        // ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
         while (true)
         {
             while (true)
@@ -139,7 +139,7 @@ public class PatrolComponent : MonoBehaviour
             path = new NavMeshPath();
 
 
-            // °¥ ¼ö ÀÖ´Â °æ·Î°¡ ³ª¿À¸é ·çÆ¾ Á¾·á 
+            // ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Î°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½ 
             if (navMeshAgent.CalculatePath(goalPosition, path) == true)
             {
                 navMeshPath = path;
@@ -148,7 +148,7 @@ public class PatrolComponent : MonoBehaviour
             }
 
 
-            yield return null;  // ¸ÅÇÁ·¹ÀÓ ¸¶´Ù 
+            yield return null;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         }
     }
 

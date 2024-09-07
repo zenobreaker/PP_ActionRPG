@@ -96,7 +96,7 @@ public class Melee : Weapon
 
     }
 
-    // ÆÄÆ¼Å¬ ¼¼ÆÃ 
+    // ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½ï¿½ï¿½ 
     protected virtual void SetParticleObject(int index)
     {
         if (particleTransforms == null)
@@ -158,15 +158,15 @@ public class Melee : Weapon
 
     IEnumerator RotateToTarget(Quaternion rotation)
     {
-        // È¸Àü ¼Óµµ
+        // È¸ï¿½ï¿½ ï¿½Óµï¿½
         float rotationSpeed = 5.0f;
         float elapasedTime = 0.0f;
         float duration = 0.1f;
-        // ¸ñÇ¥ °¢µµ¿¡ µµ´ÞÇÒ ¶§±îÁö ·çÇÁ¸¦ ½ÇÇà
+        // ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         while (elapasedTime < duration)
         {
             elapasedTime += Time.deltaTime;
-            // ÇöÀç È¸ÀüÀ» ¸ñÇ¥ È¸ÀüÀ» ÇâÇØ º¸°£ÇÕ´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
             rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, rotation, (elapasedTime * rotationSpeed)/duration);
             float differ = Quaternion.Angle(rootObject.transform.rotation, rotation);
             if(differ < 2.0f )
@@ -175,12 +175,12 @@ public class Melee : Weapon
                 yield break; 
             }
 
-            // ´ÙÀ½ ÇÁ·¹ÀÓÀ» ±â´Ù¸³´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½Ï´ï¿½.
             yield return null;
         }
     }
 
-    // ÆÄÆ¼Å¬ »èÁ¦ 
+    // ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½ï¿½ï¿½ 
     protected void DeleteParticle()
     {
         if (trailParticles == null)
@@ -192,7 +192,7 @@ public class Melee : Weapon
         }
     }
 
-    // ÄÞº¸ Áß °ø°Ý ÀÔ·Â È®ÀÎ 
+    // ï¿½Þºï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ È®ï¿½ï¿½ 
     public void Begin_Combo()
     {
         bEnable = true;
@@ -210,7 +210,7 @@ public class Melee : Weapon
             listener.m_ReactionSettings.m_SecondaryNoise = null;
         }
 
-        // °ø°ÝÀÌ µé¾î¿Â »óÈ²
+        // ì½¤ë³´ ê°€ëŠ¥í•œ ìƒíƒœì¸ì§€ 
         if (bEnable)
         {
             bEnable = false;
@@ -219,16 +219,14 @@ public class Melee : Weapon
             return;
         }
 
-        // ÃÖÃÊ °ø°Ý
         if (state.IdleMode == false)
             return;
 
-        // ºÎ¸ð¿¡¼± ¾ÆÀÌµé¸ðµå°¡ ¾ÈµÇ¹Ç·Î ÀÌ À§Ä¡·Î
         base.DoAction();
 
     }
 
-    public override void DoAction(int comboIndex , bool bNext = false)
+    public override void DoAction(bool bNext)
     {
 
         if (listener != null)
@@ -236,23 +234,20 @@ public class Melee : Weapon
             listener.m_ReactionSettings.m_SecondaryNoise = null;
         }
 
-        comboIndex %= (doActionDatas.Length);
         bExist = bNext;
         if (isAnimating)
         {
             return;
         }
 
-        index = comboIndex;
         isAnimating = true; 
-        animator.Play(comboObjData.comboDatas[comboIndex].ComboName);
+        animator.Play(comboObjData.comboDatas[index++].ComboName);
+        index %= (doActionDatas.Length);
 
-        // ÃÖÃÊ °ø°Ý
         if (state.IdleMode == false)
             return;
         
-        // ºÎ¸ð¿¡¼± ¾ÆÀÌµé¸ðµå°¡ ¾ÈµÇ¹Ç·Î ÀÌ À§Ä¡·Î
-        base.DoAction(comboIndex, bNext);
+        base.DoAction(bNext);
     }
 
 
@@ -282,9 +277,10 @@ public class Melee : Weapon
       
         if (bExist == false)
             return;
+
         bExist = false;
-        //index++;
-        //animator.SetTrigger("NextCombo");
+        index++;
+        animator.SetTrigger("NextCombo");
 
         CanMove();
         base.Begin_DoAction();
@@ -378,9 +374,9 @@ public class Melee : Weapon
         }
 
 
-        // ¿ùµå »ó ÁÂÇ¥ 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ 
         hitPoint = enabledCollider.ClosestPoint(other.transform.position);
-        // ¿ªÇà¿­ °öÇØ¼­ ¿ùµå »ó ÁÂÇ¥¸¦ ¼Ò°ÅÇØ¼­ ·ÎÄÃÁÂÇ¥·Î º¯È¯
+        // ï¿½ï¿½ï¿½à¿­ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
         //var text = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -393,11 +389,11 @@ public class Melee : Weapon
 
         //if (moving != null)
         //{
-        //    // ¹Ð¸®Å¸°ÝÀÏ ¶§¸¸ ÀÛ¾÷ Àü¹æ¿¡ ¸Â¾Ñ°í °¡Àå °¡±î¿î³ð¿¡°Ô Ä«¸Þ¶ó µ¹¸®±â 
+        //    // ï¿½Ð¸ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½æ¿¡ ï¿½Â¾Ñ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ð¿¡°ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
         //    Vector3 direction = other.gameObject.transform.position - rootObject.transform.position;
         //    Quaternion q = Quaternion.FromToRotation(rootObject.transform.forward, direction.normalized);
 
-        //    // ÇÇÄ¡°¡ 0°ªÀÌ¶ó È¸Àü¿Ï·áÈÄ Á¤¸éÀÌ´Ù ³ªÁß¿¡ ÆÈ·Î¿ìÅ¸°ÙÀ» °¡Á®¿Í¼­ ¼¼ÆÃÀ» ÇÏ°í Àü´ÞÇØ¾ßÇÒ °Í 
+        //    // ï¿½ï¿½Ä¡ï¿½ï¿½ 0ï¿½ï¿½ï¿½Ì¶ï¿½ È¸ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½È·Î¿ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½ï¿½ 
         //    rootObject.transform.rotation *= Quaternion.Euler(0, q.eulerAngles.y, 0);
         //    moving.Rotation = rootObject.transform.rotation;
         //}
@@ -432,12 +428,12 @@ public class Melee : Weapon
 
         Vector3 direction = endPosObj.transform.position - startPosObj.transform.position;
 
-        // ¿¹: ¿ùµå ÁÂÇ¥°èÀÇ zÃà°ú °Ë ¹æÇâ º¤ÅÍ »çÀÌÀÇ °¢µµ °è»ê
+        // ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ zï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         Vector3 referenceDirection = Vector3.forward;
         float angle = Vector3.SignedAngle(referenceDirection, direction.normalized, Vector3.up);
 
-        Debug.Log($"°Ë ¹æÇâ º¤ÅÍ: {direction}");
-        Debug.Log($"zÃà°ú °Ë ¹æÇâ º¤ÅÍ »çÀÌÀÇ °¢µµ: {angle}µµ");
+        Debug.Log($"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {direction}");
+        Debug.Log($"zï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {angle}ï¿½ï¿½");
 
         //float dot = Vector3.Dot(rootObject.transform.position.normalized, direction.normalized);
         //float theta = Mathf.Acos(dot) * Mathf.Rad2Deg;
@@ -479,18 +475,18 @@ public class Melee : Weapon
         ParticleSystem particleSystem = obj.GetComponent<ParticleSystem>();
         if (particleSystem == null) return;
 
-        // RotateOverLifetime ¸ðµâÀ» °¡Á®¿À±â
+        // RotateOverLifetime ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         var rotateOverLifetime = particleSystem.rotationOverLifetime;
         rotateOverLifetime.enabled = true;
         rotateOverLifetime.separateAxes = true;
 
-        // ±âÁ¸ Ä¿ºê¸¦ º¹»çÇÏ°í °ªÀ» ¹ÝÀü½ÃÅ°±â
+        // ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ê¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½
         AnimationCurve curve = new AnimationCurve(
             new Keyframe(0f, 15),
             new Keyframe(1f, rotateOverLifetime.y.curve.keys[0].value)
         );
 
-        // Ä¿ºêÀÇ ¸ðµç Å°ÇÁ·¹ÀÓ °ªÀ» ¹ÝÀü½ÃÅ°±â
+        // Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½
         for (int i = 0; i < curve.keys.Length; i++)
         {
             Keyframe key = curve.keys[i];
@@ -498,11 +494,11 @@ public class Melee : Weapon
             curve.MoveKey(i, key);
         }
 
-        // Ä¿ºê¸¦ MinMaxCurve·Î º¯È¯
+        // Ä¿ï¿½ê¸¦ MinMaxCurveï¿½ï¿½ ï¿½ï¿½È¯
         ParticleSystem.MinMaxCurve yCurve = new ParticleSystem.MinMaxCurve(1f, curve);
         Debug.Log($"{rotateOverLifetime.y.curve.keys[0].value}/ {rotateOverLifetime.y.curve.keys[1].value}");
 
-        // YÃà È¸Àü °ªÀ» ¾Ö´Ï¸ÞÀÌ¼Ç Ä¿ºê·Î ¼³Á¤
+        // Yï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         rotateOverLifetime.y = yCurve;
     }
 
@@ -516,7 +512,7 @@ public class Melee : Weapon
             return;
 
         Debug.Assert(doActionDatas[index].Particle != null);
-        // ÆÄÆ¼Å¬ ¿ÀºêÁ§Æ®¸¦ ÀÎ½ºÅÏ½ºÈ­ÇÏ°í È¸ÀüÀ» ¼³Á¤ÇÕ´Ï´Ù.
+        // ï¿½ï¿½Æ¼Å¬ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½È­ï¿½Ï°ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         GameObject obj = Instantiate<GameObject>(doActionDatas[index].Particle, slashTransform, false);
         Debug.Assert(obj != null);
         if (obj == null)
@@ -529,15 +525,15 @@ public class Melee : Weapon
         Vector3 initPos = this.transform.position.normalized;
         Vector3 slashPos = slashTransform.position.normalized;
 
-        // º¤ÅÍÀÇ ³»ÀûÀ» ÀÌ¿ëÇÏ¿© °¢µµ¸¦ ±¸ÇÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         float dotProduct = Vector3.Dot(initPos, slashPos);
-        float angle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg; // ¶óµð¾ÈÀ» °¢µµ·Î º¯È¯ÇÕ´Ï´Ù.
+        float angle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
         Vector3 referVec = slashTransform.forward;
         Vector3 dirVec = transform.position - slashTransform.transform.position;
-        // ±âÁØ ¿ÀºêÁ§Æ®ÀÇ Àü¹æ º¤ÅÍ¿Í Å¸°Ù ¿ÀºêÁ§Æ®·Î ÇâÇÏ´Â º¤ÅÍÀÇ Å©·Î½º ÇÁ·Î´öÆ® °è»ê
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½Î½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½Æ® ï¿½ï¿½ï¿½
         Vector3 crossProdut = Vector3.Cross(referVec, dirVec);
         VFXController vfx = obj.GetComponent<VFXController>();
-        // Å©·Î½º ÇÁ·Î´öÆ®ÀÇ y°ªÀÌ ¾ç¼öÀÎÁö À½¼öÀÎÁö·Î ¹æÇâÀ» °áÁ¤
+        // Å©ï¿½Î½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½Æ®ï¿½ï¿½ yï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (vfx != null)
             vfx.ControllParticleSystem(crossProdut.y > 0);
 
@@ -546,11 +542,11 @@ public class Melee : Weapon
 
         float prevRotY = obj.transform.rotation.eulerAngles.y;
         Quaternion rotation = Quaternion.AngleAxis(angle, transform.forward);
-        // ¿ÀÀÏ·¯ º¯È¯
+        // ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½È¯
         Vector3 originEulerAngles = new Vector3(rotation.eulerAngles.x, prevRotY, rotation.eulerAngles.z);
 
 
-        //  ´Ù½Ã ÄõÅÍ´Ï¾ð º¯È¯ 
+        //  ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Í´Ï¾ï¿½ ï¿½ï¿½È¯ 
         Quaternion flippQuaternion = Quaternion.Euler(originEulerAngles);
 
         obj.transform.rotation = flippQuaternion;

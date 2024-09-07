@@ -91,7 +91,7 @@ public abstract class AIController : MonoBehaviour
 
     protected virtual void Update()
     {
-        //ºôº¸µå => Ç×»ó Ä«¸Þ¶ó¸¦ ¹Ù¶óº¸°Ô ÇÏ´Â UI
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ => ï¿½×»ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½Ù¶óº¸°ï¿½ ï¿½Ï´ï¿½ UI
         if (uiStateCanvas == null)
             return;
 
@@ -129,9 +129,9 @@ public abstract class AIController : MonoBehaviour
     protected bool CheckMode()
     {
         bool bCheck = false;
-        // ÀåÂøÇÒ ¶§±îÁö Áö¿¬½ÃÅ³°ÅÀÓ!
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½!
         bCheck |= (EquipMode == true);
-        // °ø°ÝÇÒ ¶§µµ Ã³¸® ¾ÈÇÔ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         bCheck |= (ActionMode == true);
         bCheck |= (DamagedMode == true);
         bCheck |= (state.DownCondition);
@@ -142,7 +142,10 @@ public abstract class AIController : MonoBehaviour
         }
 
         if (state.DeadMode)
+        {
+            Debug.Log("is Dead");
             SetNavMeshStop(true);
+        }
 
         return bCheck;
     }
@@ -152,9 +155,12 @@ public abstract class AIController : MonoBehaviour
 
 
     #region Late_Update
-    // °ÔÀ¸¸¥Ã³¸®?? => µðÆÛµå ÀÍ½ºÅ¥ÆÃ => ¾À±×·¡ÇÁ°¡ ÀÌ·¸°Ô Ã³¸®ÇÔ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½?? => ï¿½ï¿½ï¿½Ûµï¿½ ï¿½Í½ï¿½Å¥ï¿½ï¿½ => ï¿½ï¿½ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½
     protected virtual void LateUpdate()
     {
+        if (state.DeadMode || state.DownCondition || state.DamagedMode)
+            return;
+
         LateUpdate_SetSpeed();
         LateUpdate_Approach();
     }
@@ -193,7 +199,7 @@ public abstract class AIController : MonoBehaviour
         if (player == null)
             return;
 
-        //Àû°ú ÀÚ½Å »çÀÌ¿¡ ´Ù¸¥ ¹«¾ð°¡°¡ ÀÖ´Â°¡?
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ð°¡°ï¿½ ï¿½Ö´Â°ï¿½?
         Vector3 targetPos = player.gameObject.transform.localPosition;
         Vector3 direction = targetPos - transform.localPosition;
         float distance = direction.magnitude;
@@ -205,7 +211,7 @@ public abstract class AIController : MonoBehaviour
         {
             if (hit.collider.gameObject.tag.Equals("Player") == false)
             {
-                Debug.Log("³Ê¿Í ³ª »çÀÌ¿¡ ¹º°¡°¡ ÀÖ±¸³ª?");
+                Debug.Log("ï¿½Ê¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ï¿½ï¿½?");
                 SetWaitMode();
                 return;
             }
@@ -288,7 +294,7 @@ public abstract class AIController : MonoBehaviour
         if (ActionMode == true)
             return;
 
-        // ¿òÁ÷ÀÌÁö ¸»Áö´Â doaction µ¥ÀÌÅÍ·Î Ã³¸®ÇØº¸±â
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ doaction ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ Ã³ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
         SetNavMeshStop(true);
         //navMeshAgent.isStopped = true;
         ChangeType(Type.Action);
@@ -304,7 +310,7 @@ public abstract class AIController : MonoBehaviour
     public void SetDamagedMode()
     {
 
-        // ÀÌ°Ô ÇÊ¿äÇÒ±î? 
+        // ï¿½Ì°ï¿½ ï¿½Ê¿ï¿½ï¿½Ò±ï¿½? 
         // 2024 07 10 
         //if (DamagedMode == true)
         //{
@@ -313,7 +319,7 @@ public abstract class AIController : MonoBehaviour
 
         //}
 
-        // ÀåÂø ÁßÀÏ ¶§ Ã³¸ÂÀ» ¶§ Å¸ÀÌ¹Ö¿¡ µû¶ó ºñ±ä, ¿£µå È£Ãâ 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½Ì¹Ö¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ 
         if (EquipMode == true)
         {
             animator.Play("Arms", 1);
@@ -352,7 +358,7 @@ public abstract class AIController : MonoBehaviour
 
     protected void ChangeType(Type type)
     {
-        // ÀÌÀü°ú ÇöÀç°¡ °°À¸¸é ¸·À» ÇÊ¿ä°¡ ÀÖÀ»±î? ÀÖÀ¸¸é O
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ O
         Type prevType = this.type;
         this.type = type;
         //Debug.Log($"state Enemy {prevType} , {type}");
@@ -378,7 +384,7 @@ public abstract class AIController : MonoBehaviour
         SetCoolTime(attackDelay, attackDelayRandom);
 
         SetWaitMode();
-        // ¿©±ä ¸¶¹«¸®¸¸ Ã³¸®ÇØ¾ßÇÏ´Â ·ÎÁ÷ÀÌ¹Ç·Î ¤§º°µµÀÇ ÄÚµå xx 
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ xx 
         // coroutineEndDoAction = StartCoroutine(Wait_EndDoAction_Random());
     }
 

@@ -9,7 +9,7 @@ public class PerceptionComponent : MonoBehaviour
     [SerializeField] private float lostTime = 2.0f;
     [SerializeField] private LayerMask layerMask;
 
-    // °¨ÁöµÈ ´ë»óµéÀ» ´ã´Â Å×ÀÌºí 
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ 
     private Dictionary<GameObject, float> percievedTable;
 
     private void Reset()
@@ -28,7 +28,7 @@ public class PerceptionComponent : MonoBehaviour
         Vector3 forward = transform.forward;
         List<Collider> candidateList = new List<Collider>();
 
-        //1. °¨Áö Á¶°Ç¿¡ ¸Â´Â ´ë»óÀÚ ¼±Á¤
+        //1. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (Collider collider in colliders)
         {
             Vector3 direction = collider.transform.position - transform.position;
@@ -40,7 +40,7 @@ public class PerceptionComponent : MonoBehaviour
 
         //candidateList.ForEach(collider => print(collider.name));
 
-        //2. °¨Áö ´ë»óÀÚ µî·Ï ¹× ½Ã°£ ¾÷µ¥ÀÌÆ®
+        //2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         foreach (Collider collider in candidateList)
         {
             if (percievedTable.ContainsKey(collider.gameObject) == false)
@@ -53,7 +53,7 @@ public class PerceptionComponent : MonoBehaviour
             percievedTable[collider.gameObject] = Time.realtimeSinceStartup;
         }
 
-        //3. ½Ã°£ ÃÊ°ú ´ë»óÀÚ ¼±Á¤ ¹× »èÁ¦ 
+        //3. ï¿½Ã°ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
         List<GameObject> removeList = new List<GameObject>();
         foreach (var item in percievedTable)
         {
@@ -88,7 +88,7 @@ public class PerceptionComponent : MonoBehaviour
 
         Vector3 direction = Vector3.zero;
         Vector3 forward = transform.forward;
-        // º¤ÅÍ È¸Àü °ø°£ »ç¿ë 
+        // ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 
         direction = Quaternion.AngleAxis(angle, Vector3.up) * forward;
         Gizmos.DrawLine(transform.position, transform.position + direction.normalized * distance);
 

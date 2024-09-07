@@ -173,6 +173,7 @@ GameObject:
   - component: {fileID: 6572412871648487698}
   - component: {fileID: 5960436619135904885}
   - component: {fileID: 7691991989611839774}
+  - component: {fileID: 3327704649950825398}
   m_Layer: 0
   m_Name: Guns
   m_TagString: Untagged
@@ -371,6 +372,22 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &3327704649950825398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4359761958674035541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72b0e4594bd3d949bf4785045f0b589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateBeginTime: 0.1
+  stateEndTime: 0.3
+  BegeinActionTime: 0.2
+  EndActionTime: 0.3
 --- !u!1 &7313588275628250617
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,22 +9,22 @@ public class ActionData
 {
    
     public bool bDownable = false;
-    public bool bLauncher;  // ÀûÀ» ³¯·Á¹ö¸®´Â°Ô °¡´ÉÇÑÁö ¿©ºÎ 
+    public bool bLauncher;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 
-    public float Power;     // À§·Â 
-    public float Distance;  // Àû ·±Ä¡ ±æÀÌ 
-    public float heightValue; // °øÁß¿¡ ¶ç¿ì´Â ³ôÀÌ°ª 
+    public float Power;     // ï¿½ï¿½ï¿½ï¿½ 
+    public float Distance;  // ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ 
+    public float heightValue; // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ 
 
-    public int StopFrame;   // È÷Æ®½ºÅ¾ ÇÁ·¹ÀÓ 
+    public int StopFrame;   // ï¿½ï¿½Æ®ï¿½ï¿½Å¾ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 
     [Header("Camera Shake")]
     public Vector3 impulseDirection;
     public Cinemachine.NoiseSettings impulseSettings;
 
-    public string effectSoundName; // Àç»ý ½ÃÅ³ »ç¿îµå 
+    public string effectSoundName; // ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ 
 
-    public int HitImpactIndex; // ÇÇ°Ý´çÇßÀ» ¶§ ¸ð¼Ç ÀÎµ¦½º
-    public string hitSoundName;     // ÇÇ°Ý ´çÇßÀ» ¶§ »ç¿îµå 
+    public int HitImpactIndex; // ï¿½Ç°Ý´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+    public string hitSoundName;     // ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 
     public GameObject HitParticle;
     public Vector3 HitParticlePositionOffset;
@@ -84,7 +84,7 @@ public abstract class Weapon : MonoBehaviour
     protected StateComponent state;
     protected Animator animator;
 
-    protected SkillData currSkillData; // ÇöÀç »ç¿ë ÁßÀÎ ½ºÅ³ Á¤º¸ 
+    protected SkillData currSkillData; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ 
 
     protected static readonly int SkillNumberHash = Animator.StringToHash("SkillNumber");
     protected static readonly int SkillActionHash = Animator.StringToHash("SkillAction");
@@ -123,7 +123,7 @@ public abstract class Weapon : MonoBehaviour
 
     public void Equip()
     {
-        state.SetEquipMode(); // »óÅÂ º¯°æ
+        state.SetEquipMode(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     public virtual void Begin_Equip()
@@ -137,7 +137,7 @@ public abstract class Weapon : MonoBehaviour
         state.SetIdleMode();
     }
 
-    // ÇØÁ¦ÇÏ´Â ÀÚ½Ä¿¡ µû¶ó ÇØÁ¦ÇÒ ¼ö ÀÖÀ¸´Ï °¡»ó
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ú½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public virtual void Unequip()
     {
         bEquipping = false;
@@ -156,7 +156,7 @@ public abstract class Weapon : MonoBehaviour
         CheckStop(0);
     }
 
-    public virtual void DoAction(int comboIndex = 0, bool bNext = false)
+    public virtual void DoAction(bool bNext = false)
     {
         state.SetActionMode();
  
@@ -223,10 +223,10 @@ public abstract class Weapon : MonoBehaviour
     public virtual void DoSkillAction(SkillData skill)
     {
         currSkillData = skill; 
-        // ¾Ö´Ï¸ÞÀÌ¼Ç Àç»ý
+        // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½
         if (!string.IsNullOrEmpty(skill.animationName))
         {
-            // ¾Ö´Ï¸ÞÀÌ¼Ç Àç»ý ·ÎÁ÷
+            // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             animator.Play(skill.animationName);
             CheckStop(0, skill);
         }
@@ -244,7 +244,7 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void End_SkillAciton()
     {
-        currSkillData = null; // »ç¿ëÀÌ ³¡³ª¸é µ¥ÀÌÅÍ¸¦ Áö¿î´Ù. 
+        currSkillData = null; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. 
         Move();
     }
 
@@ -291,9 +291,9 @@ public abstract class Weapon : MonoBehaviour
         {
             Vector3 hitPoint = Vector3.zero;
 
-            // ¿ùµå »ó ÁÂÇ¥ 
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ 
             hitPoint = other.transform.position + skillData.HitParticlePositionOffset;
-            // ¿ªÇà¿­ °öÇØ¼­ ¿ùµå »ó ÁÂÇ¥¸¦ ¼Ò°ÅÇØ¼­ ·ÎÄÃÁÂÇ¥·Î º¯È¯
+            // ï¿½ï¿½ï¿½à¿­ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
             hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
             damage?.OnDamage(rootObject, this, hitPoint, skillData);

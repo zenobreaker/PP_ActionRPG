@@ -40,7 +40,8 @@ public class GroundedComponent : MonoBehaviour
 
         airborne = GetComponent<AirborneComponent>();
         Debug.Assert(airborne != null);
-        airborne.OnAirborneChange += OnAirborneChange;
+        if(airborne != null)
+            airborne.OnAirborneChange += OnAirborneChange;
 
 
         rigidbody = GetComponent<Rigidbody>();

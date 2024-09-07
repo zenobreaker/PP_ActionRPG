@@ -14,7 +14,7 @@ public class OtherStateColliderComponent : MonoBehaviour
     protected CapsuleCollider capsuleCollider;
     protected new Rigidbody rigidbody;
     
-    private float originRadius; // Ä¸½¶ÄÝ¶óÀÌ´õ Àü¿ë..
+    private float originRadius; // Ä¸ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½..
     private bool bOriginTrigger;
 
     private void Awake()
@@ -39,7 +39,7 @@ public class OtherStateColliderComponent : MonoBehaviour
         }
     }
 
-    // Ã¼°ø »óÅÂÀÏ ¶§ ÄÝ¶óÀÌ´õ ¹üÀ§¸¦ ´Ã·ÁÁØ´Ù. 
+    // Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ø´ï¿½. 
     public void SetAirStateCollider(bool state)
     {
         if (capsuleCollider == null)
@@ -72,8 +72,8 @@ public class OtherStateColliderComponent : MonoBehaviour
         {
             //capsuleCollider.center = new Vector3(originalCenter.x, originalCenter.y, originalCenter.z);
             capsuleCollider.center = new Vector3(originalCenter.x, 0, -0.5f);
-            //capsuleCollider.height = originalHeight; // ³ôÀÌ¸¦ Àý¹ÝÀ¸·Î ÁÙÀÔ´Ï´Ù.
-            capsuleCollider.direction = 2; // zÃàÀ» ±âÁØÀ¸·Î È¸Àü
+            //capsuleCollider.height = originalHeight; // ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
+            capsuleCollider.direction = 2; // zï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
             capsuleCollider.radius = 1;
             capsuleCollider.height = 3;
             if (rigidbody != null)
@@ -81,11 +81,11 @@ public class OtherStateColliderComponent : MonoBehaviour
         }
         else
         {
-            // ÄÝ¶óÀÌ´õ¸¦ ¿ø·¡ »óÅÂ·Î µÇµ¹¸®´Â ·ÎÁ÷
+            // ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             capsuleCollider.center = originalCenter;
             capsuleCollider.height = originalHeight;
             capsuleCollider.radius = originRadius;
-            capsuleCollider.direction = 1; // yÃàÀ» ±âÁØÀ¸·Î È¸Àü
+            capsuleCollider.direction = 1; // yï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
             if (rigidbody != null)
                 rigidbody.constraints |= RigidbodyConstraints.FreezePositionX;
         }
