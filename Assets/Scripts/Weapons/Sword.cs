@@ -90,8 +90,8 @@ public class Sword : Melee
 
             
             animator.Play("Unarmed.Sword.Sub.Sword_Air_Combo"+ (index+1));
-            index++;
-            index %= (doActionDatas.Length);
+            //index++;
+            //index %= (doActionDatas.Length);
             return; 
         }
 

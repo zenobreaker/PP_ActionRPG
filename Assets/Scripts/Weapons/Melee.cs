@@ -240,9 +240,10 @@ public class Melee : Weapon
             return;
         }
 
-        isAnimating = true; 
-        animator.Play(comboObjData.comboDatas[index++].ComboName);
-        index %= (doActionDatas.Length);
+        isAnimating = true;
+        Debug.Log($"{this.rootObject.name} Combo : " + index);
+        animator.Play(comboObjData.comboDatas[index].ComboName);
+        
 
         if (state.IdleMode == false)
             return;
@@ -274,12 +275,13 @@ public class Melee : Weapon
     public override void Begin_DoAction()
     {
         isAnimating = false;
+        index++;
+        index %= (doActionDatas.Length);
       
         if (bExist == false)
             return;
 
         bExist = false;
-        index++;
         animator.SetTrigger("NextCombo");
 
         CanMove();

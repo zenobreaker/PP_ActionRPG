@@ -113,14 +113,6 @@ public class Enemy :
         }
     }
 
-    private void RandAttack()
-    {
-        int random = UnityEngine.Random.Range(0, 3);
-
-        state.SetActionMode();
-        animator.SetInteger("Sword_Combo_Index", random);
-        animator.SetBool("IsAction", true);
-    }
 
     public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
@@ -187,19 +179,15 @@ public class Enemy :
         Collider collider = GetComponent<Collider>();
         collider.enabled = false;
 
-        animator.SetTrigger("Dead");
+        if(!state.DownCondition)
+            animator.SetTrigger("Dead");
+
         MovableStopper.Instance.Delete(this);
         MovableSlower.Instance.Delete(this);
         BossStageManager.Instance.SetEnemyCount(1);
         Destroy(gameObject, 5);
     }
 
-
-
-    private IEnumerator Start_Launch(int frame)
-    {
-        yield return null;
-    }
 
 
     private IEnumerator Change_Color(float time)

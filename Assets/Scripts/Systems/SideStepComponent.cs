@@ -216,7 +216,7 @@ public class SideStepComponent : MonoBehaviour
 
         // 0: Left , 1 : Right 
         crossroads = UnityEngine.Random.Range(0, 2);
-        Debug.Log(crossroads == 0 ? "����" : "������");
+        Debug.Log(crossroads == 0 ? "back" : "starife");
         
         RemovePathList();
         SetSideMovePostionList(target);

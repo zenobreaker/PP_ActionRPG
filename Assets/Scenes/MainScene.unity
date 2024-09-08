@@ -1872,6 +1872,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6027634458269586181, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
+      propertyPath: maxHealthPoint
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6027634458269586431, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
       propertyPath: m_Name
       value: Enemy_3
@@ -1889,13 +1893,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5532808461678546062, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_RootOrder
       value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.74
+      value: -7.8
       objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1903,7 +1911,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -32.01
+      value: -36.58
       objectReference: {fileID: 0}
     - target: {fileID: 5532808461678546063, guid: f1451259238eb78409e3a12b1c3b8ff5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6016,7 +6024,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076335333}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8499999, z: -15.53}
+  m_LocalPosition: {x: 0, y: 2.66, z: -3.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7256,7 +7264,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6817022973681259599, guid: 3708dd4b782f7a34b96fea1c6dfc6f28, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6817022973681259597, guid: 3708dd4b782f7a34b96fea1c6dfc6f28, type: 3}
@@ -8951,13 +8959,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6027634458269586181, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
+      propertyPath: maxHealthPoint
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6027634458269586431, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
       propertyPath: m_Name
       value: Enemy_4
       objectReference: {fileID: 0}
     - target: {fileID: 6027634458269586431, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
@@ -10332,13 +10344,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6027634458269586181, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
+      propertyPath: maxHealthPoint
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6027634458269586431, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
       propertyPath: m_Name
       value: Enemy_5
       objectReference: {fileID: 0}
     - target: {fileID: 6027634458269586431, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f454121ce0a85bc41a473ad757bf4da7, type: 3}
@@ -10493,6 +10509,18 @@ PrefabInstance:
     - target: {fileID: 4355128017842358676, guid: f72d5cf4c17a43b4690dffc592822963, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4355128017842358679, guid: f72d5cf4c17a43b4690dffc592822963, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4355128017842358685, guid: f72d5cf4c17a43b4690dffc592822963, type: 3}
+      propertyPath: uiPlayerName
+      value: Healthbar_Foreground
+      objectReference: {fileID: 0}
+    - target: {fileID: 4355128017842358685, guid: f72d5cf4c17a43b4690dffc592822963, type: 3}
+      propertyPath: maxHealthPoint
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f72d5cf4c17a43b4690dffc592822963, type: 3}

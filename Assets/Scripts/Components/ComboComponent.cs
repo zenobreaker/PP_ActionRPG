@@ -29,15 +29,12 @@ public class ComboComponent : MonoBehaviour
     }
 
     private Queue<KeyCode> uiQueue;
-    private float maxQueueTime = 1.0f;
     private Queue<InputElement> inputQueue;
     [SerializeField] private float inputLimitTime = 1.0f; // 입력 제한 시간 
-    [SerializeField] private float queueCleanTime = 1.0f;
     private float currLimitTime;
     private bool bEnable = true;  // 입력 가능 여부 
     private bool bExist = false;  // 입력한 다음 내용이 존재하는가에 대한 여부
     private bool bNextable = false; // 다음 콤보 여부 
-    private bool bDoingAction = false; // 액션 중인지 여부
 
     private WeaponComponent weapon;
     private SO_Combo currComboObj;
@@ -123,11 +120,8 @@ public class ComboComponent : MonoBehaviour
 
     private void ExecuteAttack(ref InputElement inputElement)
     {
-
-        bDoingAction = true; 
-
         bNextable = false;
-        if (bExist)
+        if (inputElement.bNext)
             bNextable = true;
 
         currLimitTime = 0.5f; 

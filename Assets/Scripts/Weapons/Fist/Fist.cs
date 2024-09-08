@@ -69,9 +69,12 @@ public class Fist : Melee
             t.SetParent(parent, false);
         }
 
-        subActionDirector = rootObject.GetComponent<PlayableDirector>();
-        Debug.Assert(subActionDirector != null);
-        subActionDirector.stopped += OnSubActionPlay;
+        if (rootObject.TryGetComponent<Player>(out Player player))
+        {
+            subActionDirector = rootObject.GetComponent<PlayableDirector>();
+            Debug.Assert(subActionDirector != null);
+            subActionDirector.stopped += OnSubActionPlay;
+        }
     }
 
 

@@ -101,10 +101,8 @@ public abstract class Character
         MovableSlower.Instance.Regist(this);
     }
 
-    // �Ͼ�� ���� 
     protected IEnumerator Change_GetUpCondition()
     {
-        //TODO: ��� �ð� �� �����ϱ� 
         //yield return new WaitForSecondsRealtime(3.0f);
         yield return new WaitForSeconds(3.0f);
         Begin_GetUp();
@@ -119,7 +117,6 @@ public abstract class Character
 
         animator.SetTrigger("GetUp");
 
-        // �Ͼ�� ������� ����
         state.SetNoneConditon();
     }
 

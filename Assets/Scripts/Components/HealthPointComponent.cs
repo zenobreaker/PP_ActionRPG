@@ -9,7 +9,7 @@ public class HealthPointComponent : MonoBehaviour
     private float currHealthPoint;
 
 
-    [SerializeField] private string uiPlayerName = "Image_Healthbar_Foreground";
+    [SerializeField] private string uiPlayerName = "Healthbar_Foreground";
 
 
     [SerializeField] private string uiEnemyName = "EnemyHealthBar";
