@@ -1,31 +1,84 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 
-
+// 최하위 작업 노드 
 public class ActionNode : BTNode
 {
-
-    protected Func<BTNode.NodeState> onUpdate = null; 
-
-    public ActionNode (Func<BTNode.NodeState> onUpdate)
+    protected enum ActionState
     {
+        Begin, Update, End
+    }
+
+    protected ActionState currActionState;
+
+    protected Func<BTNode.NodeState> onBegin = null; 
+    protected Func<BTNode.NodeState> onUpdate = null;
+    protected Func<BTNode.NodeState> onEnd = null;
+
+    #region Constructor
+
+    public ActionNode (GameObject owner = null, Func<BTNode.NodeState> onBegin = null, Func<BTNode.NodeState> onUpdate = null,
+        Func<BTNode.NodeState> onEnd = null) : base(owner)
+    {
+        currActionState = ActionState.Begin;
+
+        this.onBegin = onBegin;
         this.onUpdate = onUpdate;
+        this.onEnd = onEnd;
     }
+    #endregion
 
-    public string GetMethodName()
-    {
-        if (onUpdate != null)
-        {
-            return onUpdate.Method.Name;
-        }
-        return "";
-    }
+    //////////////////////////////////////////////////////////////////////////////////// 
 
+
+    /// <summary>
+    /// 액션 노드의 ActionState 값을 변경 시키는 함수 
+    /// </summary>
+    /// <param name="newState"></param>
+    protected void ChangeActionState(ActionState newState) => currActionState = newState;
 
     public override NodeState Evaluate()
     {
-        //Debug.Log($"Current Node Name : {GetMethodName()} ");
-        return onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
+        if (currActionState == ActionState.Begin)
+            return onBegin?.Invoke() ?? BTNode.NodeState.Failure;
+        else if(currActionState == ActionState.Update)
+            return onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
+        else if (currActionState == ActionState.End)
+            return onEnd?.Invoke() ?? BTNode.NodeState.Failure;
+
+        return NodeState.Failure;
+    }
+
+
+    protected virtual BTNode.NodeState OnBegin()
+    {
+
+        ChangeActionState(ActionState.Update);
+        return BTNode.NodeState.Success;
+    }
+
+
+    protected virtual BTNode.NodeState OnUpdate()
+    {
+
+        ChangeActionState(ActionState.End);
+        return BTNode.NodeState.Success;
+    }
+
+
+    protected virtual BTNode.NodeState OnEnd()
+    {
+        ChangeActionState(ActionState.Begin);
+        return BTNode.NodeState.Success;
+    }
+
+
+
+
+
+    public override string ToString()
+    {
+        return onUpdate.Method.Name;
     }
 }
