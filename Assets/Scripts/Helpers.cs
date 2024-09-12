@@ -84,7 +84,7 @@ public static class CameraHelpers
         position = Vector3.zero;
         normal = Vector3.zero;
 
-        //Input.mousePosition ÁÖÀÇ»çÇ× => ÀÎÇ²½Ã½ºÅÛ¿¡¼± ¾È¸ÔÀ½.. ÀÎÇ²½Ã½ºÅÛ¿¡ µû·ÎÀÕ¤·¤±??
+        //Input.mousePosition ì£¼ì˜ì‚¬í•­ => ì¸í’‹ì‹œìŠ¤í…œì—ì„  ì•ˆë¨¹ìŒ.. ì¸í’‹ì‹œìŠ¤í…œì— ë”°ë¡œì‡ã…‡ã…??
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
@@ -117,15 +117,15 @@ public static class MathHelpers
 
 public static class BTNodeFactory
 {
-    public static SelectorNode CreateSelectorNode(params BTNode[]  children)
+    public static SelectorNode CreateSelectorNode(GameObject owner, params BTNode[]  children)
     {
-        SelectorNode selectorNode = new SelectorNode(new System.Collections.Generic.List<BTNode>(children));
+        SelectorNode selectorNode = new SelectorNode(owner, new System.Collections.Generic.List<BTNode>(children));
         return selectorNode;
     }
 
-    public static SequenceNode CreateSequenceNode(params BTNode[] children)
+    public static SequenceNode CreateSequenceNode(GameObject owner,params BTNode[] children)
     {
-        SequenceNode sequenceNode= new SequenceNode(new System.Collections.Generic.List<BTNode>(children));
+        SequenceNode sequenceNode= new SequenceNode(owner, new System.Collections.Generic.List<BTNode>(children));
         return sequenceNode;
     }
 }

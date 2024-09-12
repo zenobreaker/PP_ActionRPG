@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 // 최하위 작업 노드 
@@ -16,12 +17,16 @@ public class ActionNode : BTNode
     protected Func<BTNode.NodeState> onUpdate = null;
     protected Func<BTNode.NodeState> onEnd = null;
 
+
+    protected SO_Blackboard blackboard;
+
     #region Constructor
 
-    public ActionNode (GameObject owner = null, Func<BTNode.NodeState> onBegin = null, Func<BTNode.NodeState> onUpdate = null,
+    public ActionNode (GameObject owner = null, SO_Blackboard blackboard = null, Func<BTNode.NodeState> onBegin = null, Func<BTNode.NodeState> onUpdate = null,
         Func<BTNode.NodeState> onEnd = null) : base(owner)
     {
         currActionState = ActionState.Begin;
+        this.blackboard = blackboard.Clone();
 
         this.onBegin = onBegin;
         this.onUpdate = onUpdate;

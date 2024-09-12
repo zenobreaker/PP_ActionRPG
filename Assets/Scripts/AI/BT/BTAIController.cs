@@ -39,6 +39,8 @@ public class BTAIController : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
+    [SerializeField]
+    private SO_Blackboard blackboard;
     private BehaviorTreeRunner btRunner;
 
     private void Start()
@@ -56,6 +58,7 @@ public class BTAIController : MonoBehaviour
     {
         return new SelectorNode
             (
+                this.gameObject,
                 new List<BTNode>()
                 {                 
                     new WaitNode()

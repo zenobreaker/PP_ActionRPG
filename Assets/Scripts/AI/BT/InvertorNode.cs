@@ -4,7 +4,7 @@ public class InvertorNode : BTNode
 {
     BTNode child;
 
-    public InvertorNode(BTNode child)
+    public InvertorNode(GameObject owner, BTNode child) : base(owner)
     {
         this.child = child;
     }

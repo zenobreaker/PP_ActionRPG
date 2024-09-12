@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,16 +8,14 @@ using UnityEngine.AI;
 public class MoveToNode : ActionNode
 {
 
-    // 이 클래스는 타 컴포넌트의 의존도가 필수불가결이다.
-
-
+    
     private NavMeshAgent agent;
     private Vector3 target;
-    public void SetDestination(Vector3 destination) => this.target = destination;
+    public Vector3 Target { set => target = value; }
 
 
-    public MoveToNode(GameObject ownerObject)
-        : base(ownerObject)
+    public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard)
+        : base(ownerObject, blackboard)
     {
         agent = ownerObject.GetComponent<NavMeshAgent>();
         if(agent == null)
@@ -34,6 +33,9 @@ public class MoveToNode : ActionNode
     {
         if (agent == null)
             return NodeState.Failure;
+
+        if(blackboard != null)
+            target = blackboard.GetValue<Vector3>(BlackboardKey.TargetPosition);
         
         agent.SetDestination(target);
 
@@ -45,12 +47,7 @@ public class MoveToNode : ActionNode
         if (agent == null || CheckPath())
             return NodeState.Failure;
 
-        if (CalcArrive())
-        {
-            agent.velocity = Vector3.zero;
-            agent.ResetPath();
-        }
-        else
+        if (CalcArrive() == false)
             return NodeState.Running;
 
         return base.OnUpdate();
@@ -58,6 +55,9 @@ public class MoveToNode : ActionNode
 
     protected override NodeState OnEnd()
     {
+        agent.velocity = Vector3.zero;
+        agent.ResetPath();
+
         return base.OnEnd();
     }
 
@@ -80,4 +80,5 @@ public class MoveToNode : ActionNode
         NavMeshPath path = new NavMeshPath();
         return agent.CalculatePath(target, path);
     }
+     
 }

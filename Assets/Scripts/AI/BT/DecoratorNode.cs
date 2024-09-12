@@ -4,7 +4,8 @@ public class DecoratorNode : BTNode
 {
     protected BTNode childNode;
 
-    public DecoratorNode(BTNode childNode)
+    public DecoratorNode(GameObject owner, BTNode childNode)
+        : base(owner)
     {
         this.childNode = childNode; 
     }

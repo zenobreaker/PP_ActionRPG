@@ -8,7 +8,7 @@ public class SelectorNode : BTNode
     private  List<BTNode> children;
     private int currentRunningNodeIndex = -1;  // 현재 실행 중인 자식 추적하기 위한 변수
 
-    public SelectorNode(List<BTNode> children)
+    public SelectorNode(GameObject owner, List<BTNode> children) : base(owner)
     {
         this.children = children;
     }
