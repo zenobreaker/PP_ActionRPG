@@ -57,10 +57,16 @@ namespace AI.BT.TaskNodes
         protected override NodeState OnUpdate()
         {
             if (agent == null || CheckPath() == false)
+            {
+                currActionState = ActionState.End;
                 return NodeState.Failure;
+            }
             Debug.Log($"Move Update / {currActionState}");
             if (CalcArrive() == false)
+            {
+                currActionState = ActionState.Begin;
                 return NodeState.Running;
+            }
 
             Debug.Log("Move Update");
             return base.OnUpdate();
@@ -81,14 +87,12 @@ namespace AI.BT.TaskNodes
         {
             float distanceSquared = (target - agent.transform.position).sqrMagnitude;
 
-            Debug.Log("남은ㄱ ㅓ리 " + distanceSquared);
             if (distanceSquared <= agent.stoppingDistance)
             {
                 Debug.Log("도착");
                 return true;
             }
-
-            Debug.Log("도착 ㄴㄴ ");
+            
             return false;
         }
 
