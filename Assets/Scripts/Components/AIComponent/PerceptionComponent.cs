@@ -15,6 +15,7 @@ public class PerceptionComponent : MonoBehaviour
     private Dictionary<GameObject, float> percievedTable;
 
     public event Action<List<GameObject>> OnPerceptionUpdated;
+    public Action OnValueChange;
 
     private void Reset()
     {

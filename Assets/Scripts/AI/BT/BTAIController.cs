@@ -54,6 +54,7 @@ public class BTAIController : MonoBehaviour
     [SerializeField] private string uiStateName = "EnemyAIState";
 
 
+    private Animator animator; 
     private NavMeshAgent navMeshAgent;
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
@@ -67,6 +68,8 @@ public class BTAIController : MonoBehaviour
 
     protected virtual void Awake()
     {
+        animator = GetComponent<Animator>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
         blackboard = so_blackboard.Clone();
 
         perception = GetComponent<PerceptionComponent>();
@@ -87,6 +90,20 @@ public class BTAIController : MonoBehaviour
         btRunner?.OperateNode(bBT_DebugMode);
     }
 
+    private void LateUpdate()
+    {
+        if (WaitMode)
+        {
+            animator.SetFloat("SpeedY", 0.0f);
+            return;
+        }
+        else
+        {
+            animator.SetFloat("SpeedY", navMeshAgent.velocity.magnitude);
+        }
+        
+    }
+
     private void FixedUpdate()
     {
         GameObject player = perception.GetPercievedPlayer();
@@ -96,6 +113,14 @@ public class BTAIController : MonoBehaviour
 
             return;
         }
+
+        float distanceSquared = (player.transform.position - this.transform.position).sqrMagnitude;
+
+        if (attackRange <= distanceSquared)
+        {
+            // 공격
+        }
+
 
         SetApproachMode();
     }
@@ -121,6 +146,7 @@ public class BTAIController : MonoBehaviour
 
         // 타겟으로 이동
         MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
+        perception.OnValueChange += moveToNode.OnValueChange;
 
         BlackboardConditionDecorator<AIStateType> moveDeco =
             new BlackboardConditionDecorator<AIStateType>("MoveDeco",moveToNode, this.gameObject,
@@ -150,8 +176,9 @@ public class BTAIController : MonoBehaviour
 
             return; 
         }
-
+        Debug.Log("Target Loss!  - - 1");
         blackboard.SetValue<GameObject>("Target", null);
+        perception.OnValueChange?.Invoke();
     }
 
     public virtual void SetWaitMode()

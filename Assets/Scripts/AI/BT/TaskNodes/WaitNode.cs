@@ -26,7 +26,7 @@ namespace AI.BT.TaskNodes
 
         protected override BTNode.NodeState OnBegin()
         {
-            Debug.Log("Wait Node Begin");
+            //Debug.Log("Wait Node Begin");
             currentWaitTime = Random.Range(waitTime + (-1.0f * waitRandDelay),
                 waitTime + (+1.0f * waitRandDelay));
 
@@ -40,7 +40,7 @@ namespace AI.BT.TaskNodes
 
             if (currentWaitTime > 0)
             {
-                Debug.Log("Wait Node Update");
+              //  Debug.Log("Wait Node Update");
                 return BTNode.NodeState.Running;
             }
 
@@ -50,7 +50,7 @@ namespace AI.BT.TaskNodes
 
         protected override BTNode.NodeState OnEnd()
         {
-            Debug.Log("Wait Node End");
+            //Debug.Log("Wait Node End");
 
             return base.OnEnd();
         }

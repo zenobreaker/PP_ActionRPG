@@ -53,7 +53,7 @@ namespace AI.BT.CustomBTNodes
         {
             T value = blackboard.GetValue<T>(key);
 
-            Debug.Log($"{nodeName} What this that {key} / {value}");
+            //Debug.Log($"{nodeName} What this that {key} / {value}");
             return condition(value);
         }
 

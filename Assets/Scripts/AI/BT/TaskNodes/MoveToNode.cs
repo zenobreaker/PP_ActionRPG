@@ -1,4 +1,5 @@
 using AI.BT.Nodes;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,7 +16,6 @@ namespace AI.BT.TaskNodes
         private NavMeshAgent agent;
         private Vector3 target;
         public Vector3 Target { set => target = value; }
-
 
         public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard)
             : base(ownerObject, blackboard)
@@ -36,13 +36,16 @@ namespace AI.BT.TaskNodes
         {
             if (agent == null)
                 return NodeState.Failure;
-            Debug.Log($"Move Begin / {currActionState}");
+            
             if (blackboard != null)
             {
+                Debug.Log($"Move Begin / {currActionState}");
                 GameObject targetObject = blackboard.GetValue<GameObject>("Target");
                 if (targetObject == null)
                 {
                     currActionState = ActionState.End;
+                    ResetAgent();
+                    Debug.Log("Target Loss!");
                     return NodeState.Failure;
                 }
 
@@ -50,7 +53,7 @@ namespace AI.BT.TaskNodes
             }
 
             agent.SetDestination(target);
-            Debug.Log("Move Begin");
+            //Debug.Log("Move Begin");
             return base.OnBegin();
         }
 
@@ -59,29 +62,43 @@ namespace AI.BT.TaskNodes
             if (agent == null || CheckPath() == false)
             {
                 currActionState = ActionState.End;
+                ResetAgent();
+
                 return NodeState.Failure;
             }
-            Debug.Log($"Move Update / {currActionState}");
+            //Debug.Log($"Move Update / {currActionState}");
             if (CalcArrive() == false)
             {
                 currActionState = ActionState.Begin;
+
                 return NodeState.Running;
             }
 
-            Debug.Log("Move Update");
+            //Debug.Log("Move Update");
             return base.OnUpdate();
         }
 
         protected override NodeState OnEnd()
         {
-            agent.velocity = Vector3.zero;
-            agent.ResetPath();
+            ResetAgent();
+
             Debug.Log($"Move End / {currActionState}");
             Debug.Log("Move End");
             return base.OnEnd();
         }
 
+        private void ResetAgent()
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+            //agent.isStopped = true;
+        }
 
+        public void OnValueChange()
+        {
+            ResetAgent();
+            currActionState = ActionState.End;
+        }
 
         private bool CalcArrive()
         {
