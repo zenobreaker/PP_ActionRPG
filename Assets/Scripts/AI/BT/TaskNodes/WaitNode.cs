@@ -1,54 +1,58 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using AI.BT.Nodes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class WaitNode : ActionNode
+namespace AI.BT.TaskNodes
 {
-    [SerializeField] private float waitTime = 1.0f;
-    [SerializeField] private float waitRandDelay = 1.0f;
-
-    private float currentWaitTime; 
-
-    public WaitNode() 
-        : base(null)
+    public class WaitNode : TaskNode
     {
-        onBegin = OnBegin;
-        onUpdate = OnUpdate;
-        onEnd = OnEnd;
-    }
+        [SerializeField] private float waitTime = 1.0f;
+        public float WaitTime { set => waitTime = value; }
+        [SerializeField] private float waitRandDelay = 0;
+        public float WaitRandDelay { set => waitRandDelay = value; }
 
+        private float currentWaitTime;
+        public float CurrentWaitTime { get => currentWaitTime; }
 
-
-    protected override BTNode.NodeState OnBegin()
-    {
-        Debug.Log("Wait Node Begin");
-        currentWaitTime = Random.Range(waitTime + (-1.0f * waitRandDelay), 
-            waitTime + (+1.0f * waitRandDelay));
-
-        return base.OnBegin(); 
-    }
-
-
-    protected override BTNode.NodeState OnUpdate()
-    {
-        currentWaitTime -= Time.deltaTime;
-
-        if (currentWaitTime > 0)
+        public WaitNode()
+            : base(null, null, null)
         {
-            Debug.Log("Wait Node Update");
-            return BTNode.NodeState.Running;
+            onBegin = OnBegin;
+            onUpdate = OnUpdate;
+            onEnd = OnEnd;
         }
 
-        return base.OnUpdate();
-    }
 
 
-    protected override BTNode.NodeState OnEnd()
-    {
-        Debug.Log("Wait Node End");
+        protected override BTNode.NodeState OnBegin()
+        {
+            Debug.Log("Wait Node Begin");
+            currentWaitTime = Random.Range(waitTime + (-1.0f * waitRandDelay),
+                waitTime + (+1.0f * waitRandDelay));
 
-        return base.OnEnd();
+            return base.OnBegin();
+        }
+
+
+        protected override BTNode.NodeState OnUpdate()
+        {
+            currentWaitTime -= Time.deltaTime;
+
+            if (currentWaitTime > 0)
+            {
+                Debug.Log("Wait Node Update");
+                return BTNode.NodeState.Running;
+            }
+
+            return base.OnUpdate();
+        }
+
+
+        protected override BTNode.NodeState OnEnd()
+        {
+            Debug.Log("Wait Node End");
+
+            return base.OnEnd();
+        }
     }
 }

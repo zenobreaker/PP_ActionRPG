@@ -1,21 +1,26 @@
+using AI.BT.Nodes;
 using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
-public class BehaviorTreeRunner 
+namespace AI.BT
 {
-    private BTNode rootNode;
-
-    public BehaviorTreeRunner( BTNode rootNode)
+    public class BehaviorTreeRunner
     {
-        this.rootNode = rootNode;
+        private RootNode rootNode;
+
+        public BehaviorTreeRunner(RootNode rootNode)
+        {
+            this.rootNode = rootNode;
+        }
+
+        public void OperateNode()
+        {
+            rootNode.Evaluate();
+        }
+        public void OperateNode(bool debugMode)
+        {
+            OperateNode();
+        }
     }
 
-    public void OperateNode()
-    {
-        rootNode.Evaluate();
-    }   
-    public void OperateNode(bool debugMode)
-    {
-        OperateNode();
-    }
 }

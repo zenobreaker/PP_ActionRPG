@@ -115,17 +115,7 @@ public static class MathHelpers
 
 }
 
-public static class BTNodeFactory
-{
-    public static SelectorNode CreateSelectorNode(GameObject owner, params BTNode[]  children)
-    {
-        SelectorNode selectorNode = new SelectorNode(owner, new System.Collections.Generic.List<BTNode>(children));
-        return selectorNode;
-    }
+//public static class BTNodeFactory
+//{
 
-    public static SequenceNode CreateSequenceNode(GameObject owner,params BTNode[] children)
-    {
-        SequenceNode sequenceNode= new SequenceNode(owner, new System.Collections.Generic.List<BTNode>(children));
-        return sequenceNode;
-    }
-}
+//}

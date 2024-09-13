@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,8 +11,10 @@ public class PerceptionComponent : MonoBehaviour
     [SerializeField] private float lostTime = 2.0f;
     [SerializeField] private LayerMask layerMask;
 
-    // ������ ������ ��� ���̺� 
+    //
     private Dictionary<GameObject, float> percievedTable;
+
+    public event Action<List<GameObject>> OnPerceptionUpdated;
 
     private void Reset()
     {
@@ -66,6 +70,7 @@ public class PerceptionComponent : MonoBehaviour
 
     public GameObject GetPercievedPlayer()
     {
+        OnPerceptionUpdated?.Invoke(percievedTable.Keys.ToList());
         foreach (var item in percievedTable)
         {
             if (item.Key.CompareTag("Player"))

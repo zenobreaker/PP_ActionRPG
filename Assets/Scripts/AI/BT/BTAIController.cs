@@ -1,11 +1,30 @@
+using AI.BT;
+using AI.BT.CustomBTNodes;
+using AI.BT.Nodes;
+using AI.BT.TaskNodes;
+using System;
 using System.Collections.Generic;
-using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
-using static BTNode;
+using static StateComponent;
 
 public class BTAIController : MonoBehaviour
 {
+    public enum AIStateType
+    {
+        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Max,
+    }
+
+    private AIStateType type;
+    public event Action<AIStateType, AIStateType> OnAIStateTypeChanged;
+    public bool WaitMode { get => type == AIStateType.Wait; }
+    public bool PatrolMode { get => type == AIStateType.Patrol; }
+    public bool ApproachMode { get => type == AIStateType.Approach; }
+    public bool EquipMode { get => type == AIStateType.Equip; }
+    public bool ActionMode { get => type == AIStateType.Action; }
+    public bool DamagedMode { get => type == AIStateType.Damaged; }
+
     /// <summary>
     /// 공격 관련 
     /// </summary>
@@ -34,17 +53,32 @@ public class BTAIController : MonoBehaviour
 
     [SerializeField] private string uiStateName = "EnemyAIState";
 
-    [SerializeField] bool bBT_DebugMode = false; 
 
     private NavMeshAgent navMeshAgent;
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
-    [SerializeField]
+    [SerializeField] bool bBT_DebugMode = false;
+    [SerializeField] private SO_Blackboard so_blackboard;
     private SO_Blackboard blackboard;
+
     private BehaviorTreeRunner btRunner;
+
+    protected PerceptionComponent perception;
+
+    protected virtual void Awake()
+    {
+        blackboard = so_blackboard.Clone();
+
+        perception = GetComponent<PerceptionComponent>();
+        Debug.Assert(perception != null);
+    }
 
     private void Start()
     {
+        perception.OnPerceptionUpdated += OnPerceptionUpdated;
+
+        CreateBlackboardKey();
+
         btRunner = new BehaviorTreeRunner(CreateBTTree());
     }
 
@@ -53,18 +87,96 @@ public class BTAIController : MonoBehaviour
         btRunner?.OperateNode(bBT_DebugMode);
     }
 
-
-    private BTNode CreateBTTree()
+    private void FixedUpdate()
     {
-        return new SelectorNode
-            (
-                this.gameObject,
-                new List<BTNode>()
-                {                 
-                    new WaitNode()
-                }
-            ); 
+        GameObject player = perception.GetPercievedPlayer();
+        if (player == null)
+        {
+            SetWaitMode();
+
+            return;
+        }
+
+        SetApproachMode();
     }
 
-    
+    private void CreateBlackboardKey()
+    {
+        blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
+        blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
+    }
+
+    private RootNode CreateBTTree()
+    {
+        SelectorNode selector = new SelectorNode();
+
+        // 대기 
+        WaitNode waitNode = new WaitNode();
+
+        BlackboardConditionDecorator<AIStateType> waitDeco =
+            new BlackboardConditionDecorator<AIStateType>("WaitDeco",waitNode, this.gameObject,
+            blackboard, "Wait",
+            CheckState);
+
+
+        // 타겟으로 이동
+        MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
+
+        BlackboardConditionDecorator<AIStateType> moveDeco =
+            new BlackboardConditionDecorator<AIStateType>("MoveDeco",moveToNode, this.gameObject,
+            blackboard, "Approach",
+            CheckState);
+
+
+        selector.AddChild(waitDeco);
+        selector.AddChild(moveDeco);
+
+        return new RootNode(this.gameObject, blackboard, selector);
+    }
+
+    private bool CheckState(AIStateType type)
+    {
+        if (this.type == type)
+            return true;
+        else
+            return false; 
+    }
+
+    private void OnPerceptionUpdated(List<GameObject> gameObjects)
+    {
+        if(gameObjects.Count > 0)
+        {
+            blackboard.SetValue<GameObject>("Target", gameObjects[0]);
+
+            return; 
+        }
+
+        blackboard.SetValue<GameObject>("Target", null);
+    }
+
+    public virtual void SetWaitMode()
+    {
+        if (WaitMode == true)
+            return;
+
+        ChangeType(AIStateType.Wait);
+    }
+
+    public virtual void SetApproachMode()
+    {
+        if (ApproachMode == true)
+            return;
+
+        ChangeType(AIStateType.Approach);
+    }
+
+
+    protected void ChangeType(AIStateType type)
+    {
+        AIStateType prevType = this.type;
+        this.type = type;
+        OnAIStateTypeChanged?.Invoke(prevType, type);
+    }
+
+
 }
