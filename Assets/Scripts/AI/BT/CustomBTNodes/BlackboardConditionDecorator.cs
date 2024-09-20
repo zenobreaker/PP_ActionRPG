@@ -21,13 +21,13 @@ namespace AI.BT.CustomBTNodes
         
         private SO_Blackboard blackboard;
         private string key;
-        private Func<T, bool> condition;
+        private Predicate<T> condition;
 
         public BlackboardConditionDecorator(string nodeName, BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
             string key = null,
-            Func<T, bool> condition = null) :
+            Predicate<T> condition = null) :
             base(nodeName, childNode, owner)
         {
             
@@ -52,8 +52,7 @@ namespace AI.BT.CustomBTNodes
         protected override bool ShouldExecute()
         {
             T value = blackboard.GetValue<T>(key);
-
-            //Debug.Log($"{nodeName} What this that {key} / {value}");
+           
             return condition(value);
         }
 

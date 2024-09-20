@@ -4,7 +4,7 @@ using AI.BT.Nodes;
 using AI.BT.TaskNodes;
 using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using static StateComponent;
@@ -54,6 +54,14 @@ public class BTAIController : MonoBehaviour
     [SerializeField] private string uiStateName = "EnemyAIState";
 
 
+    /// <summary>
+    /// 순찰 관련
+    /// </summary>
+    [SerializeField] private float radius; 
+    private PatrolPoints patrolPoints;
+    public PatrolPoints PatrolPoints { get => patrolPoints; }
+    
+
     private Animator animator; 
     private NavMeshAgent navMeshAgent;
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
@@ -65,6 +73,8 @@ public class BTAIController : MonoBehaviour
     private BehaviorTreeRunner btRunner;
 
     protected PerceptionComponent perception;
+
+    Vector3 dest;
 
     protected virtual void Awake()
     {
@@ -109,7 +119,8 @@ public class BTAIController : MonoBehaviour
         GameObject player = perception.GetPercievedPlayer();
         if (player == null)
         {
-            SetWaitMode();
+            //SetWaitMode();
+            SetPatrolMode();
 
             return;
         }
@@ -129,6 +140,7 @@ public class BTAIController : MonoBehaviour
     {
         blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
         blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
+        blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
     }
 
     private RootNode CreateBTTree()
@@ -145,16 +157,53 @@ public class BTAIController : MonoBehaviour
 
 
         // 타겟으로 이동
+        SequenceNode approachSequence = new SequenceNode();
+
+        TaskNode_Speed approachSpeed = new TaskNode_Speed(this.gameObject, blackboard,
+            SpeedType.Run);
+
         MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
         perception.OnValueChange += moveToNode.OnValueChange;
 
+        approachSequence.AddChild(approachSpeed);
+        approachSequence.AddChild(moveToNode);
+
         BlackboardConditionDecorator<AIStateType> moveDeco =
-            new BlackboardConditionDecorator<AIStateType>("MoveDeco",moveToNode, this.gameObject,
+            new BlackboardConditionDecorator<AIStateType>("MoveDeco", approachSequence, this.gameObject,
             blackboard, "Approach",
             CheckState);
 
+        // 순찰
+        SequenceNode patrolSequence = new SequenceNode();
+        TaskNode_Speed patrolSpeed = new TaskNode_Speed(this.gameObject, blackboard,
+            SpeedType.Walk);
+
+
+        SelectorNode patrolSelector = new SelectorNode();
+        SequenceNode patrolSubSequence = new SequenceNode();
+
+        TaskNode_Patrol patrolNode = new TaskNode_Patrol(this.gameObject, blackboard,
+            radius);
+        patrolNode.OnDestination += OnDestination;
+        WaitNode patrolWait = new WaitNode(1.5f, 0.5f);
+        
+        patrolSubSequence.AddChild(patrolNode); 
+        patrolSubSequence.AddChild(patrolWait);
+
+        patrolSelector.AddChild(patrolSubSequence);
+        patrolSelector.AddChild(patrolWait);
+
+        patrolSequence.AddChild(patrolSpeed);
+        patrolSequence.AddChild(patrolSelector);
+
+        BlackboardConditionDecorator<AIStateType> patrolDeco =
+         new BlackboardConditionDecorator<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
+         blackboard, "Patrol",
+         CheckState);
+
 
         selector.AddChild(waitDeco);
+        selector.AddChild(patrolDeco);
         selector.AddChild(moveDeco);
 
         return new RootNode(this.gameObject, blackboard, selector);
@@ -163,7 +212,10 @@ public class BTAIController : MonoBehaviour
     private bool CheckState(AIStateType type)
     {
         if (this.type == type)
+        {
+            Debug.Log($"Current AI State : {type}");
             return true;
+        }
         else
             return false; 
     }
@@ -176,9 +228,9 @@ public class BTAIController : MonoBehaviour
 
             return; 
         }
-        Debug.Log("Target Loss!  - - 1");
+        Debug.Log($"{this.gameObject.name} Target Loss!  - - 1");
         blackboard.SetValue<GameObject>("Target", null);
-        perception.OnValueChange?.Invoke();
+        //perception.OnValueChange?.Invoke();
     }
 
     public virtual void SetWaitMode()
@@ -189,11 +241,21 @@ public class BTAIController : MonoBehaviour
         ChangeType(AIStateType.Wait);
     }
 
+    public virtual void SetPatrolMode()
+    {
+        if (PatrolMode == true)
+            return;
+
+        navMeshAgent.stoppingDistance = 0;
+        ChangeType(AIStateType.Patrol);
+    }
+
     public virtual void SetApproachMode()
     {
         if (ApproachMode == true)
             return;
 
+        navMeshAgent.stoppingDistance = 2;
         ChangeType(AIStateType.Approach);
     }
 
@@ -206,4 +268,40 @@ public class BTAIController : MonoBehaviour
     }
 
 
+    public void SetSpeed(float speed)
+    {
+        navMeshAgent.speed = speed; 
+    }
+
+
+    private void OnDestination(Vector3 destination)
+    {
+        dest = destination;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (Application.isPlaying == false)
+            return;
+
+        if (Selection.activeGameObject != gameObject)
+            return;
+
+        Vector3 form = transform.position + new Vector3(0, 0.1f, 0);
+        Vector3 to = dest + new Vector3(0, 0.1f, 0);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(form, to);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(dest, 0.5f);
+
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(form, 0.25f);
+
+       
+    }
+#endif
 }

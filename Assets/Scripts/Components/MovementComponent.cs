@@ -3,118 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum SpeedType
+{
+    Walk = 0, Run, Sprint, Max
+}
 
 /// <summary>
-///  NavMeshAgent¸¦ ÀÌ¿ëÇÏ¿©  ¿òÁ÷ÀÌ´Â ÄÄÆ÷³ÍÆ® 
+///  ê° ìƒíƒœë³„ ì´ë™ ì†ë„ ë“±ì„ ì„¸íŒ…
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 public class MovementComponent : MonoBehaviour
 {
-    [SerializeField] private float radius = 10.0f; // ¼øÂû ¹İ°æ 
-   // [SerializeField] private float goalDelay = 2.0f; // µµ´Ş ½Ã ´ë±â ½Ã°£ 
-   // [SerializeField] private float goalDelayRandom = 0.5f; // goalDelay +( - ·£´ı ~ +·£´ı)
-    [SerializeField] //private PatrolPoints patrolPoints;
-    //public bool HasPatrolPoints { get => patrolPoints != null; }
+    [SerializeField]
+    private float[] speeds =
+        new float[(int)SpeedType.Max] { 2, 4, 6 };
 
-    private Vector3 initPosition; // ½ÃÀÛÁöÁ¡
-    private Vector3 goalPosition; // ¸ñÇ¥ÁöÁ¡
+    public float GetWalkSpeed { get => speeds[(int)SpeedType.Walk]; }
+    public float GetRunSpeed { get => speeds[(int)SpeedType.Run]; }
+    public float GetSprintSpeed { get => speeds[(int)SpeedType.Sprint]; }
 
-
-    private NavMeshPath navMeshPath;
-    private NavMeshAgent navMeshAgent;
-    private Coroutine coroutienPathRoutine;
-
-    private bool bArrived = false;
+    private BTAIController bTAIController;
 
     private void Awake()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();   
-
+        bTAIController = GetComponent<BTAIController>();
     }
 
-    private void Update()
+
+    public void OnSprint()
     {
-        if (navMeshPath == null)
-            return;
-
-        if (bArrived == true)
-            return;
-
-
-        float distance = Vector3.Distance(transform.position, goalPosition);
-
-        if (distance >= navMeshAgent.stoppingDistance)
-            return;
-
-        bArrived = true;
-
-        //TODO: Wait Mode ¶§ µ¹¸±±î
-        //float waitTime = goalDelay + Random.Range(-goalDelayRandom, goalDelayRandom);
-
-        //IEnumerator waitRoutine = WaitDelay(waitTime);
-
-        //StartCoroutine(waitRoutine);
+        SetSpeed(SpeedType.Sprint);
     }
 
-    public void StartMove()
+    public void OnRun()
     {
-        if (navMeshPath != null)
-            return;
-
-        StartCoroutine(CreateNavMeshPathRoutine());
+        SetSpeed(SpeedType.Run);
     }
 
-    private IEnumerator CreateNavMeshPathRoutine()
+    public void OnWalk()
     {
-        navMeshPath = null;
+        SetSpeed(SpeedType.Walk);
+    }
 
-        //if (HasPatrolPoints)
-        //{
-        //    goalPosition = patrolPoints.GetMoveToPosition();
-
-        //    path = new NavMeshPath();
-
-        //    bool bCheck = navMeshAgent.CalculatePath(goalPosition, path);
-        //    Debug.Assert(bCheck);
-
-        //    patrolPoints.UpdateNextIndex();
-
-        //    return path;
-        //}
-
-
-        Vector3 prevGoalPosition = goalPosition;
-
-        // °¥ ¼ö ÀÖ´Â À§Ä¡°¡ ³ª¿Ã ¶§±îÁö µ¹¸°´Ù.
-        while (true)
+    public void SetSpeed(SpeedType speedType)
+    {
+        if (bTAIController != null)
         {
-            while (true)
-            {
-                float x = Random.Range(-radius * 0.5f, radius * 0.5f);
-                float z = Random.Range(-radius * 0.5f, radius * 0.5f);
-
-                goalPosition = new Vector3(x, 0, z) + initPosition;
-
-                if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
-                    break;
-
-                yield return null;
-            }
-
-        
-            // °¥ ¼ö ÀÖ´Â °æ·Î°¡ ³ª¿À¸é ·çÆ¾ Á¾·á 
-            if (navMeshAgent.CalculatePath(goalPosition, navMeshPath) == true)
-            {
-                navMeshAgent.SetPath(navMeshPath);
-                yield break;
-            }
-
-
-            yield return null;  // ¸ÅÇÁ·¹ÀÓ ¸¶´Ù 
+            bTAIController.SetSpeed(speeds[(int)speedType]);
         }
     }
-
-
-
-
 }

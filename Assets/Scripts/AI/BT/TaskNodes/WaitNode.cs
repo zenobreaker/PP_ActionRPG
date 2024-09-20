@@ -22,6 +22,19 @@ namespace AI.BT.TaskNodes
             onEnd = OnEnd;
         }
 
+        public WaitNode(float waitTime, float waitRandDelay)
+            : base(null, null, null)
+        {
+            nodeName = "Speed";
+
+            this.waitTime = waitTime;
+            this.waitRandDelay = waitRandDelay;
+
+            onBegin = OnBegin;
+            onUpdate = OnUpdate;
+            onEnd = OnEnd;
+        }
+
 
 
         protected override BTNode.NodeState OnBegin()

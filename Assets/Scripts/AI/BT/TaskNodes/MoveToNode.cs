@@ -1,5 +1,4 @@
 using AI.BT.Nodes;
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -39,13 +38,13 @@ namespace AI.BT.TaskNodes
             
             if (blackboard != null)
             {
-                Debug.Log($"Move Begin / {currActionState}");
+                //Debug.Log($"Move Begin / {currActionState}");
                 GameObject targetObject = blackboard.GetValue<GameObject>("Target");
                 if (targetObject == null)
                 {
-                    currActionState = ActionState.End;
+                    ChangeActionState(ActionState.End);
                     ResetAgent();
-                    Debug.Log("Target Loss!");
+                    //Debug.Log("Target Loss!");
                     return NodeState.Failure;
                 }
 
@@ -61,7 +60,7 @@ namespace AI.BT.TaskNodes
         {
             if (agent == null || CheckPath() == false)
             {
-                currActionState = ActionState.End;
+                ChangeActionState(ActionState.End);
                 ResetAgent();
 
                 return NodeState.Failure;
@@ -69,11 +68,11 @@ namespace AI.BT.TaskNodes
             //Debug.Log($"Move Update / {currActionState}");
             if (CalcArrive() == false)
             {
-                currActionState = ActionState.Begin;
-
+                ChangeActionState(ActionState.Begin);
                 return NodeState.Running;
             }
 
+            ResetAgent();
             //Debug.Log("Move Update");
             return base.OnUpdate();
         }
@@ -97,7 +96,7 @@ namespace AI.BT.TaskNodes
         public void OnValueChange()
         {
             ResetAgent();
-            currActionState = ActionState.End;
+            ChangeActionState(ActionState.End);
         }
 
         private bool CalcArrive()

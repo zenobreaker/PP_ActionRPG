@@ -20,6 +20,8 @@ namespace AI.BT.Nodes
         protected GameObject owner;
         protected SO_Blackboard blackboard;
 
+        protected string nodeName; 
+
         #region Constructor
 
         public TaskNode(GameObject owner = null, SO_Blackboard blackboard = null,
@@ -72,6 +74,8 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
+            Debug.Log($"Current Node Evaluate {nodeName} / {currActionState}");
+
             if (currActionState == ActionState.Begin)
                 return onBegin?.Invoke() ?? BTNode.NodeState.Failure;
             else if (currActionState == ActionState.Update)
