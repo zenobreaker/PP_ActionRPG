@@ -57,8 +57,8 @@ public class BTAIController : MonoBehaviour
     /// <summary>
     /// 순찰 관련
     /// </summary>
-    [SerializeField] private float radius; 
-    private PatrolPoints patrolPoints;
+    [SerializeField] private float radius;
+    [SerializeField] private PatrolPoints patrolPoints;
     public PatrolPoints PatrolPoints { get => patrolPoints; }
     
 

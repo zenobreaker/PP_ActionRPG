@@ -2,6 +2,7 @@ using AI.BT.Nodes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,10 +16,16 @@ namespace AI.BT.CustomBTNodes
     {
 
         private NavMeshAgent agent;
-        private NavMeshPath navMeshPath;
+        //private NavMeshPath navMeshPath;
+        private PatrolPoints patrolPoints; 
         private Vector3 initPosition;
         private Vector3 goalPosition;
         private float radius;
+
+        private bool hasPatrolPoints;
+
+        private int loopBreakMaxCount = 10;     // 루프를 강제로 탈출시킬 최대 수치 
+        private int loopCount;
 
         public Action<Vector3> OnDestination;
 
@@ -29,8 +36,6 @@ namespace AI.BT.CustomBTNodes
 
             agent = ownerObject.GetComponent<NavMeshAgent>();
             this.radius = radius;
-
-            Debug.Log("이색히 시작 상태 " + currActionState);
 
             onBegin = OnBegin;
             onUpdate = OnUpdate;
@@ -45,8 +50,7 @@ namespace AI.BT.CustomBTNodes
             }
 
             // 특정 지점 위치를 반환
-            BTAIController aicont =  owner.GetComponent<BTAIController>();
-            if (aicont == null)
+            if (!owner.TryGetComponent<BTAIController>(out var aicont))
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -54,27 +58,23 @@ namespace AI.BT.CustomBTNodes
 
             initPosition = goalPosition = agent.transform.position;
 
-            PatrolPoints patrolPoints =   aicont.PatrolPoints;
-            if(patrolPoints == null )
+            patrolPoints = aicont.PatrolPoints;
+            hasPatrolPoints = patrolPoints != null;
+
+            NavMeshPath path = CreateNavMeshPathRoutine();
+            // 경로에 따른 처리 
+            if (path != null)
             {
-                // 지정한 지점이 없다면 인위적을 선택하여 처리 
-                bool bResult = CreateNaveMeshPathRoutine();
-                if (bResult)
-                {
-                    OnDestination?.Invoke(goalPosition);
-                    ChangeActionState (ActionState.Update);
-                    return NodeState.Running;
-                }
-                else
-                    return NodeState.Failure;
+                OnDestination?.Invoke(goalPosition);
+                ChangeActionState(ActionState.Update);
+                agent.SetPath(path);
+
+                return NodeState.Running;
             }
             else
             {
-                goalPosition = patrolPoints.GetMoveToPosition();
-                agent.SetDestination(goalPosition);
+                return NodeState.Failure;
             }
-
-            return base.OnBegin();
         }
 
 
@@ -92,7 +92,7 @@ namespace AI.BT.CustomBTNodes
             if (CalcArrive() == false)
             {
                 //ChangeActionState(ActionState.Begin);
-                agent.SetDestination(goalPosition);
+                //agent.SetDestination(goalPosition);
                 return NodeState.Running;
             }
 
@@ -108,13 +108,36 @@ namespace AI.BT.CustomBTNodes
         }
 
 
-        private bool CreateNaveMeshPathRoutine()
+        private NavMeshPath CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
 
+            if(hasPatrolPoints)
+            {
+                goalPosition = patrolPoints.GetMoveToPosition();
+
+                path = new NavMeshPath();
+                bool bCheck = agent.CalculatePath(goalPosition, path); 
+                Debug.Assert(bCheck);
+
+                patrolPoints.UpdateNextIndex();
+
+                return path; 
+            }
+
+
             Vector3 prevGoalPosition = goalPosition;
+            // 지정한 지점이 없다면 인위적을 선택하여 처리 
+            //TODO: 비동기나 코루틴으로 빼야할 듯한 로직 
             while (true)
             {
+                if (loopCount >= loopBreakMaxCount)
+                {
+                    Debug.Log("Not find Goal Poistion");
+                    return null;
+                }
+
+                loopCount++; 
                 while (true)
                 {
                     float x = UnityEngine.Random.Range(-radius * 0.5f, radius * 0.5f);
@@ -124,22 +147,16 @@ namespace AI.BT.CustomBTNodes
 
                     if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
                         break;
-
-                    return false;
                 }
 
                 path = new NavMeshPath();
 
-
                 if (agent.CalculatePath(goalPosition, path) == true)
                 {
-                    navMeshPath = path;
-                    agent.SetPath(navMeshPath);
+                    //navMeshPath = path;
 
-                    return true; 
+                    return path; 
                 }
-
-                return false;
             }
         }
 
