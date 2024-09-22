@@ -23,6 +23,8 @@ namespace AI.BT.Nodes
                     taskNode.AbortTask();
                 else if (node is DecoratorNode decoratorNode)
                     decoratorNode.AbortTask();
+                else if( node is CompositeNode compositeNode)
+                    compositeNode.AbortTask();
             }
         }
     }

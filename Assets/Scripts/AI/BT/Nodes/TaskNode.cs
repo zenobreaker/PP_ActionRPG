@@ -116,6 +116,7 @@ namespace AI.BT.Nodes
 
         public void AbortTask()
         {
+            Debug.Log($"NodeName {nodeName} Abort");
             onAbort?.Invoke();  
         }
 

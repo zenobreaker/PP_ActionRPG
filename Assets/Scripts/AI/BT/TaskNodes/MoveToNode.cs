@@ -81,8 +81,6 @@ namespace AI.BT.TaskNodes
         {
             ResetAgent();
 
-            Debug.Log($"Move End / {currActionState}");
-            Debug.Log("Move End");
             return base.OnEnd();
         }
 
@@ -95,6 +93,7 @@ namespace AI.BT.TaskNodes
 
         protected override NodeState OnAbort()
         {
+            Debug.Log($"Move Abort / {currActionState}");
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 

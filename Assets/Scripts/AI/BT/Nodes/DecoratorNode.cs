@@ -57,6 +57,8 @@ namespace AI.BT.Nodes
                 return childNode.Evaluate();
             }
 
+            AbortTask();
+
             return NodeState.Failure;
         }
 
@@ -118,7 +120,7 @@ namespace AI.BT.Nodes
 
         public void AbortTask()
         {
-            Debug.Log("Task Aboarted ");
+            Debug.Log($"Task Aboarted  {nodeName}");
 
             // 자식들을 순회하면서 AbortTask 함수 실행
             if(childNode is CompositeNode composite)

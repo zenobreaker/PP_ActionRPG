@@ -23,14 +23,20 @@ namespace AI.BT.CustomBTNodes
             this.condition = condition;
         }
 
+        //TODO: 아래 이벤트용 함수는 정리가 필요하다.
         protected override void OnValueChanged(string changedKey)
         {
             // 여기에 등록된 키값이랑 값이 변경되는 키값이랑 같은 경우 
             if (changedKey == boardKey)
             {
-                T value = blackboard.GetValue<T>(key);
-                if (condition(value) == false)
+                T value = blackboard.GetValue<T>(boardKey);
+                //Debug.Log($"here to condition check previous : {value} / {key}");
+                //T myValue = blackboard.GetValue<T>(key); 
+                //TODO: 제네릭에 대한 정리가 안되어 잇는 상태 
+                //if (!value.Equals(myValue))
+                if(condition(value) == false)
                 {
+                    //Debug.Log($"here to condition after : {myValue} / {key}");
                     AbortTask();
                 }
             }

@@ -232,6 +232,7 @@ public class Enemy :
 
         // ai야 너 스스로가 처리해
         aiController?.End_Damage();
+        bTAIController?.End_Damage();
     }
 
     protected override void Begin_DownCondition()
@@ -248,12 +249,14 @@ public class Enemy :
     public override void ApplySlow(float duration, float slowFactor)
     {
         base.ApplySlow(duration, slowFactor);
-        aiController.Slow_NavMeshSpeed(slowFactor);
+        aiController?.Slow_NavMeshSpeed(slowFactor);
+        bTAIController?.Slow_NavMeshSpeed(slowFactor);
     }
 
     public override void ResetSpeed()
     {
         base.ResetSpeed();
-        aiController.Reset_NavMeshSpeed();
+        aiController?.Reset_NavMeshSpeed();
+        bTAIController?.Reset_NavMeshSpeed();
     }
 }

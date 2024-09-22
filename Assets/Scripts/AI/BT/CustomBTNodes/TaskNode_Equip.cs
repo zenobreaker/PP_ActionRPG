@@ -91,14 +91,15 @@ namespace AI.BT.CustomBTNodes
             bool bIdle = stateComponent.IdleMode;
             bCheck = bEquippd && bIdle;
 
-            ChangeActionState(ActionState.Begin);
+            
 
             if (bCheck)
             {
+                ChangeActionState (ActionState.Begin);
                 return NodeState.Success;
             }
 
-            return NodeState.Failure;
+            return NodeState.Running;
         }
 
 

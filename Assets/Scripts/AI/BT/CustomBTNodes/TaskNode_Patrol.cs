@@ -44,6 +44,7 @@ namespace AI.BT.CustomBTNodes
             onBegin = OnBegin;
             onUpdate = OnUpdate;
             onEnd = OnEnd;
+            onAbort = OnAbort;
         }
         protected override NodeState OnBegin()
         {
@@ -88,7 +89,6 @@ namespace AI.BT.CustomBTNodes
             {
                 ChangeActionState(ActionState.End);
                 ResetAgent();
-
 
                 return NodeState.Failure;
             }
@@ -166,6 +166,14 @@ namespace AI.BT.CustomBTNodes
         }
 
 
+        protected override NodeState OnAbort()
+        {
+            Debug.Log($"Patrol Abort / {currActionState}");
+            ChangeActionState(ActionState.Begin);
+            ResetAgent();
+
+            return base.OnAbort();
+        }
 
         private void ResetAgent()
         {

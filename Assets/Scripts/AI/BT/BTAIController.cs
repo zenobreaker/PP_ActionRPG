@@ -1,24 +1,20 @@
 using AI.BT;
-using AI.BT.CustomBTNodes;
 using AI.BT.Nodes;
-using AI.BT.TaskNodes;
 using System;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
-using static StateComponent;
-using static UnityEngine.EventSystems.EventTrigger;
 
-public class BTAIController : MonoBehaviour
+[RequireComponent(typeof(MovementComponent))]
+[RequireComponent(typeof(PerceptionComponent))]
+public abstract class BTAIController : MonoBehaviour
 {
     public enum AIStateType
     {
         Wait = 0, Patrol, Approach, Equip, Action, Damaged, Max,
     }
 
-    private AIStateType type;
+    protected AIStateType type;
     public event Action<AIStateType, AIStateType> OnAIStateTypeChanged;
     public bool WaitMode { get => type == AIStateType.Wait; }
     public bool PatrolMode { get => type == AIStateType.Patrol; }
@@ -30,57 +26,67 @@ public class BTAIController : MonoBehaviour
     /// <summary>
     /// 공격 관련 
     /// </summary>
-    [SerializeField] private float attackRange = 1.5f;
-    [SerializeField] private float attackDelay = 2.0f;
-    [SerializeField] private float attackDelayRandom = 0.5f;
+    [Header("About Attack")]
+    [SerializeField] protected float attackRange = 1.5f;
+    [SerializeField] protected float attackDelay = 2.0f;
+    [SerializeField] protected float attackDelayRandom = 0.5f;
 
     /// <summary>
     /// 데미지 관련 
     /// </summary>
-    [SerializeField] private float damageDelay = 2.0f;
-    [SerializeField] private float damageDelayRandom = 1.0f;
+    [Header("About Damage")]
+    [SerializeField] protected float damageDelay = 2.0f;
+    [SerializeField] protected float damageDelayRandom = 1.0f;
 
     /// <summary>
     /// 대기 관련
     /// </summary>
-    [SerializeField] private float waitDelay = 1.0f;
-    [SerializeField] private float waitDelayRandom = 0.5f; // goalDelay +( - 랜덤 ~ +랜덤)
+    [Header("About Wait")]
+    [SerializeField] protected float waitDelay = 1.0f;
+    [SerializeField] protected float waitDelayRandom = 0.5f; // goalDelay +( - 랜덤 ~ +랜덤)
 
 
     /// <summary>
     ///  이동 관련
     /// </summary>
-    [SerializeField] private float moveSpeed = 1.0f;
+    [Header("About Move")]
+    [SerializeField] protected float moveSpeed = 1.0f;
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
-
-    [SerializeField] private string uiStateName = "EnemyAIState";
 
 
     /// <summary>
     /// 순찰 관련
     /// </summary>
-    [SerializeField] private float radius;
-    [SerializeField] private PatrolPoints patrolPoints;
+    [Header("About Patrol")]
+    [SerializeField] protected float radius;
+    [SerializeField] protected PatrolPoints patrolPoints;
     public PatrolPoints PatrolPoints { get => patrolPoints; }
-    
 
-    private Animator animator; 
-    private NavMeshAgent navMeshAgent;
+
+    [Header("UI")]
+    [SerializeField] protected string uiStateName = "EnemyAIState";
+
+
+    protected Animator animator;
+    protected NavMeshAgent navMeshAgent;
+    private float navOriginSpeed;
+    private float navOriginAngularSpeed;
+
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
     [SerializeField] bool bBT_DebugMode = false;
-    [SerializeField] private SO_Blackboard so_blackboard;
-    private SO_Blackboard blackboard;
+    [SerializeField] protected SO_Blackboard so_blackboard;
+    protected SO_Blackboard blackboard;
 
-    private BehaviorTreeRunner btRunner;
+    protected BehaviorTreeRunner btRunner;
 
 
-    private Enemy enemy; 
+    protected Enemy enemy;
     protected PerceptionComponent perception;
     protected StateComponent state;
-    protected WeaponComponent weapon;   
+    protected WeaponComponent weapon;
 
-    Vector3 dest;
+    protected Vector3 dest;
 
     protected virtual void Awake()
     {
@@ -88,15 +94,14 @@ public class BTAIController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         blackboard = so_blackboard.Clone();
 
-
         enemy = GetComponent<Enemy>();
-        state = GetComponent<StateComponent>(); 
+        state = GetComponent<StateComponent>();
         weapon = GetComponent<WeaponComponent>();
         perception = GetComponent<PerceptionComponent>();
         Debug.Assert(perception != null);
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         perception.OnPerceptionUpdated += OnPerceptionUpdated;
 
@@ -105,190 +110,34 @@ public class BTAIController : MonoBehaviour
         btRunner = new BehaviorTreeRunner(CreateBTTree());
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         btRunner?.OperateNode(bBT_DebugMode);
     }
 
-    private void LateUpdate()
+    protected abstract void LateUpdate();
+    
+
+    protected virtual void FixedUpdate()
     {
-        if (WaitMode)
-        {
-            animator.SetFloat("SpeedY", 0.0f);
-            return;
-        }
-        else
-        {
-            animator.SetFloat("SpeedY", navMeshAgent.velocity.magnitude);
-        }
-        
+      
     }
 
-    private void FixedUpdate()
-    {
-        GameObject player = perception.GetPercievedPlayer();
-        if (player == null)
-        {
-            //SetWaitMode();
-            SetPatrolMode();
-
-            return;
-        }
-
-        float distanceSquared = (player.transform.position - this.transform.position).sqrMagnitude;
-
-        if ( distanceSquared <= attackRange)
-        {
-            // 공격
-            SetActionMode();
-
-            return; 
-        }
+    protected abstract void CreateBlackboardKey();
 
 
-        SetApproachMode();
-    }
-
-    private void CreateBlackboardKey()
-    {
-        // 모든 데코레이터노드가 해당 키로 비교한다. 
-        blackboard.SetValue<AIStateType>("AIStateType", AIStateType.Wait);
-
-        // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
-        blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
-        blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
-        blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
-        blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
-        blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
-    }
-
-    private RootNode CreateBTTree()
-    {
-
-        // hit
-        SelectorNode DamagedSelector = new SelectorNode();
-        DamagedSelector.NodeName = "DamagedSelector";
-
-        SequenceNode DamagedSequence = new SequenceNode();
-        DamagedSequence.NodeName = "DamagedSequence";
-
-        TaskNode_Damaged damagedNode = new TaskNode_Damaged(this.gameObject, blackboard);
-        WaitNode  damagedWaitNode = new WaitNode(damageDelay, damageDelayRandom);
-        damagedWaitNode.NodeName = "DamagedWait";
-
-        DamagedSequence.AddChild(damagedNode);
-        DamagedSequence.AddChild(damagedWaitNode);
-
-        BlackboardConditionDecorator<AIStateType> damagedDeco =
-            new BlackboardConditionDecorator<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", "Damaged", CheckState);
-
-        DamagedSelector.AddChild(damagedDeco);
-
-        // 서비스 
-        SelectorNode selector = new SelectorNode();
-
-        // 대기 
-        WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
-
-        BlackboardConditionDecorator<AIStateType> waitDeco =
-            new BlackboardConditionDecorator<AIStateType>("WaitDeco",waitNode, this.gameObject,
-            blackboard, "AIStateType","Wait",
-            CheckState);
+    protected abstract RootNode CreateBTTree();
+   
 
 
-        // 타겟으로 이동
-        SequenceNode approachSequence = new SequenceNode();
-
-        TaskNode_Speed approachSpeed = new TaskNode_Speed(this.gameObject, blackboard,
-            SpeedType.Run);
-
-        MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
-
-        approachSequence.AddChild(approachSpeed);
-        approachSequence.AddChild(moveToNode);
-
-        BlackboardConditionDecorator<AIStateType> moveDeco =
-            new BlackboardConditionDecorator<AIStateType>("MoveDeco", approachSequence, this.gameObject,
-            blackboard, "AIStateType", "Approach",
-            CheckState);
-
-        // 순찰
-        SequenceNode patrolSequence = new SequenceNode();
-        TaskNode_Speed patrolSpeed = new TaskNode_Speed(this.gameObject, blackboard,
-            SpeedType.Walk);
-
-
-        SelectorNode patrolSelector = new SelectorNode();
-        SequenceNode patrolSubSequence = new SequenceNode();
-
-        TaskNode_Patrol patrolNode = new TaskNode_Patrol(this.gameObject, blackboard,
-            radius);
-        patrolNode.OnDestination += OnDestination;
-        WaitNode patrolWait = new WaitNode(waitDelay, waitDelayRandom);
-        
-        patrolSubSequence.AddChild(patrolNode); 
-        patrolSubSequence.AddChild(patrolWait);
-
-        patrolSelector.AddChild(patrolSubSequence);
-        patrolSelector.AddChild(patrolWait);
-
-        patrolSequence.AddChild(patrolSpeed);
-        patrolSequence.AddChild(patrolSelector);
-
-        BlackboardConditionDecorator<AIStateType> patrolDeco =
-         new BlackboardConditionDecorator<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "AIStateType", "Patrol",
-         CheckState);
-
-        // 공격 
-        SequenceNode attackSequence = new SequenceNode();
-        attackSequence.NodeName = "Attack";
-
-        TaskNode_Equip equipNode = new TaskNode_Equip(this.gameObject, blackboard, enemy.weaponType);
-
-        TaskNode_Action actionNode = new TaskNode_Action(this.gameObject, blackboard);
-
-        WaitNode attackWaitNode = new WaitNode(attackDelay, attackDelayRandom);
-        attackWaitNode.NodeName = "Attak_Wait";
-
-        attackSequence.AddChild(equipNode);
-        attackSequence.AddChild(actionNode);
-        attackSequence.AddChild(attackWaitNode);
-
-        BlackboardConditionDecorator<AIStateType> attackDeco =
-            new BlackboardConditionDecorator<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, "AIStateType", "Action",
-            CheckState);
-
-        selector.AddChild(waitDeco);
-        selector.AddChild(patrolDeco);
-        selector.AddChild(moveDeco);
-        selector.AddChild(attackDeco);
-
-        DamagedSelector.AddChild(selector);
-
-        return new RootNode(this.gameObject, blackboard, DamagedSelector);
-    }
-
-    private bool CheckState(AIStateType type)
-    {
-        if (this.type == type)
-        {
-            //Debug.Log($"Current AI State : {type}");
-            return true;
-        }
-        else
-            return false; 
-    }
 
     private void OnPerceptionUpdated(List<GameObject> gameObjects)
     {
-        if(gameObjects.Count > 0)
+        if (gameObjects.Count > 0)
         {
             blackboard.SetValue<GameObject>("Target", gameObjects[0]);
 
-            return; 
+            return;
         }
         //Debug.Log($"{this.gameObject.name} Target Loss!  - - 1");
         blackboard.SetValue<GameObject>("Target", null);
@@ -323,7 +172,7 @@ public class BTAIController : MonoBehaviour
     public virtual void SetActionMode()
     {
         if (ActionMode == true)
-            return; 
+            return;
 
         ChangeType(AIStateType.Action);
     }
@@ -338,6 +187,7 @@ public class BTAIController : MonoBehaviour
 
     protected void ChangeType(AIStateType type)
     {
+        Debug.Log($"new type : {type}");
         AIStateType prevType = this.type;
         this.type = type;
         blackboard.SetValue("AIStateType", type);
@@ -347,7 +197,7 @@ public class BTAIController : MonoBehaviour
 
     public void StopMovement()
     {
-        navMeshAgent.isStopped = true; 
+        navMeshAgent.isStopped = true;
     }
     public void StartMovement()
     {
@@ -356,38 +206,29 @@ public class BTAIController : MonoBehaviour
 
     public void SetSpeed(float speed)
     {
-        navMeshAgent.speed = speed; 
+        navMeshAgent.speed = speed;
     }
 
-
-    private void OnDestination(Vector3 destination)
+    public void Slow_NavMeshSpeed(float slowFactor)
     {
-        dest = destination;
+        navOriginSpeed = navMeshAgent.speed;
+        navOriginAngularSpeed = navMeshAgent.angularSpeed;
+
+        navMeshAgent.speed = navMeshAgent.speed * slowFactor;
+        navMeshAgent.angularSpeed = navMeshAgent.angularSpeed * slowFactor;
     }
 
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    public void Reset_NavMeshSpeed()
     {
-        if (Application.isPlaying == false)
-            return;
-
-        if (Selection.activeGameObject != gameObject)
-            return;
-
-        Vector3 form = transform.position + new Vector3(0, 0.1f, 0);
-        Vector3 to = dest + new Vector3(0, 0.1f, 0);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(form, to);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(dest, 0.5f);
-
-
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(form, 0.25f);
-
-       
+        navMeshAgent.speed = navOriginSpeed;
+        navMeshAgent.angularSpeed = navOriginAngularSpeed;
     }
-#endif
+
+    public void End_Damage()
+    {
+        // coroutineEndDamage = StartCoroutine(Wait_End_Damage());
+        //SetCoolTime(damageDelay, damageDelayRandom);
+
+        SetWaitMode();
+    }
 }
