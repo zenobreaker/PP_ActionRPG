@@ -29,7 +29,7 @@ namespace AI.BT.CustomBTNodes
             ChangeActionState(ActionState.Update);
             weapon.DoAction();
 
-            return base.OnBegin();
+            return NodeState.Running;
         }
 
 

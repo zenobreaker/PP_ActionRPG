@@ -6,9 +6,10 @@ namespace AI.BT
     public abstract class BTNode
     {
         public enum NodeState { Running, Success, Failure, Abort, }
-        protected NodeState state;
+        protected NodeState nodeState;
 
-        public string nodeName;
+        protected string nodeName;
+        public string NodeName { get => nodeName; set => nodeName = value; }
         protected GameObject owner;
         
 

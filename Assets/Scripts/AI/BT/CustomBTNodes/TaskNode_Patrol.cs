@@ -3,9 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.XR;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -15,6 +17,7 @@ namespace AI.BT.CustomBTNodes
     public class TaskNode_Patrol : TaskNode
     {
 
+        private BTAIController controller; 
         private NavMeshAgent agent;
         //private NavMeshPath navMeshPath;
         private PatrolPoints patrolPoints; 
@@ -34,6 +37,7 @@ namespace AI.BT.CustomBTNodes
         {
             nodeName = "Patrol";
 
+            controller = ownerObject.GetComponent<BTAIController>();
             agent = ownerObject.GetComponent<NavMeshAgent>();
             this.radius = radius;
 
@@ -50,7 +54,7 @@ namespace AI.BT.CustomBTNodes
             }
 
             // 특정 지점 위치를 반환
-            if (!owner.TryGetComponent<BTAIController>(out var aicont))
+            if (controller == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -58,7 +62,7 @@ namespace AI.BT.CustomBTNodes
 
             initPosition = goalPosition = agent.transform.position;
 
-            patrolPoints = aicont.PatrolPoints;
+            patrolPoints = controller.PatrolPoints;
             hasPatrolPoints = patrolPoints != null;
 
             NavMeshPath path = CreateNavMeshPathRoutine();

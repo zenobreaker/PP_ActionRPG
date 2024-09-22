@@ -22,7 +22,7 @@ public class Enemy :
     [SerializeField]
     private float changeColorTime = 0.15f;
 
-    [SerializeField] private string surfaceName; 
+    [SerializeField] private string surfaceName;
 
     private Color originColor;
     private Material skinMaterial;
@@ -34,9 +34,10 @@ public class Enemy :
     private LaunchComponent launch;
     private AirborneComponent airborne;
     private AIController aiController;
+    private BTAIController bTAIController;
 
     public WeaponType weaponType;
-    [SerializeField] private CharacterGrade grade = CharacterGrade.Common; 
+    [SerializeField] private CharacterGrade grade = CharacterGrade.Common;
     public CharacterGrade Grade { get => grade; }
     protected override void Awake()
     {
@@ -60,6 +61,7 @@ public class Enemy :
 
 
         aiController = GetComponent<AIController>();
+        bTAIController = GetComponent<BTAIController>();
 
     }
 
@@ -135,8 +137,9 @@ public class Enemy :
         if (healthPoint.Dead == false)
         {
             aiController?.SetDamagedMode();
+            bTAIController?.SetDamagedMode();
             state.SetDamagedMode();
-            
+
             //airborne?.DoAir(attacker, causer, data, false, grade);
             launch?.DoHit(attacker, causer, data, true, grade);
 
@@ -146,7 +149,7 @@ public class Enemy :
                 bool bCheck = true;
                 bCheck &= grade == CharacterGrade.Boss;
                 bCheck &= (aiController != null && aiController.ActionMode);
-                
+
                 if (bCheck == false)
                 {
                     // 아니라면 해당 피격 이벤트로 애니메이션 실행
@@ -179,7 +182,7 @@ public class Enemy :
         Collider collider = GetComponent<Collider>();
         collider.enabled = false;
 
-        if(!state.DownCondition)
+        if (!state.DownCondition)
             animator.SetTrigger("Dead");
 
         MovableStopper.Instance.Delete(this);
@@ -215,11 +218,11 @@ public class Enemy :
 
         animator.SetInteger("ImpactIndex", 0);
 
-        if(ground != null)
+        if (ground != null)
         {
-            if(ground.IsGround)
+            if (ground.IsGround)
                 state.SetIdleMode();
-            else 
+            else
                 state.SetAirborneMode();
         }
         else
@@ -238,7 +241,7 @@ public class Enemy :
 
         if (ground.IsGround == false)
             return;
-       
+
         base.Begin_DownCondition();
     }
 

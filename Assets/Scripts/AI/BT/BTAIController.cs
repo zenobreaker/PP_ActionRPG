@@ -5,6 +5,7 @@ using AI.BT.TaskNodes;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using static StateComponent;
@@ -31,18 +32,18 @@ public class BTAIController : MonoBehaviour
     /// </summary>
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float attackDelay = 2.0f;
-    [SerializeField] private float attackDelayRandom = 0.9f;
+    [SerializeField] private float attackDelayRandom = 0.5f;
 
     /// <summary>
     /// 데미지 관련 
     /// </summary>
-    [SerializeField] private float damageDelay = 1.0f;
-    [SerializeField] private float damageDelayRandom = 0.5f;
+    [SerializeField] private float damageDelay = 2.0f;
+    [SerializeField] private float damageDelayRandom = 1.0f;
 
     /// <summary>
     /// 대기 관련
     /// </summary>
-    [SerializeField] private float waitDelay = 2.0f;
+    [SerializeField] private float waitDelay = 1.0f;
     [SerializeField] private float waitDelayRandom = 0.5f; // goalDelay +( - 랜덤 ~ +랜덤)
 
 
@@ -158,14 +159,37 @@ public class BTAIController : MonoBehaviour
         blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
         blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
         blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
+        blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
     }
 
     private RootNode CreateBTTree()
     {
+
+        // hit
+        SelectorNode DamagedSelector = new SelectorNode();
+        DamagedSelector.NodeName = "DamagedSelector";
+
+        SequenceNode DamagedSequence = new SequenceNode();
+        DamagedSequence.NodeName = "DamagedSequence";
+
+        TaskNode_Damaged damagedNode = new TaskNode_Damaged(this.gameObject, blackboard);
+        WaitNode  damagedWaitNode = new WaitNode(damageDelay, damageDelayRandom);
+        damagedWaitNode.NodeName = "DamagedWait";
+
+        DamagedSequence.AddChild(damagedNode);
+        DamagedSequence.AddChild(damagedWaitNode);
+
+        BlackboardConditionDecorator<AIStateType> damagedDeco =
+            new BlackboardConditionDecorator<AIStateType>("DamagedDeco", DamagedSequence,
+            this.gameObject, blackboard, "AIStateType", "Damaged", CheckState);
+
+        DamagedSelector.AddChild(damagedDeco);
+
+        // 서비스 
         SelectorNode selector = new SelectorNode();
 
         // 대기 
-        WaitNode waitNode = new WaitNode();
+        WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
 
         BlackboardConditionDecorator<AIStateType> waitDeco =
             new BlackboardConditionDecorator<AIStateType>("WaitDeco",waitNode, this.gameObject,
@@ -180,7 +204,6 @@ public class BTAIController : MonoBehaviour
             SpeedType.Run);
 
         MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
-        perception.OnValueChange += moveToNode.OnValueChange;
 
         approachSequence.AddChild(approachSpeed);
         approachSequence.AddChild(moveToNode);
@@ -202,7 +225,7 @@ public class BTAIController : MonoBehaviour
         TaskNode_Patrol patrolNode = new TaskNode_Patrol(this.gameObject, blackboard,
             radius);
         patrolNode.OnDestination += OnDestination;
-        WaitNode patrolWait = new WaitNode(1.5f, 0.5f);
+        WaitNode patrolWait = new WaitNode(waitDelay, waitDelayRandom);
         
         patrolSubSequence.AddChild(patrolNode); 
         patrolSubSequence.AddChild(patrolWait);
@@ -220,14 +243,14 @@ public class BTAIController : MonoBehaviour
 
         // 공격 
         SequenceNode attackSequence = new SequenceNode();
-        attackSequence.nodeName = "Attack";
+        attackSequence.NodeName = "Attack";
 
         TaskNode_Equip equipNode = new TaskNode_Equip(this.gameObject, blackboard, enemy.weaponType);
 
         TaskNode_Action actionNode = new TaskNode_Action(this.gameObject, blackboard);
 
-        WaitNode attackWaitNode = new WaitNode(1.5f, 0.5f);
-        attackWaitNode.nodeName = "Attak_Wait";
+        WaitNode attackWaitNode = new WaitNode(attackDelay, attackDelayRandom);
+        attackWaitNode.NodeName = "Attak_Wait";
 
         attackSequence.AddChild(equipNode);
         attackSequence.AddChild(actionNode);
@@ -242,8 +265,10 @@ public class BTAIController : MonoBehaviour
         selector.AddChild(patrolDeco);
         selector.AddChild(moveDeco);
         selector.AddChild(attackDeco);
-        
-        return new RootNode(this.gameObject, blackboard, selector);
+
+        DamagedSelector.AddChild(selector);
+
+        return new RootNode(this.gameObject, blackboard, DamagedSelector);
     }
 
     private bool CheckState(AIStateType type)
@@ -267,7 +292,6 @@ public class BTAIController : MonoBehaviour
         }
         //Debug.Log($"{this.gameObject.name} Target Loss!  - - 1");
         blackboard.SetValue<GameObject>("Target", null);
-        //perception.OnValueChange?.Invoke();
     }
 
     public virtual void SetWaitMode()
@@ -304,13 +328,31 @@ public class BTAIController : MonoBehaviour
         ChangeType(AIStateType.Action);
     }
 
+    public virtual void SetDamagedMode()
+    {
+        if (DamagedMode == true)
+            return;
+
+        ChangeType(AIStateType.Damaged);
+    }
+
     protected void ChangeType(AIStateType type)
     {
         AIStateType prevType = this.type;
         this.type = type;
+        blackboard.SetValue("AIStateType", type);
         OnAIStateTypeChanged?.Invoke(prevType, type);
     }
 
+
+    public void StopMovement()
+    {
+        navMeshAgent.isStopped = true; 
+    }
+    public void StartMovement()
+    {
+        navMeshAgent.isStopped = false;
+    }
 
     public void SetSpeed(float speed)
     {

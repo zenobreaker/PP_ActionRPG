@@ -91,7 +91,7 @@ namespace AI.BT.Nodes
         {
 
             ChangeActionState(ActionState.Update);
-            return BTNode.NodeState.Success;
+            return BTNode.NodeState.Running;
         }
 
 
@@ -99,7 +99,7 @@ namespace AI.BT.Nodes
         {
 
             ChangeActionState(ActionState.End);
-            return BTNode.NodeState.Success;
+            return BTNode.NodeState.Running;
         }
 
 

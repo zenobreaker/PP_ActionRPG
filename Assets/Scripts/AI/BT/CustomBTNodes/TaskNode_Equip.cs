@@ -8,6 +8,10 @@ namespace AI.BT.CustomBTNodes
 {
     public class TaskNode_Equip : TaskNode
     {
+
+        private WeaponComponent weapon;
+        private StateComponent stateComponent; 
+
         private WeaponType weaponType = WeaponType.Unarmed; 
 
         public TaskNode_Equip(GameObject ownerObject, SO_Blackboard blackboard, 
@@ -18,6 +22,9 @@ namespace AI.BT.CustomBTNodes
 
             this.weaponType = weaponType;
 
+            weapon = ownerObject.GetComponent<WeaponComponent>();
+            stateComponent = ownerObject.GetComponent<StateComponent>();
+
             onBegin = OnBegin;
             onUpdate = OnUpdate;
             onEnd = OnEnd;
@@ -27,7 +34,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnBegin()
         {
-            if (!owner.TryGetComponent<WeaponComponent>(out var weapon))
+            if (weapon == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -67,13 +74,13 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnUpdate()
         {
-            if (!owner.TryGetComponent<WeaponComponent>(out var weapon))
+            if (weapon == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
-            if (!owner.TryGetComponent<StateComponent>(out var state))
+            if (stateComponent == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -81,7 +88,7 @@ namespace AI.BT.CustomBTNodes
 
             bool bCheck = true; 
             bool bEquippd = weapon.IsEquipped();
-            bool bIdle = state.IdleMode;
+            bool bIdle = stateComponent.IdleMode;
             bCheck = bEquippd && bIdle;
 
             ChangeActionState(ActionState.Begin);
@@ -99,7 +106,7 @@ namespace AI.BT.CustomBTNodes
         {
             //Debug.Log("Equip Abort !!");
 
-            if (!owner.TryGetComponent<WeaponComponent>(out var weapon))
+            if (weapon == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Abort;

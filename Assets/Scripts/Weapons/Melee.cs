@@ -376,9 +376,9 @@ public class Melee : Weapon
         }
 
 
-        // ���� �� ��ǥ 
+        
         hitPoint = enabledCollider.ClosestPoint(other.transform.position);
-        // ���࿭ ���ؼ� ���� �� ��ǥ�� �Ұ��ؼ� ������ǥ�� ��ȯ
+        
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
         //var text = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -482,13 +482,13 @@ public class Melee : Weapon
         rotateOverLifetime.enabled = true;
         rotateOverLifetime.separateAxes = true;
 
-        // ���� Ŀ�긦 �����ϰ� ���� ������Ű��
+        
         AnimationCurve curve = new AnimationCurve(
             new Keyframe(0f, 15),
             new Keyframe(1f, rotateOverLifetime.y.curve.keys[0].value)
         );
 
-        // Ŀ���� ��� Ű������ ���� ������Ű��
+        
         for (int i = 0; i < curve.keys.Length; i++)
         {
             Keyframe key = curve.keys[i];
@@ -496,11 +496,11 @@ public class Melee : Weapon
             curve.MoveKey(i, key);
         }
 
-        // Ŀ�긦 MinMaxCurve�� ��ȯ
+        
         ParticleSystem.MinMaxCurve yCurve = new ParticleSystem.MinMaxCurve(1f, curve);
         Debug.Log($"{rotateOverLifetime.y.curve.keys[0].value}/ {rotateOverLifetime.y.curve.keys[1].value}");
 
-        // Y�� ȸ�� ���� �ִϸ��̼� Ŀ��� ����
+        
         rotateOverLifetime.y = yCurve;
     }
 

@@ -53,7 +53,7 @@ namespace AI.BT.TaskNodes
 
             if (currentWaitTime > 0)
             {
-                Debug.Log($"{nodeName} Update ");
+                //Debug.Log($"{nodeName} Update ");
                 return BTNode.NodeState.Running;
             }
 

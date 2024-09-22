@@ -28,6 +28,7 @@ namespace AI.BT.TaskNodes
             onBegin = OnBegin;
             onUpdate = OnUpdate;
             onEnd = OnEnd;
+            onAbort = OnAbort;
         }
 
         // 도착 지점을 언제 어디서 어떻게 세팅할 것인지가 문제다. 
@@ -44,7 +45,7 @@ namespace AI.BT.TaskNodes
                 GameObject targetObject = blackboard.GetValue<GameObject>("Target");
                 if (targetObject == null)
                 {
-                    ChangeActionState(ActionState.End);
+                   // ChangeActionState(ActionState.End);
                     ResetAgent();
                     //Debug.Log("Target Loss!");
                     return NodeState.Failure;
@@ -61,20 +62,17 @@ namespace AI.BT.TaskNodes
         protected override NodeState OnUpdate()
         {
             if (agent == null || CheckPath() == false)
-            {
-                ChangeActionState(ActionState.End);
-                ResetAgent();
-
                 return NodeState.Failure;
-            }
+
             //Debug.Log($"Move Update / {currActionState}");
             if (CalcArrive() == false)
             {
+                // 다시 대상 위치를 탐색하기 위해 Begin으로 
                 ChangeActionState(ActionState.Begin);
                 return NodeState.Running;
             }
 
-            ResetAgent();
+            //ResetAgent();
             //Debug.Log("Move Update");
             return base.OnUpdate();
         }
@@ -95,10 +93,12 @@ namespace AI.BT.TaskNodes
             //agent.isStopped = true;
         }
 
-        public void OnValueChange()
+        protected override NodeState OnAbort()
         {
+            ChangeActionState(ActionState.Begin);
             ResetAgent();
-            ChangeActionState(ActionState.End);
+
+            return base.OnAbort();
         }
 
         private bool CalcArrive()

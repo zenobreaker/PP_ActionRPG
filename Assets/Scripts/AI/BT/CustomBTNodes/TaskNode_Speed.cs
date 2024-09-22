@@ -16,8 +16,7 @@ namespace AI.BT.CustomBTNodes
             nodeName = "Speed";
 
             this.speedType = speedType;
-            if (owner != null)
-                movement = owner.GetComponent<MovementComponent>();
+            movement = owner?.GetComponent<MovementComponent>();
 
             onBegin = OnBegin;
 
