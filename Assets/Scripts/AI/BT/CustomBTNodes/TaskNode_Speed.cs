@@ -28,7 +28,7 @@ namespace AI.BT.CustomBTNodes
             if (blackboard == null || movement == null)
                 return NodeState.Failure;
 
-            Debug.Log($"속도 세팅 {speedType}");
+            //Debug.Log($"속도 세팅 {speedType}");
 
             movement.SetSpeed(speedType);
 

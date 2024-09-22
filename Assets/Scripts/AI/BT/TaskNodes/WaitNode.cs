@@ -25,7 +25,7 @@ namespace AI.BT.TaskNodes
         public WaitNode(float waitTime, float waitRandDelay)
             : base(null, null, null)
         {
-            nodeName = "Speed";
+            nodeName = "Wait";
 
             this.waitTime = waitTime;
             this.waitRandDelay = waitRandDelay;
@@ -53,7 +53,7 @@ namespace AI.BT.TaskNodes
 
             if (currentWaitTime > 0)
             {
-              //  Debug.Log("Wait Node Update");
+                Debug.Log($"{nodeName} Update ");
                 return BTNode.NodeState.Running;
             }
 
@@ -64,7 +64,7 @@ namespace AI.BT.TaskNodes
         protected override BTNode.NodeState OnEnd()
         {
             //Debug.Log("Wait Node End");
-
+             
             return base.OnEnd();
         }
     }

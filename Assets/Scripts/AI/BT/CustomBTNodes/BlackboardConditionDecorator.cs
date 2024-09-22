@@ -10,44 +10,31 @@ namespace AI.BT.CustomBTNodes
     /// </summary>
     public class BlackboardConditionDecorator<T> : DecoratorNode
     {
-        //public enum BB_KeyQuery
-        //{
-        //    Equals = 0, NotEquals, LessThan, LessThanOrEqual, GreaterThan, GreateThanOrEqual,
-        //}
-
-        //private BB_KeyQuery keyQuery;
-        //private T value;
-
-        
-        private SO_Blackboard blackboard;
-        private string key;
-        private Predicate<T> condition;
+        protected Predicate<T> condition;
 
         public BlackboardConditionDecorator(string nodeName, BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
+            string boardKey = null,
             string key = null,
             Predicate<T> condition = null) :
-            base(nodeName, childNode, owner)
+            base(nodeName, childNode, owner, blackboard, boardKey, key)
         {
-            
-            this.blackboard = blackboard;
-            this.key = key;
             this.condition = condition;
         }
 
-        //public BlackboardConditionDecorator(BTNode childNode,
-        //   GameObject owner = null,
-        //   SO_Blackboard blackboard = null,
-        //   string key = null,
-        //   T value) :
-        //   base(childNode, owner)
-        //{
-        //    this.blackboard = blackboard;
-        //    this.key = key;
-        //    this.value = value;
-        //}
-
+        protected override void OnValueChanged(string changedKey)
+        {
+            // 여기에 등록된 키값이랑 값이 변경되는 키값이랑 같은 경우 
+            if (changedKey == boardKey)
+            {
+                T value = blackboard.GetValue<T>(key);
+                if (condition(value) == false)
+                {
+                    AbortTask();
+                }
+            }
+        }
 
         protected override bool ShouldExecute()
         {
@@ -56,6 +43,5 @@ namespace AI.BT.CustomBTNodes
             return condition(value);
         }
 
-    
     }
 }

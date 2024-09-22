@@ -14,6 +14,17 @@ namespace AI.BT.Nodes
         {
             children.Add(node);
         }
+
+        public void AbortTask()
+        {
+            foreach(BTNode node in children)
+            {
+                if (node is TaskNode taskNode)
+                    taskNode.AbortTask();
+                else if (node is DecoratorNode decoratorNode)
+                    decoratorNode.AbortTask();
+            }
+        }
     }
 
 }

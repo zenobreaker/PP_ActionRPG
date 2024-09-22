@@ -82,8 +82,6 @@ public class AIController_Boss_Dragon : AIController
         userInterface.text += "\n";
         //TODO: 상태 적어보기 
         userInterface.text += bossPattern.ToString() + "\n";
-        userInterface.text += $"pattern1 " + fireballMaxCoolTime.ToString("f2") + "can : " + bCanfireball.ToString() + "\n";
-        userInterface.text += $"pattern2 " + comboMaxCoolTime.ToString("f2") + "can : " + bCanCombo + "\n";
         userInterface.text += waitState.ToString();
         //userInterface.text += $"pattern2 " + comboMaxCoolTime.ToString("f2") + "can : " + bCanCombo + "\n";
         //userInterface.text += $"pattern3 " + fireballCoolTime.ToString("f2") + "\n";
@@ -110,11 +108,12 @@ public class AIController_Boss_Dragon : AIController
             SetWaitMode();
         else
         {
-            if (weapon.UnarmedMode == true)
-            {
-                SetEquipMode(enemy.weaponType);
-                return;
-            }
+            // 용은 장비할 필요가 없으므로 
+            //if (weapon.UnarmedMode == true)
+            //{
+            //    SetEquipMode(enemy.weaponType);
+            //    return;
+            //}
 
             // 공격 조건 확인
             SetBossAttackMode(player);
@@ -351,25 +350,7 @@ public class AIController_Boss_Dragon : AIController
         if (bStart)
             return;
 
-        bool bDecide = true;
-        var randPattern = (BossPattern)Random.Range(1, (int)BossPattern.Max);
-
-        if (randPattern == BossPattern.Pattern1)
-        {
-            bDecide &= CanShootFireball();
-        }
-
-        if (randPattern == BossPattern.Pattern2)
-        {
-            bDecide &= CanComboAttack();
-        }
-
-        if (bDecide)
-        {
-            ChangeBossPattern(randPattern);
-            CheckPatternKeepTime();
-        }
-
+      
     }
 
     private void DoDecidedPattern()
@@ -382,113 +363,19 @@ public class AIController_Boss_Dragon : AIController
         SetNavMeshStop(true);
         ChangeType(Type.Action);
 
-        if (bossPattern == BossPattern.Pattern1)
-        {
-            ShootFireball();
-        }
-        if (bossPattern == BossPattern.Pattern2)
-        {
-            DoComboAttack();
-        }
-        if (bossPattern == BossPattern.Pattern3)
-        {
-            DoNormalAttack();
-        }
+
+
 
 
         bossPattern = BossPattern.None;
     }
 
     #region Pattern1 
-    // 패턴이 결정이 되면 해당 패턴을 일정 시간 이내에 발동시켜야 한다. 
-    // 그러기 위해선 근접 기술에 경우 접근하던가 원거리 기술에 경우 조건을 결정 
-
-    private bool bCanfireball = true;
-    private float fireballMaxCoolTime = 5.0f;
-    private Coroutine firballCoroutine = null;
-
-    [SerializeField] private float usedDistance = 5.0f;
-    private bool CanShootFireball()
-    {
-        GameObject player = perception.GetPercievedPlayer();
-
-        bool bCheck = false;
-        bCheck |= bCanfireball == false;
-        bCheck |= player == null;
-
-        if (bCheck)
-            return false;
-
-        float distance = Vector3.Distance(this.transform.position, player.transform.position);
-        if (distance <= usedDistance)
-            return false;
-
-        return true;
-    }
-
-    private void ShootFireball()
-    {
-        firballCoroutine = StartCoroutine(CoolDown_Fireball());
-
-        GameObject player = perception.GetPercievedPlayer();
-        if (player != null)
-        {
-            //Vector3 direction = player.transform.localPosition - transform.localPosition;
-            //transform.localRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
-            transform.LookAt(player.transform, Vector3.up);
-            //transform.localRotation = Quaternion.LookRotation(direction);
-
-            //TODO: 파이어볼 발사 
-            bossAction.DoPattern(2);
-        }
-    }
-
-
-    private IEnumerator CoolDown_Fireball()
-    {
-        bCanfireball = false;
-
-        float time = 0.0f;
-        time += fireballMaxCoolTime;
-        time += Random.Range(-attackDelayRandom, -attackDelayRandom);
-
-        yield return new WaitForSeconds(time);
-        bCanfireball = true;
-
-    }
-
+   
     #endregion
 
     #region Pattern2
-    private bool bCanCombo = true;
-    private float comboMaxCoolTime = 5.0f;
-    private bool CanComboAttack()
-    {
-        return bCanCombo;
-    }
-
-    private void DoComboAttack()
-    {
-        StartCoroutine(CoolDown_ComboAttack());
-        //TODO: 콤보 
-        // 이 공격 동안 슈퍼아머 상태 - 공격이 끝나면 슈퍼아머 변수 해제 
-        animator.SetBool("IsAction", true);
-        animator.SetInteger("Pattern", 1);
-    }
-
-    IEnumerator CoolDown_ComboAttack()
-    {
-        bCanCombo = false;
-
-        float time = 0.0f;
-        time += comboMaxCoolTime;
-        time += Random.Range(-attackDelayRandom, -attackDelayRandom);
-
-        yield return new WaitForSeconds(time);
-        bCanCombo = true;
-    }
-
-
+  
     #endregion
 
     #region Wandering
@@ -625,7 +512,7 @@ public class AIController_Boss_Dragon : AIController
             return;
 
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, usedDistance);
+        //Gizmos.DrawWireSphere(transform.position, usedDistance);
     }
 #endif
 }

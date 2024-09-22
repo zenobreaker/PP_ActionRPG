@@ -37,7 +37,7 @@ public class WeaponComponent : MonoBehaviour
     public bool GunMode { get => type == WeaponType.Gun; }
     public bool WarpMode { get => type == WeaponType.Warp; }
 
-    public bool IsEquippingMode()
+    public bool IsEquipped()
     {
         if (UnarmedMode)
             return false;
@@ -46,7 +46,7 @@ public class WeaponComponent : MonoBehaviour
         if (weapon == null)
             return false;
 
-        return weapon.Equipping;
+        return weapon.Equipped;
     }
 
     public Weapon GetEquippedWeapon()

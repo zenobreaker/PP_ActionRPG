@@ -16,11 +16,9 @@ namespace AI.BT.Nodes
         protected Func<BTNode.NodeState> onBegin = null;
         protected Func<BTNode.NodeState> onUpdate = null;
         protected Func<BTNode.NodeState> onEnd = null;
+        protected Func<BTNode.NodeState> onAbort = null;
 
-        protected GameObject owner;
         protected SO_Blackboard blackboard;
-
-        protected string nodeName; 
 
         #region Constructor
 
@@ -36,6 +34,7 @@ namespace AI.BT.Nodes
             this.onBegin = onBegin;
             this.onUpdate = onUpdate;
             this.onEnd = onEnd;
+            this.onAbort = OnAbort;
         }
 
 
@@ -48,6 +47,7 @@ namespace AI.BT.Nodes
             this.onBegin = onBegin;
             this.onUpdate = onUpdate;
             this.onEnd = onEnd;
+            this.onAbort = OnAbort;
         }
 
         #endregion
@@ -74,7 +74,7 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
-            Debug.Log($"Current Node Evaluate {nodeName} / {currActionState}");
+            //Debug.Log($"Current Node Evaluate {nodeName} / {currActionState}");
 
             if (currActionState == ActionState.Begin)
                 return onBegin?.Invoke() ?? BTNode.NodeState.Failure;
@@ -107,6 +107,16 @@ namespace AI.BT.Nodes
         {
             ChangeActionState(ActionState.Begin);
             return BTNode.NodeState.Success;
+        }
+
+        protected virtual BTNode.NodeState OnAbort()
+        {
+            return BTNode.NodeState.Abort;
+        }
+
+        public void AbortTask()
+        {
+            onAbort?.Invoke();  
         }
 
         public override string ToString()

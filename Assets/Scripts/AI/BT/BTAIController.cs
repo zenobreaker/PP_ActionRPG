@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using static StateComponent;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class BTAIController : MonoBehaviour
 {
@@ -72,7 +73,11 @@ public class BTAIController : MonoBehaviour
 
     private BehaviorTreeRunner btRunner;
 
+
+    private Enemy enemy; 
     protected PerceptionComponent perception;
+    protected StateComponent state;
+    protected WeaponComponent weapon;   
 
     Vector3 dest;
 
@@ -82,6 +87,10 @@ public class BTAIController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         blackboard = so_blackboard.Clone();
 
+
+        enemy = GetComponent<Enemy>();
+        state = GetComponent<StateComponent>(); 
+        weapon = GetComponent<WeaponComponent>();
         perception = GetComponent<PerceptionComponent>();
         Debug.Assert(perception != null);
     }
@@ -127,9 +136,12 @@ public class BTAIController : MonoBehaviour
 
         float distanceSquared = (player.transform.position - this.transform.position).sqrMagnitude;
 
-        if (attackRange <= distanceSquared)
+        if ( distanceSquared <= attackRange)
         {
             // 공격
+            SetActionMode();
+
+            return; 
         }
 
 
@@ -138,9 +150,14 @@ public class BTAIController : MonoBehaviour
 
     private void CreateBlackboardKey()
     {
+        // 모든 데코레이터노드가 해당 키로 비교한다. 
+        blackboard.SetValue<AIStateType>("AIStateType", AIStateType.Wait);
+
+        // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
         blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
         blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
         blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
+        blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
     }
 
     private RootNode CreateBTTree()
@@ -152,7 +169,7 @@ public class BTAIController : MonoBehaviour
 
         BlackboardConditionDecorator<AIStateType> waitDeco =
             new BlackboardConditionDecorator<AIStateType>("WaitDeco",waitNode, this.gameObject,
-            blackboard, "Wait",
+            blackboard, "AIStateType","Wait",
             CheckState);
 
 
@@ -170,7 +187,7 @@ public class BTAIController : MonoBehaviour
 
         BlackboardConditionDecorator<AIStateType> moveDeco =
             new BlackboardConditionDecorator<AIStateType>("MoveDeco", approachSequence, this.gameObject,
-            blackboard, "Approach",
+            blackboard, "AIStateType", "Approach",
             CheckState);
 
         // 순찰
@@ -198,14 +215,34 @@ public class BTAIController : MonoBehaviour
 
         BlackboardConditionDecorator<AIStateType> patrolDeco =
          new BlackboardConditionDecorator<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "Patrol",
+         blackboard, "AIStateType", "Patrol",
          CheckState);
 
+        // 공격 
+        SequenceNode attackSequence = new SequenceNode();
+        attackSequence.nodeName = "Attack";
+
+        TaskNode_Equip equipNode = new TaskNode_Equip(this.gameObject, blackboard, enemy.weaponType);
+
+        TaskNode_Action actionNode = new TaskNode_Action(this.gameObject, blackboard);
+
+        WaitNode attackWaitNode = new WaitNode(1.5f, 0.5f);
+        attackWaitNode.nodeName = "Attak_Wait";
+
+        attackSequence.AddChild(equipNode);
+        attackSequence.AddChild(actionNode);
+        attackSequence.AddChild(attackWaitNode);
+
+        BlackboardConditionDecorator<AIStateType> attackDeco =
+            new BlackboardConditionDecorator<AIStateType>("ActionDeco",
+            attackSequence, this.gameObject, blackboard, "AIStateType", "Action",
+            CheckState);
 
         selector.AddChild(waitDeco);
         selector.AddChild(patrolDeco);
         selector.AddChild(moveDeco);
-
+        selector.AddChild(attackDeco);
+        
         return new RootNode(this.gameObject, blackboard, selector);
     }
 
@@ -213,7 +250,7 @@ public class BTAIController : MonoBehaviour
     {
         if (this.type == type)
         {
-            Debug.Log($"Current AI State : {type}");
+            //Debug.Log($"Current AI State : {type}");
             return true;
         }
         else
@@ -228,7 +265,7 @@ public class BTAIController : MonoBehaviour
 
             return; 
         }
-        Debug.Log($"{this.gameObject.name} Target Loss!  - - 1");
+        //Debug.Log($"{this.gameObject.name} Target Loss!  - - 1");
         blackboard.SetValue<GameObject>("Target", null);
         //perception.OnValueChange?.Invoke();
     }
@@ -255,10 +292,17 @@ public class BTAIController : MonoBehaviour
         if (ApproachMode == true)
             return;
 
-        navMeshAgent.stoppingDistance = 2;
+        navMeshAgent.stoppingDistance = attackRange;
         ChangeType(AIStateType.Approach);
     }
 
+    public virtual void SetActionMode()
+    {
+        if (ActionMode == true)
+            return; 
+
+        ChangeType(AIStateType.Action);
+    }
 
     protected void ChangeType(AIStateType type)
     {

@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 namespace AI.BT.Nodes
 {
 
@@ -10,36 +12,40 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
+            //Debug.Log($"{nodeName} Sequence first = {currentRunningNodeIndex}");
+
             if (currentRunningNodeIndex != -1)
             {
                 NodeState result = children[currentRunningNodeIndex].Evaluate();
+
                 if (result == NodeState.Running)
                     return NodeState.Running;
-                else
+                else if (result == NodeState.Failure)
                 {
                     currentRunningNodeIndex = -1;
-                    if (result == NodeState.Failure)
-                        return NodeState.Failure;
+                    return NodeState.Failure;
                 }
+
             }
 
-            for (int i = 0; i < children.Count; i++)
-            {
-                if (i <= currentRunningNodeIndex)
-                    continue;
-                
-                currentRunningNodeIndex = i;
+            //Debug.Log($"{nodeName} Sequence second = {currentRunningNodeIndex}");
 
+            for (int i = currentRunningNodeIndex + 1; i < children.Count; i++)
+            {
+                currentRunningNodeIndex = i;
                 NodeState result = children[i].Evaluate();
+
                 switch (result)
                 {
                     case NodeState.Running:
                     return NodeState.Running;
                     case NodeState.Failure:
+                    currentRunningNodeIndex = -1;
                     return NodeState.Failure;
                 }
             }
 
+            currentRunningNodeIndex = -1;
             return NodeState.Success;
 
         }

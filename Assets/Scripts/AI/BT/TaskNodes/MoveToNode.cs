@@ -19,6 +19,8 @@ namespace AI.BT.TaskNodes
         public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard)
             : base(ownerObject, blackboard)
         {
+            nodeName = "MoveTo";
+
             agent = ownerObject.GetComponent<NavMeshAgent>();
             if (agent == null)
                 agent = ownerObject.AddComponent<NavMeshAgent>();

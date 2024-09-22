@@ -129,6 +129,7 @@ namespace AI.BT.CustomBTNodes
             Vector3 prevGoalPosition = goalPosition;
             // 지정한 지점이 없다면 인위적을 선택하여 처리 
             //TODO: 비동기나 코루틴으로 빼야할 듯한 로직 
+            //TODO: 코루틴 러너나 헬퍼로 넘겨준다.
             while (true)
             {
                 if (loopCount >= loopBreakMaxCount)
@@ -175,7 +176,7 @@ namespace AI.BT.CustomBTNodes
             if (distanceSquared <= agent.stoppingDistance 
                 || agent.remainingDistance <= agent.stoppingDistance)
             {
-                Debug.Log("도착");
+               // Debug.Log("도착");
                 return true;
             }
 

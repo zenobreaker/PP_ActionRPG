@@ -343,7 +343,7 @@ MonoBehaviour:
     HitImpactIndex: 0
     hitSoundName: Fist_Impact
     HitParticle: {fileID: 5024009746357069194, guid: 277c88633f53efb44b2dc6a966748827, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticlePositionOffset: {x: 0, y: 1, z: 0}
     HitParticleSacleOffset: {x: 2, y: 2, z: 2}
     bCanMove: 0
     Particle: {fileID: 0}

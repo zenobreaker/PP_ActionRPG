@@ -5,12 +5,12 @@ namespace AI.BT.Nodes
 {
     public class RootNode : BTNode
     {
-        private GameObject owner;
         private SO_Blackboard blackboard;
         private BTNode childNode;
 
         public RootNode(GameObject owner, SO_Blackboard blackboard, BTNode childNode)
         {
+            this.nodeName = "Root";
             this.owner = owner;
             this.blackboard = blackboard;
             this.childNode = childNode;
@@ -35,13 +35,13 @@ namespace AI.BT.Nodes
                     InitializeNode(child);
                 }
             }
-            // 데코레이터라면 세팅하고 다시 데코레이터의 자식으로 세팅
-            else if (node is DecoratorNode decoratorNode)
-            {
-                decoratorNode.SetOwnerObject(owner);
-                Debug.Log($"Set!!! {decoratorNode.nodeName}");
-                InitializeNode(decoratorNode.ChildNode);
-            }
+            //// 데코레이터라면 세팅하고 다시 데코레이터의 자식으로 세팅
+            //else if (node is DecoratorNode decoratorNode)
+            //{
+            //    decoratorNode.SetOwnerObject(owner);
+            //    Debug.Log($"Set!!! {decoratorNode.nodeName}");
+            //    InitializeNode(decoratorNode.ChildNode);
+            //}
             // 작업 노드라면 해당 노드에게 할당할 내용 전달
             else if (node is TaskNode TaskNode)
             {

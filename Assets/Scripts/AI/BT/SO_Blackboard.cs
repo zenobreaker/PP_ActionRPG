@@ -34,13 +34,15 @@ public class SO_Blackboard : ScriptableObject
 {
     private Dictionary<string, IBlackboardKey> keys = new Dictionary<string, IBlackboardKey>();
 
+    // 블랙보드의 특정 키가 변경될 때 발생
+    public event Action<string> OnValueChanged;
+
     // 새로운 키 추가
     public void AddKey<T>(string keyName)
     {
         if(!keys.ContainsKey(keyName))
             keys[keyName] = new BlackboardKey<T>(keyName);
     }
-
     // 데이터 설정 메서드
     public void SetValue<T>(string keyName, T value)
     {
@@ -49,6 +51,7 @@ public class SO_Blackboard : ScriptableObject
             if (key is BlackboardKey<T> typedKey)
             {
                 typedKey.SetValue(value);
+                OnValueChanged?.Invoke(keyName); // 값 변경 시 트리거되게
             }
             else
             {
@@ -61,6 +64,8 @@ public class SO_Blackboard : ScriptableObject
             BlackboardKey<T> newKey = new BlackboardKey<T>(keyName);
             newKey.SetValue(value);
             keys.Add(keyName, newKey);
+
+            //OnValueChanged?.Invoke(keyName); // 새로 추가된 것도 트리거 
         }
     }
 

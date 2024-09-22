@@ -76,8 +76,8 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] protected DoActionData[] subActionDatas;
     public WeaponType Type { get => type; }
 
-    private bool bEquipping;
-    public bool Equipping { get => bEquipping; }
+    private bool bEquipped;
+    public bool Equipped { get => bEquipped; }
     protected int currentComboCount = 0;
 
     protected GameObject rootObject;
@@ -133,14 +133,14 @@ public abstract class Weapon : MonoBehaviour
 
     public virtual void End_Equip()
     {
-        bEquipping = true;
+        bEquipped = true;
         state.SetIdleMode();
     }
 
     // �����ϴ� �ڽĿ� ���� ������ �� ������ ����
     public virtual void Unequip()
     {
-        bEquipping = false;
+        bEquipped = false;
     }
 
 

@@ -12,6 +12,7 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
+
             if (currentRunningNodeIndex != -1)
             {
                 // 이전에 실행 중이던 노드 평가하기
@@ -20,30 +21,30 @@ namespace AI.BT.Nodes
                 {
                     return NodeState.Running;
                 }
-                else
+                else if (result == NodeState.Success)
                 {
                     currentRunningNodeIndex = -1;
-                    if (result == NodeState.Success)
-                        return NodeState.Success;
+                    return NodeState.Success;
                 }
+
             }
 
-            for (int i = 0; i < children.Count; i++)
+            for (int i = currentRunningNodeIndex + 1; i < children.Count; i++)
             {
-                if (i <= currentRunningNodeIndex)
-                    continue;
-
                 currentRunningNodeIndex = i;
                 NodeState result = children[i].Evaluate();
+
                 switch (result)
                 {
                     case NodeState.Running:
                     return NodeState.Running;
                     case NodeState.Success:
+                    currentRunningNodeIndex = -1;
                     return NodeState.Success;
                 }
             }
 
+            currentRunningNodeIndex = -1;
             return NodeState.Failure;
         }
 

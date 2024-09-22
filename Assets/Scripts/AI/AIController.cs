@@ -211,7 +211,6 @@ public abstract class AIController : MonoBehaviour
         {
             if (hit.collider.gameObject.tag.Equals("Player") == false)
             {
-                Debug.Log("�ʿ� �� ���̿� ������ �ֱ���?");
                 SetWaitMode();
                 return;
             }
@@ -324,7 +323,7 @@ public abstract class AIController : MonoBehaviour
         {
             animator.Play("Arms", 1);
 
-            if (weapon.IsEquippingMode() == false)
+            if (weapon.IsEquipped() == false)
                 weapon.Begin_Equip();
 
             weapon.End_Equip();
