@@ -34,7 +34,7 @@ namespace AI.BT.CustomBTNodes
                 //T myValue = blackboard.GetValue<T>(key); 
                 //TODO: 제네릭에 대한 정리가 안되어 잇는 상태 
                 //if (!value.Equals(myValue))
-                if(condition(value) == false)
+                if(condition?.Invoke(value) == false)
                 {
                     //Debug.Log($"here to condition after : {myValue} / {key}");
                     AbortTask();

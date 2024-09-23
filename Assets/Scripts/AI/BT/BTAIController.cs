@@ -2,6 +2,8 @@ using AI.BT;
 using AI.BT.Nodes;
 using System;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,7 +13,7 @@ public abstract class BTAIController : MonoBehaviour
 {
     public enum AIStateType
     {
-        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Max,
+        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Prowl, Max,
     }
 
     protected AIStateType type;
@@ -22,6 +24,8 @@ public abstract class BTAIController : MonoBehaviour
     public bool EquipMode { get => type == AIStateType.Equip; }
     public bool ActionMode { get => type == AIStateType.Action; }
     public bool DamagedMode { get => type == AIStateType.Damaged; }
+
+    public bool ProwlMode { get => type == AIStateType.Prowl; }
 
     /// <summary>
     /// 공격 관련 
@@ -64,8 +68,11 @@ public abstract class BTAIController : MonoBehaviour
 
 
     [Header("UI")]
+    [SerializeField] protected bool bDrawDebug = false;
     [SerializeField] protected string uiStateName = "EnemyAIState";
 
+    protected TextMeshProUGUI userInterface;
+    protected Canvas uiStateCanvas;
 
     protected Animator animator;
     protected NavMeshAgent navMeshAgent;
@@ -108,11 +115,23 @@ public abstract class BTAIController : MonoBehaviour
         CreateBlackboardKey();
 
         btRunner = new BehaviorTreeRunner(CreateBTTree());
+
+        uiStateCanvas = UIHelpers.CreateBillboardCanvas(uiStateName, transform, Camera.main);
+
+        Transform t = uiStateCanvas.transform.FindChildByName("Txt_AIState");
+        userInterface = t.GetComponent<TextMeshProUGUI>();
+        userInterface.text = "";
+
     }
 
     protected virtual void Update()
     {
         btRunner?.OperateNode(bBT_DebugMode);
+
+        userInterface.gameObject.SetActive(bDrawDebug);
+
+        userInterface.text = type.ToString();
+        uiStateCanvas.transform.rotation = Camera.main.transform.rotation;
     }
 
     protected abstract void LateUpdate();
@@ -185,12 +204,20 @@ public abstract class BTAIController : MonoBehaviour
         ChangeType(AIStateType.Damaged);
     }
 
+    public virtual void SetProwlMode()
+    {
+        if (ProwlMode)
+            return;
+
+        ChangeType(AIStateType.Prowl);
+    }
+
     protected void ChangeType(AIStateType type)
     {
         Debug.Log($"new type : {type}");
         AIStateType prevType = this.type;
-        this.type = type;
         blackboard.SetValue("AIStateType", type);
+        this.type = type;
         OnAIStateTypeChanged?.Invoke(prevType, type);
     }
 

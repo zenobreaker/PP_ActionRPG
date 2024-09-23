@@ -137,12 +137,15 @@ public class BTAIController_Range : BTAIController
 
         TaskNode_Equip equipNode = new TaskNode_Equip(this.gameObject, blackboard, enemy.weaponType);
 
+        TaskNode_Targeting targetingNode = new TaskNode_Targeting(this.gameObject, blackboard);
+
         TaskNode_Action actionNode = new TaskNode_Action(this.gameObject, blackboard);
 
         WaitNode attackWaitNode = new WaitNode(attackDelay, attackDelayRandom);
         attackWaitNode.NodeName = "Attak_Wait";
 
         attackSequence.AddChild(equipNode);
+        attackSequence.AddChild(targetingNode);
         attackSequence.AddChild(actionNode);
         attackSequence.AddChild(attackWaitNode);
 

@@ -13023,9 +13023,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: radius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: bDrawDebug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: patrolPoints
       value: 
       objectReference: {fileID: 1781917019}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: maxDecidePattern
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7845690608406794497, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: m_RootOrder
       value: 19
@@ -13073,6 +13085,10 @@ PrefabInstance:
     - target: {fileID: 7845690608406794618, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: m_Name
       value: Enemy_Attack_BT
+      objectReference: {fileID: 0}
+    - target: {fileID: 7845690608406794618, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
@@ -14565,9 +14581,11 @@ MonoBehaviour:
   moveSpeed: 1
   radius: 5
   patrolPoints: {fileID: 1781917019}
+  bDrawDebug: 0
   uiStateName: EnemyAIState
   bBT_DebugMode: 0
   so_blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
+  maxDecidePattern: 0
 --- !u!195 &5108375825807144765
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -20516,6 +20534,10 @@ PrefabInstance:
     - target: {fileID: 7652825849562460762, guid: a75092679cfb0e940a28a2b39256d5c9, type: 3}
       propertyPath: m_Name
       value: Enemy_Range_BT
+      objectReference: {fileID: 0}
+    - target: {fileID: 7652825849562460762, guid: a75092679cfb0e940a28a2b39256d5c9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a75092679cfb0e940a28a2b39256d5c9, type: 3}

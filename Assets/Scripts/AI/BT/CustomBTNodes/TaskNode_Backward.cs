@@ -1,3 +1,4 @@
+using AI.BT.Helpers;
 using AI.BT.Nodes;
 using System;
 using System.Collections;
@@ -14,28 +15,26 @@ namespace AI.BT.CustomBTNodes
     /// <summary>
     /// 정찰 지점이 있다면 해당 지점으로 이동, 없다면 일정 구간 범위에서 랜덤한 곳으로 이동
     /// </summary>
-    public class TaskNode_Patrol : TaskNode
+    public class TaskNode_Backward : TaskNode
     {
 
         private BTAIController controller; 
         private NavMeshAgent agent;
-        //private NavMeshPath navMeshPath;
-        private PatrolPoints patrolPoints; 
+        private NavMeshPath navMeshPath;
         private Vector3 initPosition;
         private Vector3 goalPosition;
         private float radius;
-
-        private bool hasPatrolPoints;
 
         private int loopBreakMaxCount = 10;     // 루프를 강제로 탈출시킬 최대 수치 
         private int loopCount;
 
         public Action<Vector3> OnDestination;
+        private Coroutine backwardCoroutine;
 
-        public TaskNode_Patrol(GameObject ownerObject, SO_Blackboard blackboard, float radius)
+        public TaskNode_Backward(GameObject ownerObject, SO_Blackboard blackboard, float radius)
             : base(ownerObject, blackboard)
         {
-            nodeName = "Patrol";
+            nodeName = "Backward";
 
             controller = ownerObject.GetComponent<BTAIController>();
             agent = ownerObject.GetComponent<NavMeshAgent>();
@@ -61,19 +60,18 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Failure;
             }
 
-            loopCount = 0;
+            loopCount = 0; 
+            navMeshPath = null; 
             initPosition = goalPosition = agent.transform.position;
+            agent.updateRotation = false; 
 
-            patrolPoints = controller.PatrolPoints;
-            hasPatrolPoints = patrolPoints != null;
-
-            NavMeshPath path = CreateNavMeshPathRoutine();
+            backwardCoroutine = CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
             // 경로에 따른 처리 
-            if (path != null)
+            if (navMeshPath != null)
             {
                 OnDestination?.Invoke(goalPosition);
                 ChangeActionState(ActionState.Update);
-                agent.SetPath(path);
+                agent.SetPath(navMeshPath);
 
                 return NodeState.Running;
             }
@@ -101,7 +99,7 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Running;
             }
 
-
+            agent.updateRotation = true;
             return base.OnUpdate();
         }
 
@@ -112,23 +110,9 @@ namespace AI.BT.CustomBTNodes
             return base.OnEnd();
         }
 
-
-        private NavMeshPath CreateNavMeshPathRoutine()
+        private IEnumerator CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
-
-            if(hasPatrolPoints)
-            {
-                goalPosition = patrolPoints.GetMoveToPosition();
-
-                path = new NavMeshPath();
-                bool bCheck = agent.CalculatePath(goalPosition, path); 
-                Debug.Assert(bCheck);
-
-                patrolPoints.UpdateNextIndex();
-
-                return path; 
-            }
 
 
             Vector3 prevGoalPosition = goalPosition;
@@ -140,39 +124,53 @@ namespace AI.BT.CustomBTNodes
                 if (loopCount >= loopBreakMaxCount)
                 {
                     Debug.Log("Not find Goal Poistion");
-                    return null;
+                    break; 
                 }
 
-                loopCount++; 
+                loopCount++;
                 while (true)
                 {
-                    float x = UnityEngine.Random.Range(-radius * 0.5f, radius * 0.5f);
-                    float z = UnityEngine.Random.Range(-radius * 0.5f, radius * 0.5f);
+                    // 캐릭터의 현재 방향을 얻습니다.
+                    Vector3 forwardDirection = owner.transform.forward;
 
-                    goalPosition = new Vector3(x, 0, z) + initPosition;
+                    // 후방 방향은 현재 방향의 반대 방향입니다.
+                    Vector3 backwardDirection = -forwardDirection;
 
+                    // 후방으로 일직선 상의 좌표를 얻기 위해 z 축 값을 설정합니다.
+                    float z = UnityEngine.Random.Range(1.0f, radius);
+
+                    // 후방 방향으로 일정 거리만큼 이동한 좌표를 계산합니다.
+                    goalPosition = initPosition + backwardDirection * z;
+
+                    // 이전 목표 지점과 너무 가까운지 확인합니다.
                     if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
+                    {
                         break;
+                    }
                 }
 
+                // NavMesh 상에서 해당 좌표로 이동할 수 있는지 확인합니다.
                 path = new NavMeshPath();
-
-                if (agent.CalculatePath(goalPosition, path) == true)
+                if (agent.CalculatePath(goalPosition, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    //navMeshPath = path;
+                    navMeshPath = path;
                     loopCount = 0;
-                    return path; 
+                    // 유효한 경로가 있으면 루프를 종료하고 목표 좌표를 반환합니다.
+                    yield break;
                 }
+
+                yield return null;
             }
         }
 
 
         protected override NodeState OnAbort()
         {
-            //Debug.Log($"Patrol Abort / {currActionState}");
+            Debug.Log($"Prowl Abort / {currActionState}");
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
+            CoroutineHelper.Instance.StopHelperCoroutine(backwardCoroutine);
             return base.OnAbort();
         }
 
@@ -180,6 +178,7 @@ namespace AI.BT.CustomBTNodes
         {
             agent.ResetPath();
             agent.velocity = Vector3.zero;
+            agent.updateRotation = true;
             //agent.isStopped = true;
         }
         private bool CalcArrive()

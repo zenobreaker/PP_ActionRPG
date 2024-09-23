@@ -93,7 +93,7 @@ namespace AI.BT.TaskNodes
 
         protected override NodeState OnAbort()
         {
-            Debug.Log($"Move Abort / {currActionState}");
+            // Debug.Log($"Move Abort / {currActionState}");
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
