@@ -1,4 +1,5 @@
 using AI.BT.Nodes;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -102,9 +103,11 @@ namespace AI.BT.TaskNodes
 
         private bool CalcArrive()
         {
-            float distanceSquared = (target - agent.transform.position).sqrMagnitude;
-
-            if (distanceSquared <= agent.stoppingDistance)
+            float distanceSquared = (target - agent.transform.position).magnitude;
+            distanceSquared = Mathf.Floor(distanceSquared * 10) / 10;
+            
+            if (distanceSquared <= agent.stoppingDistance ||
+                agent.remainingDistance <= agent.stoppingDistance)
             {
                 Debug.Log("도착");
                 return true;

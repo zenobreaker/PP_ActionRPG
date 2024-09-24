@@ -10,6 +10,11 @@ namespace AI.BT.Nodes
     {
         private int currentRunningNodeIndex = -1;  // 현재 실행 중인 자식 추적하기 위한 변수
 
+        protected override void OnStart()
+        {
+
+        }
+
         public override NodeState Evaluate()
         {
 
@@ -46,6 +51,12 @@ namespace AI.BT.Nodes
 
             currentRunningNodeIndex = -1;
             return NodeState.Failure;
+        }
+        
+
+        protected override void OnEnd()
+        {
+            
         }
 
     }

@@ -13,7 +13,7 @@ public abstract class BTAIController : MonoBehaviour
 {
     public enum AIStateType
     {
-        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Prowl, Max,
+        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Max,
     }
 
     protected AIStateType type;
@@ -25,7 +25,18 @@ public abstract class BTAIController : MonoBehaviour
     public bool ActionMode { get => type == AIStateType.Action; }
     public bool DamagedMode { get => type == AIStateType.Damaged; }
 
-    public bool ProwlMode { get => type == AIStateType.Prowl; }
+    public enum WaitCondition
+    {
+        None = 0, Idle = 1, Backward, Strafe,
+    }
+
+    protected WaitCondition waitCondition;
+    public bool NoneCondition { get => waitCondition == WaitCondition.None; }
+    public bool IdleCondition { get => waitCondition == WaitCondition.Idle; }
+    public bool StrafeCondition { get => waitCondition == WaitCondition.Strafe; }
+    public bool BackwardCondition { get => waitCondition == WaitCondition.Backward; }
+    public WaitCondition MyWaitCondition { get => waitCondition; }
+
 
     /// <summary>
     /// 공격 관련 
@@ -162,6 +173,16 @@ public abstract class BTAIController : MonoBehaviour
         blackboard.SetValue<GameObject>("Target", null);
     }
 
+    protected virtual bool CheckMode()
+    {
+        bool check = false;
+        check |= ActionMode;
+        check |= DamagedMode;
+
+
+        return check;
+    }
+
     public virtual void SetWaitMode()
     {
         if (WaitMode == true)
@@ -204,22 +225,59 @@ public abstract class BTAIController : MonoBehaviour
         ChangeType(AIStateType.Damaged);
     }
 
-    public virtual void SetProwlMode()
-    {
-        if (ProwlMode)
-            return;
-
-        ChangeType(AIStateType.Prowl);
-    }
 
     protected void ChangeType(AIStateType type)
     {
-        Debug.Log($"new type : {type}");
+        //Debug.Log($"new type : {type}");
         AIStateType prevType = this.type;
         blackboard.SetValue("AIStateType", type);
         this.type = type;
         OnAIStateTypeChanged?.Invoke(prevType, type);
     }
+
+
+
+    public void SetWaitState_NoneCondition()
+    {
+        if (NoneCondition)
+            return;
+
+        ChangeWaitCondition(WaitCondition.None);
+    }
+
+
+    public virtual void SetWaitState_IdleCondition()
+    {
+        if (IdleCondition)
+            return;
+
+        ChangeWaitCondition(WaitCondition.Idle);
+    }
+
+    public virtual void SetWaitState_StrafeCondition()
+    {
+        if (StrafeCondition)
+            return;
+
+        navMeshAgent.stoppingDistance = 0;
+        ChangeWaitCondition(WaitCondition.Strafe);
+    }
+
+    public virtual void SetWaitState_BackwardCondition()
+    {
+        if (BackwardCondition)
+            return;
+
+        navMeshAgent.stoppingDistance = 0;
+        ChangeWaitCondition(WaitCondition.Backward);
+    }
+
+    protected virtual void ChangeWaitCondition(WaitCondition condition)
+    {
+        WaitCondition prevCondition = this.waitCondition;
+        waitCondition = condition;
+    }
+
 
 
     public void StopMovement()

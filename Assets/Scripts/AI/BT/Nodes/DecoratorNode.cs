@@ -52,16 +52,26 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
+
+            NodeState result = NodeState.Failure;
             if (ShouldExecute())
             {
-                return childNode.Evaluate();
+                result = childNode.Evaluate();
             }
 
-            return NodeState.Failure;
+            if(result != NodeState.Running)
+                OnEnd();
+
+            return result;
         }
 
         protected abstract bool ShouldExecute();
 
+        protected abstract void OnEnd();
+
+
+        //TODO: Task들이 변화할 때 호출될 이벤트
+        //protected virtual void OnResultChanged()
 
         protected virtual void OnValueChanged(string changedKey)
         {

@@ -131,47 +131,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   doActionDatas:
-  - bCanMove: 0
+  - bDownable: 0
+    bLauncher: 0
+    Power: 0
+    Distance: 10
+    heightValue: 0
+    StopFrame: 2
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
+    HitImpactIndex: 0
+    hitSoundName: 
+    HitParticle: {fileID: 0}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 0, y: 0, z: 0}
+    bCanMove: 0
+    Particle: {fileID: 0}
+  - bDownable: 0
+    bLauncher: 0
     Power: 0
     Distance: 0
     heightValue: 0
     StopFrame: 0
-    Particle: {fileID: 0}
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
     HitImpactIndex: 0
+    hitSoundName: 
     HitParticle: {fileID: 0}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 0, y: 0, z: 0}
-  - bCanMove: 0
+    bCanMove: 0
+    Particle: {fileID: 0}
+  - bDownable: 0
+    bLauncher: 0
     Power: 0
     Distance: 0
     heightValue: 0
     StopFrame: 0
-    Particle: {fileID: 0}
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
     HitImpactIndex: 0
+    hitSoundName: 
     HitParticle: {fileID: 0}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 0, y: 0, z: 0}
-  - bCanMove: 0
-    Power: 0
-    Distance: 0
-    heightValue: 0
-    StopFrame: 0
+    bCanMove: 0
     Particle: {fileID: 0}
-    HitImpactIndex: 0
-    HitParticle: {fileID: 0}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
-    HitParticleSacleOffset: {x: 0, y: 0, z: 0}
-  - bCanMove: 0
+  - bDownable: 0
+    bLauncher: 0
     Power: 0
     Distance: 2
     heightValue: 5
     StopFrame: 5
-    Particle: {fileID: 0}
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
     HitImpactIndex: 0
+    hitSoundName: 
     HitParticle: {fileID: 0}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 0, y: 0, z: 0}
+    bCanMove: 0
+    Particle: {fileID: 0}
+  subActionDatas: []
+  isAnimating: 0
+  comboObjData: {fileID: 0}
   index: 0
+  slashTransformName: Slash_Transform
+  startPosObj: {fileID: 0}
+  endPosObj: {fileID: 0}
+  particlePrefabs: []
+  particleTransformNames:
+  - StartPos
   holsterName: Holster_Sword
   handName: Hand_Sword
 --- !u!136 &7114741318296942556

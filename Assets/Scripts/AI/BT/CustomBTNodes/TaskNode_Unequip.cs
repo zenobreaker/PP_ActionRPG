@@ -79,16 +79,16 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
-            if (weapon == null)
-            {
-                ChangeActionState(ActionState.End);
-                return NodeState.Abort;
-            }
+            //if (weapon == null)
+            //{
+            //    ChangeActionState(ActionState.End);
+            //    return NodeState.Abort;
+            //}
 
-            bool bEquippd = weapon.IsEquipped();
-            // 장착이 완료가 된 상태가 아니라면
-            if (bEquippd )
-                weapon.SetUnarmedMode();
+            //bool bEquippd = weapon.IsEquipped();
+            //// 장착이 완료가 된 상태가 아니라면
+            //if (bEquippd )
+            //    weapon.SetUnarmedMode();
 
             return base.OnAbort();
         }

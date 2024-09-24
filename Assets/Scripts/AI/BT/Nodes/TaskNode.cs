@@ -11,6 +11,7 @@ namespace AI.BT.Nodes
             Begin, Update, End
         }
 
+        protected bool bRunning = false;
         protected ActionState currActionState;
 
         protected Func<BTNode.NodeState> onBegin = null;
@@ -89,7 +90,7 @@ namespace AI.BT.Nodes
 
         protected virtual BTNode.NodeState OnBegin()
         {
-
+            bRunning = true;
             ChangeActionState(ActionState.Update);
             return BTNode.NodeState.Running;
         }
@@ -105,6 +106,7 @@ namespace AI.BT.Nodes
 
         protected virtual BTNode.NodeState OnEnd()
         {
+            bRunning = false; 
             ChangeActionState(ActionState.Begin);
             return BTNode.NodeState.Success;
         }

@@ -6,39 +6,39 @@ using UnityEngine;
 
 public class BTAIController_Melee : BTAIController
 {
+
+
+  
     /// <summary>
     /// 0 = action 1 = backstep 2 = straife
     /// </summary>
-    [SerializeField] int maxDecidePattern = 0;
+    [SerializeField] int maxWaitCondtionPattern = 0;
 
     protected override void Start()
     {
         base.Start();
+
+        waitCondition = WaitCondition.None;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        userInterface.text += "\n" + waitCondition.ToString();
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
 
-        if(ProwlMode)
-        {
-            // 해당 모드 중에 이동 방향에 다른 무언가가 있는지 검사하기 
-            bool bResult = CheckSafetyProwl();
-            if(bResult)
-            {
-                return; 
-            }
-            else
-            {
-                // 한프레임 뒤에 
-                SetWaitMode();
-                
-                return;
-            }
-        }
+        if (CheckMode())
+            return; 
+
+        if (NoneCondition == false)
+            return; 
 
         GameObject player = perception.GetPercievedPlayer();
-        if (player == null && ProwlMode == false)
+        if (player == null)
         {
             //SetWaitMode();
             SetPatrolMode();
@@ -47,30 +47,30 @@ public class BTAIController_Melee : BTAIController
         }
 
         float distanceSquared = Vector3.Distance(player.transform.position, this.transform.position);
-
+        distanceSquared = Mathf.Floor(distanceSquared * 10 ) / 10 ;
         if (distanceSquared <= attackRange)
         {
             // 배회 or 공격 
-            DeicidePattern();
+            //DeicidePattern();
             // 공격
-            //SetActionMode();
+            SetActionMode();
 
             return;
         }
-
 
         SetApproachMode();
     }
 
     protected override void LateUpdate()
     {
-        if (WaitMode)
+        if (WaitMode && IdleCondition)
         {
             animator.SetFloat("SpeedY", 0.0f);
             return;
         }
         else
         {
+            animator.SetFloat("SpeedX", navMeshAgent.velocity.z); 
             animator.SetFloat("SpeedY", navMeshAgent.velocity.magnitude);
         }
     }
@@ -87,7 +87,6 @@ public class BTAIController_Melee : BTAIController
         blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
         blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
         blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
-        blackboard.SetValue<AIStateType>("Prowl", AIStateType.Prowl);
     }
 
     protected override RootNode CreateBTTree()
@@ -116,26 +115,71 @@ public class BTAIController_Melee : BTAIController
         // 서비스 
         SelectorNode selector = new SelectorNode();
 
-        // 대기 
-        WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
+        // WaitMode
+        SelectorNode waitSelector = new SelectorNode();
+        {
+            waitSelector.NodeName = "WaitSelector";
+
+            // 대기 
+            WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
+            Decorator_WaitCondition idleDeco = new Decorator_WaitCondition(waitNode, this.gameObject,
+                WaitCondition.Idle);
+            idleDeco.NodeName = "Idle";
+
+            // 뒷걸음 
+            ParallelNode waitBackwardParallel = new ParallelNode(ParallelNode.FinishCondition.All);
+            {
+                waitBackwardParallel.NodeName = "WaitBackWardParallel";
+
+                WaitNode bwWaitNode = new WaitNode(waitDelay, waitDelayRandom);
+                TaskNode_Speed bwSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
+                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
+                bwWaitNode.NodeName = "Backward";
+                SequenceNode sequenceNode = new SequenceNode();
+                sequenceNode.AddChild(bwSpeed);
+                sequenceNode.AddChild(backward);
+
+                waitBackwardParallel.AddChild(bwWaitNode);
+                waitBackwardParallel.AddChild(sequenceNode);
+            }
+            Decorator_WaitCondition backwardDeco = new Decorator_WaitCondition(
+                waitBackwardParallel, this.gameObject, WaitCondition.Backward);
+            backwardDeco.NodeName = " Backward";
+
+            // 옆 걸음
+            ParallelNode strafeParallel = new ParallelNode(ParallelNode.FinishCondition.All);
+            {
+                strafeParallel.NodeName = "StarfeParallel";
+
+                WaitNode sfWaitNode = new WaitNode(5.0f, 0.5f);
+                sfWaitNode.NodeName = "StrafeWait";
+                TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
+                TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 2.5f);
+                strafeNode.OnDestination += OnDestination;
+                SequenceNode sequenceNode = new SequenceNode();
+                sequenceNode.AddChild(sfSpeed);
+                sequenceNode.AddChild(strafeNode);
+
+                strafeParallel.AddChild(sfWaitNode);
+                strafeParallel.AddChild(sequenceNode);
+            }
+            Decorator_WaitCondition strafeDeco = new Decorator_WaitCondition(
+                strafeParallel, this.gameObject, WaitCondition.Strafe);
+            strafeDeco.NodeName = "Strafe";
+
+
+            waitSelector.AddChild(idleDeco);
+            waitSelector.AddChild(backwardDeco);
+            waitSelector.AddChild(strafeDeco);
+        }
 
         BlackboardConditionDecorator<AIStateType> waitDeco =
-            new BlackboardConditionDecorator<AIStateType>("WaitDeco", waitNode, this.gameObject,
+            new BlackboardConditionDecorator<AIStateType>("WaitDeco", waitSelector, this.gameObject,
             blackboard, "AIStateType", "Wait",
             CheckState);
 
-        // 배회 
-        SequenceNode bwSequenceNode = new SequenceNode();
-        TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 5.0f);
-        WaitNode bwWaitNode = new WaitNode(2.0f, 0.5f);
-        bwWaitNode.NodeName = "Prowl";
+      
 
-        bwSequenceNode.AddChild(backward);
-        bwSequenceNode.AddChild(bwWaitNode);
-
-        BlackboardConditionDecorator<AIStateType> prowlDeco =
-            new BlackboardConditionDecorator<AIStateType>("BackwardDeco", bwSequenceNode,
-            this.gameObject, blackboard, "AIStateType", "Prowl", CheckState);
         // 타겟으로 이동
         SequenceNode approachSequence = new SequenceNode();
 
@@ -194,9 +238,12 @@ public class BTAIController_Melee : BTAIController
         WaitNode attackWaitNode = new WaitNode(attackDelay, attackDelayRandom);
         attackWaitNode.NodeName = "Attak_Wait";
 
+        TaskNode_ActionEnd actionEnd = new TaskNode_ActionEnd(this.gameObject, blackboard);
+
         attackSequence.AddChild(equipNode);
         attackSequence.AddChild(actionNode);
         attackSequence.AddChild(attackWaitNode);
+        attackSequence.AddChild(actionEnd);
 
         BlackboardConditionDecorator<AIStateType> attackDeco =
             new BlackboardConditionDecorator<AIStateType>("ActionDeco",
@@ -204,7 +251,6 @@ public class BTAIController_Melee : BTAIController
             CheckState);
 
         selector.AddChild(waitDeco);
-        selector.AddChild(prowlDeco);
         selector.AddChild(patrolDeco);
         selector.AddChild(moveDeco);
         selector.AddChild(attackDeco);
@@ -225,19 +271,49 @@ public class BTAIController_Melee : BTAIController
             return false;
     }
 
-
-    private void DeicidePattern()
+    public override void SetWaitMode()
     {
-        int num = Random.Range(0, maxDecidePattern);
+        base.SetWaitMode();
 
-
-        Debug.Log($"Decide Pattern {num}");
-
-        if (num == 0)
-            SetActionMode();
-        else if (num == 1)
-            SetProwlMode();
+        //waitCondition = WaitCondition.Idle;
+        DeicideWaitCondition();
     }
+
+    private void DeicideWaitCondition()
+    {
+        int maxConditionValue = maxWaitCondtionPattern;
+        GameObject player = perception.GetPercievedPlayer();
+        if (player == null)
+            maxConditionValue = (int)WaitCondition.Idle;
+
+        int num = Random.Range(1, maxConditionValue);
+
+
+        WaitCondition codition = (WaitCondition)num;
+        Debug.Log($"Decide Wait Condtion  {codition}");
+
+        switch (codition)
+        {
+            case WaitCondition.Idle:
+            SetWaitState_IdleCondition();
+            break;
+
+            case WaitCondition.Backward:
+            //SetWaitState_StrafeCondition();
+            SetWaitState_BackwardCondition();
+            break;
+
+            case WaitCondition.Strafe:
+            SetWaitState_StrafeCondition();
+            break;
+
+            default:
+                SetWaitState_IdleCondition();
+            break;
+        }
+
+    }
+
 
     // 배회 경로 상에 무언가가 있는지 체크 
     private bool CheckSafetyProwl()

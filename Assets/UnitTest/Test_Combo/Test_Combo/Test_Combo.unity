@@ -6117,7 +6117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1328021928562530, guid: f8939751ecda65149b49d5c6efa7076f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4120084873343476, guid: f8939751ecda65149b49d5c6efa7076f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13027,8 +13027,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: waitDelay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: bDrawDebug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: attackDelay
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: patrolPoints
@@ -13037,6 +13045,14 @@ PrefabInstance:
     - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: maxDecidePattern
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: attackDelayRandom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: maxWaitCondtionPattern
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7845690608406794497, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: m_RootOrder
@@ -14585,7 +14601,7 @@ MonoBehaviour:
   uiStateName: EnemyAIState
   bBT_DebugMode: 0
   so_blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
-  maxDecidePattern: 0
+  maxWaitCondtionPattern: 0
 --- !u!195 &5108375825807144765
 NavMeshAgent:
   m_ObjectHideFlags: 0

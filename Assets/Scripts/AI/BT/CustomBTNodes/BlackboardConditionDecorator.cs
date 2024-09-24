@@ -23,6 +23,11 @@ namespace AI.BT.CustomBTNodes
             this.condition = condition;
         }
 
+        protected override void OnEnd()
+        {
+           //
+        }
+
         //TODO: 아래 이벤트용 함수는 정리가 필요하다.
         protected override void OnValueChanged(string changedKey)
         {
@@ -36,7 +41,7 @@ namespace AI.BT.CustomBTNodes
                 //if (!value.Equals(myValue))
                 if(condition?.Invoke(value) == false)
                 {
-                    //Debug.Log($"here to condition after : {myValue} / {key}");
+                    Debug.Log($"{nodeName} Abort Call");
                     AbortTask();
                 }
             }

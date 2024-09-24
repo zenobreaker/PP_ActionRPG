@@ -153,6 +153,7 @@ namespace AI.BT.CustomBTNodes
                 path = new NavMeshPath();
                 if (agent.CalculatePath(goalPosition, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
+                    initPosition = goalPosition;
                     navMeshPath = path;
                     loopCount = 0;
                     // 유효한 경로가 있으면 루프를 종료하고 목표 좌표를 반환합니다.
@@ -166,7 +167,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
-            Debug.Log($"Prowl Abort / {currActionState}");
+            //Debug.Log($"Backward Abort / {currActionState}");
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 

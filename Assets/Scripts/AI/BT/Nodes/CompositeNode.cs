@@ -10,11 +10,16 @@ namespace AI.BT.Nodes
 
         public List<BTNode> Children => children;
 
+        protected bool hasFirstStart = true; 
+
         public void AddChild(BTNode node)
         {
             children.Add(node);
         }
 
+        protected abstract void OnStart();
+        
+        protected abstract void OnEnd();
         public void AbortTask()
         {
             foreach(BTNode node in children)
