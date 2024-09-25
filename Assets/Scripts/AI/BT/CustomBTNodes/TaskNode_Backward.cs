@@ -2,13 +2,8 @@ using AI.BT.Helpers;
 using AI.BT.Nodes;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.XR;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -114,11 +109,8 @@ namespace AI.BT.CustomBTNodes
         {
             NavMeshPath path = null;
 
-
             Vector3 prevGoalPosition = goalPosition;
             // 지정한 지점이 없다면 인위적을 선택하여 처리 
-            //TODO: 비동기나 코루틴으로 빼야할 듯한 로직 
-            //TODO: 코루틴 러너나 헬퍼로 넘겨준다.
             while (true)
             {
                 if (loopCount >= loopBreakMaxCount)
@@ -153,6 +145,9 @@ namespace AI.BT.CustomBTNodes
                 path = new NavMeshPath();
                 if (agent.CalculatePath(goalPosition, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
+                    if (CanNextStep(goalPosition))
+                        continue;
+
                     initPosition = goalPosition;
                     navMeshPath = path;
                     loopCount = 0;
@@ -181,6 +176,21 @@ namespace AI.BT.CustomBTNodes
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
             //agent.isStopped = true;
+        }
+
+        private bool CanNextStep(Vector3 pos)
+        {
+            Vector3 direction = pos - owner.transform.localPosition;
+            float posToDistance = direction.magnitude;
+
+            Vector3 myPosition = owner.transform.localPosition + Vector3.up;
+            Ray ray = new Ray(myPosition, direction);
+
+            bool bCheck = true;
+            if (Physics.Raycast(ray, posToDistance))
+                bCheck = false;
+
+            return bCheck;
         }
         private bool CalcArrive()
         {

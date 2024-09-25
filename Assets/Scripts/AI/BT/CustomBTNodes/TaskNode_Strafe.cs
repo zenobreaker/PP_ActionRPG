@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.PlayerSettings;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -206,6 +207,9 @@ namespace AI.BT.CustomBTNodes
                 path = new NavMeshPath();
                 if (agent.CalculatePath(goalPosition, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
+                    if (CanNextStep(goalPosition))
+                        continue;
+
                     navMeshPath = path;
                     loopCount = 0;
                     // 유효한 경로가 있으면 루프를 종료하고 목표 좌표를 반환합니다.
@@ -240,6 +244,22 @@ namespace AI.BT.CustomBTNodes
             agent.updateRotation = true;
             //agent.isStopped = true;
         }
+
+        private bool CanNextStep(Vector3 pos)
+        {
+            Vector3 direction = pos - owner.transform.localPosition; 
+            float posToDistance = direction.magnitude;
+
+            Vector3 myPosition = owner.transform.localPosition + Vector3.up;
+            Ray ray = new Ray(myPosition, direction);
+
+            bool bCheck = true; 
+            if(Physics.Raycast(ray, posToDistance))
+                bCheck = false;
+
+            return bCheck;
+        }
+
         private bool CalcArrive()
         {
             float distanceSquared = (goalPosition - agent.transform.position).magnitude;

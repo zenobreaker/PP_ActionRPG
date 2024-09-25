@@ -3,7 +3,6 @@ using AI.BT.Nodes;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -96,6 +95,8 @@ public abstract class BTAIController : MonoBehaviour
     [SerializeField] protected SO_Blackboard so_blackboard;
     protected SO_Blackboard blackboard;
 
+
+    [SerializeField] protected float tickInterval = 0.1f;
     protected BehaviorTreeRunner btRunner;
 
 
@@ -125,20 +126,18 @@ public abstract class BTAIController : MonoBehaviour
 
         CreateBlackboardKey();
 
-        btRunner = new BehaviorTreeRunner(CreateBTTree());
-
         uiStateCanvas = UIHelpers.CreateBillboardCanvas(uiStateName, transform, Camera.main);
 
         Transform t = uiStateCanvas.transform.FindChildByName("Txt_AIState");
         userInterface = t.GetComponent<TextMeshProUGUI>();
         userInterface.text = "";
 
+        //btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
+        //btRunner.RunBehaviorTree(0.1f);
     }
 
     protected virtual void Update()
     {
-        btRunner?.OperateNode(bBT_DebugMode);
-
         userInterface.gameObject.SetActive(bDrawDebug);
 
         userInterface.text = type.ToString();

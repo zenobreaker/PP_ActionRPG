@@ -1,7 +1,4 @@
 using AI.BT.Nodes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AI.BT.CustomBTNodes
@@ -15,8 +12,13 @@ namespace AI.BT.CustomBTNodes
         BTAIController.WaitCondition waitCondition;
         BTAIController controller; 
 
-        public Decorator_WaitCondition(string nodeName, BTNode childNode, GameObject owner = null, SO_Blackboard blackboard = null, 
-            string boardKey = null, string key = null, BTAIController.WaitCondition waitCondition = BTAIController.WaitCondition.None) 
+        public Decorator_WaitCondition(string nodeName,
+            BTNode childNode,
+            GameObject owner = null, 
+            SO_Blackboard blackboard = null, 
+            string boardKey = null,
+            string key = null, 
+            BTAIController.WaitCondition waitCondition = BTAIController.WaitCondition.None) 
             : base(nodeName, childNode, owner, blackboard, boardKey, key)
         {
             controller = owner.GetComponent<BTAIController>();

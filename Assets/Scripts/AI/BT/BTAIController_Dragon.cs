@@ -5,7 +5,7 @@ using AI.BT.TaskNodes;
 using UnityEditor;
 using UnityEngine;
 
-public class BTAIController_Melee : BTAIController
+public class BTAIController_Dragon : BTAIController
 {
 
 

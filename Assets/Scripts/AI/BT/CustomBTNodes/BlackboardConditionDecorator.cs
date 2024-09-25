@@ -1,5 +1,4 @@
 using AI.BT.Nodes;
-using System;
 using UnityEngine;
 
 namespace AI.BT.CustomBTNodes
@@ -10,22 +9,22 @@ namespace AI.BT.CustomBTNodes
     /// </summary>
     public class BlackboardConditionDecorator<T> : DecoratorNode
     {
-        protected Predicate<T> condition;
 
         public BlackboardConditionDecorator(string nodeName, BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
             string boardKey = null,
             string key = null,
-            Predicate<T> condition = null) :
-            base(nodeName, childNode, owner, blackboard, boardKey, key)
+            BB_KeyQuery keyQuery = BB_KeyQuery.Equals
+           ) :
+            base(nodeName, childNode, owner, blackboard, boardKey, key, keyQuery)
         {
-            this.condition = condition;
+            
         }
 
         protected override void OnEnd()
         {
-           //
+           base.OnEnd();
         }
 
         //TODO: 아래 이벤트용 함수는 정리가 필요하다.
@@ -34,24 +33,22 @@ namespace AI.BT.CustomBTNodes
             // 여기에 등록된 키값이랑 값이 변경되는 키값이랑 같은 경우 
             if (changedKey == boardKey)
             {
-                T value = blackboard.GetValue<T>(boardKey);
-                //Debug.Log($"here to condition check previous : {value} / {key}");
-                //T myValue = blackboard.GetValue<T>(key); 
-                //TODO: 제네릭에 대한 정리가 안되어 잇는 상태 
-                //if (!value.Equals(myValue))
-                if(condition?.Invoke(value) == false)
+                // 비교 했을 때 다르다면?
+                if(CompareValueToQuery<T>(changedKey) == false)
                 {
-                    Debug.Log($"{nodeName} Abort Call");
                     AbortTask();
                 }
+                
             }
         }
 
         protected override bool ShouldExecute()
         {
-            T value = blackboard.GetValue<T>(key);
-           
-            return condition(value);
+            //T value = blackboard.GetValue<T>(key);
+
+            bool result = CompareValueToQuery<T>(boardKey);
+
+            return result;
         }
 
     }

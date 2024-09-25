@@ -87,7 +87,7 @@ public class BTAIController_Range : BTAIController
 
         BlackboardConditionDecorator<AIStateType> damagedDeco =
             new BlackboardConditionDecorator<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", "Damaged", CheckState);
+            this.gameObject, blackboard, "AIStateType", "Damaged");
 
         DamagedSelector.AddChild(damagedDeco);
 
@@ -99,8 +99,7 @@ public class BTAIController_Range : BTAIController
 
         BlackboardConditionDecorator<AIStateType> waitDeco =
             new BlackboardConditionDecorator<AIStateType>("WaitDeco", waitNode, this.gameObject,
-            blackboard, "AIStateType", "Wait",
-            CheckState);
+            blackboard, "AIStateType", "Wait");
 
 
         // 순찰
@@ -128,8 +127,7 @@ public class BTAIController_Range : BTAIController
 
         BlackboardConditionDecorator<AIStateType> patrolDeco =
          new BlackboardConditionDecorator<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "AIStateType", "Patrol",
-         CheckState);
+         blackboard, "AIStateType", "Patrol");
 
         // 공격 
         SequenceNode attackSequence = new SequenceNode();
@@ -151,8 +149,7 @@ public class BTAIController_Range : BTAIController
 
         BlackboardConditionDecorator<AIStateType> attackDeco =
             new BlackboardConditionDecorator<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, "AIStateType", "Action",
-            CheckState);
+            attackSequence, this.gameObject, blackboard, "AIStateType", "Action");
 
         selector.AddChild(waitDeco);
         selector.AddChild(patrolDeco);
