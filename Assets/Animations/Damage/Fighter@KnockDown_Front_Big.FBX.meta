@@ -1011,8 +1011,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.8239384
+      - time: 0.041856106
         functionName: Begin_DownCondition
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: dc33fbfaf46b638449a0ff68433fa5f9, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9602649
+        functionName: End_DownCondition
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: dc33fbfaf46b638449a0ff68433fa5f9, type: 3}
         floatParameter: 0

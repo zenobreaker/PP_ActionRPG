@@ -8323,16 +8323,16 @@ AnimatorStateMachine:
     m_Position: {x: 370, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7402159934407835342}
-    m_Position: {x: 290, y: -20, z: 0}
+    m_Position: {x: 290, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8693325693852699414}
     m_Position: {x: 540, y: -20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2042650609781806223}
-    m_Position: {x: 740, y: 70, z: 0}
+    m_Position: {x: 810, y: -20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1876446397422963649}
-    m_Position: {x: 530, y: -150, z: 0}
+    m_Position: {x: 280, y: -100, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -4942739927983886016}

@@ -40,9 +40,18 @@ namespace AI.BT.CustomBTNodes
             onEnd = OnEnd;
             onAbort = OnAbort;
         }
+
+        private bool AgentCheck()
+        {
+            bool bCheck = true;
+            bCheck &= agent != null;
+            bCheck &= agent.enabled;
+
+            return bCheck;
+        }
         protected override NodeState OnBegin()
         {
-            if (agent == null || blackboard == null)
+            if (AgentCheck() == false || blackboard == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -79,7 +88,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnUpdate()
         {
-            if (agent == null || CheckPath() == false)
+            if (AgentCheck() == false || CheckPath() == false)
             {
                 ChangeActionState(ActionState.End);
                 ResetAgent();
@@ -136,16 +145,16 @@ namespace AI.BT.CustomBTNodes
 
                     // 이전 목표 지점과 너무 가까운지 확인합니다.
                     if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
-                    {
                         break;
-                    }
                 }
 
                 // NavMesh 상에서 해당 좌표로 이동할 수 있는지 확인합니다.
                 path = new NavMeshPath();
-                if (agent.CalculatePath(goalPosition, path) && path.status == NavMeshPathStatus.PathComplete)
+                if (AgentCheck() && 
+                    agent.CalculatePath(goalPosition, path) 
+                    && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    if (CanNextStep(goalPosition))
+                    if (CanNextStep(goalPosition) == false )
                         continue;
 
                     initPosition = goalPosition;
@@ -166,12 +175,17 @@ namespace AI.BT.CustomBTNodes
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
+            loopCount = 0;
+
             CoroutineHelper.Instance.StopHelperCoroutine(backwardCoroutine);
             return base.OnAbort();
         }
 
         private void ResetAgent()
         {
+            if (AgentCheck() == false)
+                return;
+
             agent.ResetPath();
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
@@ -181,7 +195,7 @@ namespace AI.BT.CustomBTNodes
         private bool CanNextStep(Vector3 pos)
         {
             Vector3 direction = pos - owner.transform.localPosition;
-            float posToDistance = direction.magnitude;
+            float posToDistance = direction.magnitude * 2.0f;
 
             Vector3 myPosition = owner.transform.localPosition + Vector3.up;
             Ray ray = new Ray(myPosition, direction);
@@ -190,6 +204,7 @@ namespace AI.BT.CustomBTNodes
             if (Physics.Raycast(ray, posToDistance))
                 bCheck = false;
 
+            Debug.Log($"{owner.name} Backwalk avoid ? : {bCheck}");
             return bCheck;
         }
         private bool CalcArrive()
@@ -208,6 +223,10 @@ namespace AI.BT.CustomBTNodes
 
         private bool CheckPath()
         {
+            if (AgentCheck() == false)
+                return false;
+
+
             NavMeshPath path = new NavMeshPath();
             return agent.CalculatePath(goalPosition, path);
         }

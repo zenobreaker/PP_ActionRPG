@@ -39,7 +39,7 @@ public class OtherStateColliderComponent : MonoBehaviour
         }
     }
 
-    // ü�� ������ �� �ݶ��̴� ������ �÷��ش�. 
+    
     public void SetAirStateCollider(bool state)
     {
         if (capsuleCollider == null)
@@ -47,20 +47,21 @@ public class OtherStateColliderComponent : MonoBehaviour
 
         Debug.Log($"SetAirStateCollider - {state}");
 
+        /*
         if (state == true)
         {
-            capsuleCollider.isTrigger = true;
+            //capsuleCollider.isTrigger = true;
             capsuleCollider.height = originalHeight * airStateRatio;
             capsuleCollider.center = 
                 new Vector3(originalCenter.x, originalCenter.y - donwCenterY, originalCenter.z);
         }
         else
         {
-            capsuleCollider.isTrigger = bOriginTrigger;
+            //capsuleCollider.isTrigger = bOriginTrigger;
             capsuleCollider.center = originalCenter;
             capsuleCollider.height = originalHeight;
         }
-
+        */
     }
 
     public void SetDownCollider(bool state)

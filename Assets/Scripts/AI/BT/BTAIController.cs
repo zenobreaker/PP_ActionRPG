@@ -102,6 +102,7 @@ public abstract class BTAIController : MonoBehaviour
 
     protected Enemy enemy;
     protected PerceptionComponent perception;
+    protected ConditionComponent condition;
     protected StateComponent state;
     protected WeaponComponent weapon;
 
@@ -114,6 +115,7 @@ public abstract class BTAIController : MonoBehaviour
         blackboard = so_blackboard.Clone();
 
         enemy = GetComponent<Enemy>();
+        condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
         weapon = GetComponent<WeaponComponent>();
         perception = GetComponent<PerceptionComponent>();
@@ -182,7 +184,7 @@ public abstract class BTAIController : MonoBehaviour
         return check;
     }
 
-    public virtual void SetWaitMode()
+    public virtual void SetWaitMode(bool isDamgaed = false)
     {
         if (WaitMode == true)
             return;
@@ -281,11 +283,13 @@ public abstract class BTAIController : MonoBehaviour
 
     public void StopMovement()
     {
-        navMeshAgent.isStopped = true;
+        if(condition.NoneCondition)
+            navMeshAgent.isStopped = true;
     }
     public void StartMovement()
     {
-        navMeshAgent.isStopped = false;
+        if (condition.NoneCondition)
+            navMeshAgent.isStopped = false;
     }
 
     public void SetSpeed(float speed)
@@ -313,6 +317,6 @@ public abstract class BTAIController : MonoBehaviour
         // coroutineEndDamage = StartCoroutine(Wait_End_Damage());
         //SetCoolTime(damageDelay, damageDelayRandom);
 
-        SetWaitMode();
+        SetWaitMode(true);
     }
 }

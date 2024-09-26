@@ -271,9 +271,9 @@ public class BTAIController_Dragon : BTAIController
             return false;
     }
 
-    public override void SetWaitMode()
+    public override void SetWaitMode(bool isDamaged = false)
     {
-        base.SetWaitMode();
+        base.SetWaitMode(isDamaged);
 
         //waitCondition = WaitCondition.Idle;
         DeicideWaitCondition();

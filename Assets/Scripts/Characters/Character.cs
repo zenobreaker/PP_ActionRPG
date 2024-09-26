@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(ConditionComponent))]
 [RequireComponent(typeof(StateComponent))]
 [RequireComponent(typeof(HealthPointComponent))]
 [RequireComponent(typeof(WeaponComponent))]
@@ -13,11 +14,10 @@ public abstract class Character
     ISlowable
 {
    
-   
-
     protected Animator animator;
     protected new Rigidbody rigidbody;
 
+    protected ConditionComponent condition;
     protected StateComponent state;
     protected HealthPointComponent healthPoint;
     protected WeaponComponent weapon;
@@ -26,6 +26,12 @@ public abstract class Character
 
     private float originAnimSpeed;
 
+    protected static readonly int HitImapact = Animator.StringToHash("Impact");
+    protected static readonly int HitIndex = Animator.StringToHash("ImpactIndex");
+    protected static readonly int DownTirgger = Animator.StringToHash("Down_Trigger");
+    protected static readonly int IsDownCondition = Animator.StringToHash("IsDownCondition");
+    protected static readonly int DeadTrigger = Animator.StringToHash("Dead");
+
     protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
@@ -33,7 +39,7 @@ public abstract class Character
         originAnimSpeed = animator.speed;
 
         rigidbody = GetComponent<Rigidbody>();
-
+        condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
         healthPoint = GetComponent<HealthPointComponent>();
         weapon = GetComponent<WeaponComponent>();
@@ -41,13 +47,13 @@ public abstract class Character
 
     protected virtual void Start()
     {
-        // ���
         Regist_MovableStopper();
         Regist_MovableSlower();
     }
 
     protected virtual void Update()
     {
+     
     }
 
     protected virtual void FixedUpdate()
@@ -58,6 +64,7 @@ public abstract class Character
     {
 
     }
+
 
     protected virtual void OnAnimatorMove()
     {
@@ -80,18 +87,41 @@ public abstract class Character
         animator.speed = 1.0f;
     }
 
+    
+    protected virtual void Begin_DownImpact()
+    {
+        if (condition == null)
+            return;
 
+        if (condition.DownCondition)
+        {
+            animator.SetTrigger(HitImapact);
+
+            if (downConditionCoroutine != null)
+                StopCoroutine(downConditionCoroutine);
+
+            return;
+        }
+
+        animator.SetTrigger(DownTirgger);
+    }
 
     protected virtual void Begin_DownCondition()
     {
-        if (downConditionCoroutine != null)
-            StopCoroutine(downConditionCoroutine);
-
-        if (animator.GetBool("IsDownCondition") == false)
+        if (condition == null)
             return;
 
+        if (condition.DownCondition == false)
+            return; 
+
+        condition.SetDownCondition();
         state.SetIdleMode();
-       
+    }
+
+    protected virtual void End_DownCondition()
+    {
+        if (downConditionCoroutine != null)
+            StopCoroutine(downConditionCoroutine);
         downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
     }
 
@@ -104,20 +134,21 @@ public abstract class Character
     protected IEnumerator Change_GetUpCondition()
     {
         //yield return new WaitForSecondsRealtime(3.0f);
-        yield return new WaitForSeconds(3.0f);
+        
+        yield return new WaitForSeconds(1.5f);
         Begin_GetUp();
     }
 
     protected virtual void Begin_GetUp()
     {
-        if (state.DeadMode)
+        if (state != null && state.DeadMode)
+            return;
+        if (condition == null)
             return;
 
-        animator.SetBool("IsDownCondition", false);
-
+        condition.SetNoneConditon();
+        animator.SetBool(IsDownCondition, false);
         animator.SetTrigger("GetUp");
-
-        state.SetNoneConditon();
     }
 
     public virtual void ApplySlow(float duration, float slowFactor)

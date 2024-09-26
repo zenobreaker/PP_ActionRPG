@@ -40,6 +40,7 @@ public abstract class AIController : MonoBehaviour
     protected Animator animator;
     protected WeaponComponent weapon;
     protected LaunchComponent launch;
+    protected ConditionComponent condition;
     protected StateComponent state;
 
 
@@ -66,7 +67,7 @@ public abstract class AIController : MonoBehaviour
         navOriginAngularSpeed = navMeshAgent.angularSpeed;
 
         animator = GetComponent<Animator>();
-
+        condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
 
         launch = GetComponent<LaunchComponent>();
@@ -134,11 +135,11 @@ public abstract class AIController : MonoBehaviour
         // ������ ���� ó�� ����
         bCheck |= (ActionMode == true);
         bCheck |= (DamagedMode == true);
-        bCheck |= (state.DownCondition);
+        bCheck |= (condition.DownCondition);
         if (state != null)
         {
             bCheck |= state.DeadMode;
-            bCheck |= state.AirborneMode;
+            bCheck |= condition.AirborneCondition;
         }
 
         if (state.DeadMode)
@@ -158,7 +159,7 @@ public abstract class AIController : MonoBehaviour
     // ������ó��?? => ���۵� �ͽ�ť�� => ���׷����� �̷��� ó����
     protected virtual void LateUpdate()
     {
-        if (state.DeadMode || state.DownCondition || state.DamagedMode)
+        if (state.DeadMode || condition.DownCondition || state.DamagedMode)
             return;
 
         LateUpdate_SetSpeed();

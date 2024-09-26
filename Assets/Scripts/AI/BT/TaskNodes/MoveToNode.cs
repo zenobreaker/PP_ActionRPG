@@ -35,9 +35,18 @@ namespace AI.BT.TaskNodes
         // 도착 지점을 언제 어디서 어떻게 세팅할 것인지가 문제다. 
         // 해결방안 1. OnBegin함수를 생성자에서 전달받아서 처리해본다. => MoveTo 전용 OnBegin 등등 필요할지도?
 
+        private bool AgentCheck()
+        {
+            bool bCheck = true;
+            bCheck &= agent != null;
+            bCheck &= agent.enabled;
+
+            return bCheck;
+        }
+
         protected override NodeState OnBegin()
         {
-            if (agent == null)
+            if (AgentCheck() == false)
                 return NodeState.Failure;
             
             if (blackboard != null)
@@ -54,6 +63,9 @@ namespace AI.BT.TaskNodes
 
                 target = targetObject.transform.position;   
             }
+            
+            if (agent.updateRotation == false)
+                agent.updateRotation = true;
 
             agent.SetDestination(target);
             //Debug.Log("Move Begin");
@@ -62,7 +74,7 @@ namespace AI.BT.TaskNodes
 
         protected override NodeState OnUpdate()
         {
-            if (agent == null || CheckPath() == false)
+            if (AgentCheck() == false || CheckPath() == false)
                 return NodeState.Failure;
 
             //Debug.Log($"Move Update / {currActionState}");
@@ -87,6 +99,10 @@ namespace AI.BT.TaskNodes
 
         private void ResetAgent()
         {
+            if (AgentCheck() == false)
+                return;
+
+
             agent.ResetPath();
             agent.velocity = Vector3.zero;
             //agent.isStopped = true;
@@ -118,6 +134,9 @@ namespace AI.BT.TaskNodes
 
         private bool CheckPath()
         {
+            if (AgentCheck() == false)
+                return false;
+
             NavMeshPath path = new NavMeshPath();
             return agent.CalculatePath(target, path);
         }

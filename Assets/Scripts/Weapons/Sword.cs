@@ -121,10 +121,8 @@ public class Sword : Melee
 
         if (isSubAction)
         {
-            //TODO: �� �����ѵ�..
             if (rigid != null)
             {
-                // ��� ������ ��� ����
                 rigid.isKinematic = false;
                 rigid.velocity = new Vector3(0, -1.5f, 0);
             }
@@ -200,7 +198,7 @@ public class Sword : Melee
     // 서브 액션 실행
     IEnumerator Play_ArroundBreak()
     {
-        animator.Play("Sword.Sub.Sword_Upper");
+        //animator.Play("Sword.Sub.Sword_Upper");
 
         Collider[] colliders = Physics.OverlapSphere(this.transform.position,
             3, (1 << LayerMask.NameToLayer("Enemy")));

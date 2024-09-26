@@ -37,7 +37,7 @@ public class AIController_Tower : AIController
             return;
         }
 
-        // °ø°Ý Á¶°Ç 
+        // ê³µê²© ì¡°ê±´ 
         float temp = Vector3.Distance(transform.position, player.transform.position);
         if (temp < attackRange)
         {
@@ -54,7 +54,7 @@ public class AIController_Tower : AIController
     {
         bool bCheck = false;
         bCheck |= state.DeadMode;
-        bCheck |= state.DownCondition;
+        bCheck |= condition.DownCondition;
         if (bCheck)
         {
             Debug.Log("is Dead");

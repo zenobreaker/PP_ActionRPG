@@ -6,13 +6,13 @@ public class StateComponent : MonoBehaviour
 {
     public enum StateType 
     {
-        Idle = 0, Equip, Action, Evade, Damaged, Dead, Airborne,
+        Idle = 0, Equip, Action, Evade, Damaged, Dead,
     }
     private StateType type = StateType.Idle;
     public StateType Type { get => type; }
 
     public event Action<StateType, StateType> OnStateTypeChanged;
-    public event Action<StateType> OnStateTypeChanging; // ���� ���¿� ���� �̺�Ʈ ��
+    public event Action<StateType> OnStateTypeChanging; 
 
    
     public bool IdleMode { get => type == StateType.Idle; }
@@ -21,7 +21,6 @@ public class StateComponent : MonoBehaviour
     public bool EvadeMode { get => type == StateType.Evade; }
     public bool DamagedMode { get => type == StateType.Damaged; }
     public bool DeadMode { get => type == StateType.Dead; }
-    public bool AirborneMode { get=>type == StateType.Airborne; }
 
     public void SetIdleMode() => ChangeType(StateType.Idle);
     public void SetEquipMode() => ChangeType(StateType.Equip);
@@ -29,22 +28,10 @@ public class StateComponent : MonoBehaviour
     public void SetEvadeMode() => ChangeType(StateType.Evade);
     public void SetDamagedMode() => ChangeType(StateType.Damaged);
     public void SetDeadMode() => ChangeType(StateType.Dead);
-    public void SetAirborneMode() =>ChangeType(StateType.Airborne);
+    //public void SetAirborneMode() =>ChangeType(StateType.Airborne);
 
 
-    private enum ConditionType
-    {
-        None, Down, Max,
-    }
-
-    private ConditionType myCondition;
-
-    public bool NoneCondition { get => myCondition == ConditionType.None; }
-    public bool DownCondition { get => myCondition == ConditionType.Down; }
-    public void SetNoneConditon() { myCondition = ConditionType.None; }
-    public void SetDownCondition() { myCondition = ConditionType.Down; }
-
-
+   
     private void ChangeType(StateType type)
     {
         if (this.type == type)

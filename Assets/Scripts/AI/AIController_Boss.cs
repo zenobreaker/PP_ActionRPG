@@ -82,7 +82,7 @@ public class AIController_Boss : AIController
 
         uiStateCanvas.gameObject.SetActive(bDrawDebug);
         userInterface.text +="\n";
-        //TODO: »óÅÂ Àû¾îº¸±â 
+        //TODO: ìƒíƒœ ì ì–´ë³´ê¸° 
         userInterface.text += bossPattern.ToString() +"\n";
         userInterface.text += $"pattern1 "+fireballMaxCoolTime.ToString("f2") + "can : " +  bCanfireball.ToString() +"\n";
         userInterface.text += $"pattern2 " + comboMaxCoolTime.ToString("f2") + "can : " +bCanCombo+"\n";
@@ -118,7 +118,7 @@ public class AIController_Boss : AIController
                 return;
             }
 
-            // °ø°İ Á¶°Ç È®ÀÎ
+            // ê³µê²© ì¡°ê±´ í™•ì¸
             SetBossAttackMode(player);
 
             if (bossPattern == BossPattern.Pattern2 || bossPattern == BossPattern.Pattern3)
@@ -131,7 +131,7 @@ public class AIController_Boss : AIController
                 }
             }
             
-            // °ø°İ
+            // ê³µê²©
             DoDecidedPattern();
         }
         
@@ -142,7 +142,7 @@ public class AIController_Boss : AIController
         if (state.DeadMode)
             return;
 
-        if (state.DownCondition)
+        if (condition.DownCondition)
         {
             Debug.Log("is Down");
             return;
@@ -225,9 +225,9 @@ public class AIController_Boss : AIController
 
         Vector3 position = transform.position;
         Vector3 behindPos = -transform.forward;
-        // ¹Ú½º Ä³½ºÆ®ÀÇ ½ÃÀÛ À§Ä¡¸¦ µÚÂÊÀ¸·Î ¾à°£ ÀÌµ¿
-        Vector3 castStartPosition = position + behindPos * 0.5f; // Ä³¸¯ÅÍ À§Ä¡¿¡¼­ µÚ·Î 0.5f ¸¸Å­ ÀÌµ¿
-        // µŞÆí¿¡ °Ë»ç¸¦ ÇØ¼­ µŞ°ÉÀ½Áú ÇÒ ¼ö ÀÖ´ÂÁö °Ë»ç
+        // ë°•ìŠ¤ ìºìŠ¤íŠ¸ì˜ ì‹œì‘ ìœ„ì¹˜ë¥¼ ë’¤ìª½ìœ¼ë¡œ ì•½ê°„ ì´ë™
+        Vector3 castStartPosition = position + behindPos * 0.5f; // ìºë¦­í„° ìœ„ì¹˜ì—ì„œ ë’¤ë¡œ 0.5f ë§Œí¼ ì´ë™
+        // ë’·í¸ì— ê²€ì‚¬ë¥¼ í•´ì„œ ë’·ê±¸ìŒì§ˆ í•  ìˆ˜ ìˆëŠ”ì§€ ê²€ì‚¬
         RaycastHit[] hits = Physics.BoxCastAll(castStartPosition, transform.lossyScale, behindPos,
             transform.rotation, 1.0f);
 
@@ -255,7 +255,7 @@ public class AIController_Boss : AIController
 
     private Vector3 CalcBehindPosition()
     {
-        // ÇöÀç À§Ä¡¿Í µÚÂÊ ¹æÇâ °è»ê
+        // í˜„ì¬ ìœ„ì¹˜ì™€ ë’¤ìª½ ë°©í–¥ ê³„ì‚°
         Vector3 characterPosition = transform.position;
         Vector3 backwardDirection = -transform.forward * (navMeshAgent.stoppingDistance + 1.0f);
         Vector3 behindPosition = characterPosition + backwardDirection;
@@ -345,7 +345,7 @@ public class AIController_Boss : AIController
     }
  
 
-    // °ø°İ ÆĞÅÏ Á¤¸® 
+    // ê³µê²© íŒ¨í„´ ì •ë¦¬ 
     private void SetBossAttackMode(GameObject player)
     {
         if (ActionMode)
@@ -404,8 +404,8 @@ public class AIController_Boss : AIController
     }
 
     #region Pattern1 
-    // ÆĞÅÏÀÌ °áÁ¤ÀÌ µÇ¸é ÇØ´ç ÆĞÅÏÀ» ÀÏÁ¤ ½Ã°£ ÀÌ³»¿¡ ¹ßµ¿½ÃÄÑ¾ß ÇÑ´Ù. 
-    // ±×·¯±â À§ÇØ¼± ±ÙÁ¢ ±â¼ú¿¡ °æ¿ì Á¢±ÙÇÏ´ø°¡ ¿ø°Å¸® ±â¼ú¿¡ °æ¿ì Á¶°ÇÀ» °áÁ¤ 
+    // íŒ¨í„´ì´ ê²°ì •ì´ ë˜ë©´ í•´ë‹¹ íŒ¨í„´ì„ ì¼ì • ì‹œê°„ ì´ë‚´ì— ë°œë™ì‹œì¼œì•¼ í•œë‹¤. 
+    // ê·¸ëŸ¬ê¸° ìœ„í•´ì„  ê·¼ì ‘ ê¸°ìˆ ì— ê²½ìš° ì ‘ê·¼í•˜ë˜ê°€ ì›ê±°ë¦¬ ê¸°ìˆ ì— ê²½ìš° ì¡°ê±´ì„ ê²°ì • 
 
     private bool bCanfireball = true;
     private float fireballMaxCoolTime = 5.0f;
@@ -442,7 +442,7 @@ public class AIController_Boss : AIController
             transform.LookAt(player.transform, Vector3.up);
             //transform.localRotation = Quaternion.LookRotation(direction);
 
-            //TODO: ÆÄÀÌ¾îº¼ ¹ß»ç 
+            //TODO: íŒŒì´ì–´ë³¼ ë°œì‚¬ 
             bossAction.DoPattern(2);
         }
     }
@@ -474,8 +474,8 @@ public class AIController_Boss : AIController
     private void DoComboAttack()
     {
         StartCoroutine(CoolDown_ComboAttack());
-        //TODO: ÄŞº¸ 
-        // ÀÌ °ø°İ µ¿¾È ½´ÆÛ¾Æ¸Ó »óÅÂ - °ø°İÀÌ ³¡³ª¸é ½´ÆÛ¾Æ¸Ó º¯¼ö ÇØÁ¦ 
+        //TODO: ì½¤ë³´ 
+        // ì´ ê³µê²© ë™ì•ˆ ìŠˆí¼ì•„ë¨¸ ìƒíƒœ - ê³µê²©ì´ ëë‚˜ë©´ ìŠˆí¼ì•„ë¨¸ ë³€ìˆ˜ í•´ì œ 
         animator.SetBool("IsAction", true);
         animator.SetInteger("Pattern",1);
     }
@@ -574,7 +574,7 @@ public class AIController_Boss : AIController
         weapon.DoAction();
     }
 
-    // ¹İ°İ ¾î¶»°Ô ³ÖÁö 
+    // ë°˜ê²© ì–´ë–»ê²Œ ë„£ì§€ 
     private bool bStart;
     private Coroutine coroutineCheckUsedPattern;
     private void CheckPatternKeepTime()
@@ -591,14 +591,14 @@ public class AIController_Boss : AIController
     private IEnumerator CheckUsedPattern()
     {
         bStart = true;
-        Debug.Log("Å¸ÀÌ¸Ó ½ÃÀÛ");
+        Debug.Log("íƒ€ì´ë¨¸ ì‹œì‘");
         yield return new WaitForSeconds(4.0f);
-        Debug.Log("Å¸ÀÌ¸Ó ³¡");
-        // ÀÏÁ¤ ½Ã°£ µÚ¿¡ °Ë»çÇØº¸´Ï ¾ÆÁ÷µµ ÆĞÅÏÀ» °®°í ÀÖ´Ù¸é 
+        Debug.Log("íƒ€ì´ë¨¸ ë");
+        // ì¼ì • ì‹œê°„ ë’¤ì— ê²€ì‚¬í•´ë³´ë‹ˆ ì•„ì§ë„ íŒ¨í„´ì„ ê°–ê³  ìˆë‹¤ë©´ 
         if (bossPattern != BossPattern.None)
         {
-            Debug.Log("Çàµ¿ Á¾·á");
-            // ±×³É Çàµ¿À» Á¾·á 
+            Debug.Log("í–‰ë™ ì¢…ë£Œ");
+            // ê·¸ëƒ¥ í–‰ë™ì„ ì¢…ë£Œ 
             OnBossEndAction();
         }
     }
@@ -617,7 +617,7 @@ public class AIController_Boss : AIController
         BossPattern prevPattern = bossPattern;
         bossPattern = pattern;
 
-        Debug.Log($"ÀÌÀü ÆĞÅÏ {prevPattern} / °áÁ¤ {bossPattern}");
+        Debug.Log($"ì´ì „ íŒ¨í„´ {prevPattern} / ê²°ì • {bossPattern}");
     }
 
 

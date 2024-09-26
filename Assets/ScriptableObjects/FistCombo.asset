@@ -20,8 +20,8 @@ MonoBehaviour:
     comboInputLimitTime: 0.5
     comboQueueLimitTime: 1.5
   - ComboName: Fist_Combo3
-    comboInputLimitTime: 1
-    comboQueueLimitTime: 1.5
+    comboInputLimitTime: 0.5
+    comboQueueLimitTime: 0.5
   - ComboName: Fist_Combo4
     comboInputLimitTime: 1
     comboQueueLimitTime: 0.5

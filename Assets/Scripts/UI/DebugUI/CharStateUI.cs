@@ -11,6 +11,7 @@ public class CharStateUI : MonoBehaviour
     protected TextMeshProUGUI userInterface;
     protected Canvas uiStateCanvas;
 
+    private ConditionComponent condition;
     private StateComponent state;
 
     private void Start()
@@ -21,6 +22,7 @@ public class CharStateUI : MonoBehaviour
         userInterface = t.GetComponent<TextMeshProUGUI>();
         userInterface.text = "";
 
+        condition = GetComponent<ConditionComponent>();
         state = GetComponent<StateComponent>();    
     }
 
@@ -41,6 +43,7 @@ public class CharStateUI : MonoBehaviour
         userInterface.gameObject.SetActive(bDrawDebug);
 
         userInterface.text = state.Type.ToString();
+        userInterface.text += "\n" + condition.MyCondition.ToString();
         uiStateCanvas.transform.rotation = Camera.main.transform.rotation;
     }
 }

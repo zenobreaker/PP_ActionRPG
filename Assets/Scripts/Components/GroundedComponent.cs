@@ -10,6 +10,7 @@ using UnityEngine.UIElements;
 /// </summary>
 public class GroundedComponent : MonoBehaviour
 {
+    private ConditionComponent condition;
     private StateComponent state;
     private AirborneComponent airborne;
     private new Rigidbody rigidbody;
@@ -35,6 +36,9 @@ public class GroundedComponent : MonoBehaviour
 
     private void Awake()
     {
+
+        condition = GetComponent<ConditionComponent>();
+
         state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
 
@@ -56,8 +60,8 @@ public class GroundedComponent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        FixedUpdate_CheckOverDistance();
-        FixedUpdate_CheckGrounded();
+        //FixedUpdate_CheckOverDistance();
+        //FixedUpdate_CheckGrounded();
     }
 
     private void FixedUpdate_CheckGrounded()
@@ -85,7 +89,7 @@ public class GroundedComponent : MonoBehaviour
 
     private void OnAirborneChange()
     {
-        if (state.AirborneMode == false)
+        if (condition != null && condition.AirborneCondition == false)
             return;
 
         bDistanceCheck = true;

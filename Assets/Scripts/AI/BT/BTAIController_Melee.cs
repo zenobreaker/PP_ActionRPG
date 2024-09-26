@@ -23,6 +23,7 @@ public class BTAIController_Melee : BTAIController
         blackboard.AddEnumComparisonStrategy<AIStateType>();
         btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
         btRunner.RunBehaviorTree(0.01f);
+        navMeshAgent.avoidancePriority = Random.Range(1, 100);
     }
 
     protected override void Update()
@@ -271,12 +272,13 @@ public class BTAIController_Melee : BTAIController
             return false;
     }
 
-    public override void SetWaitMode()
+    public override void SetWaitMode(bool isDamaged = false)
     {
-        base.SetWaitMode();
+        base.SetWaitMode(isDamaged);
 
         //waitCondition = WaitCondition.Idle;
-        DeicideWaitCondition();
+        if(isDamaged == false)
+            DeicideWaitCondition();
     }
 
     private void DeicideWaitCondition()

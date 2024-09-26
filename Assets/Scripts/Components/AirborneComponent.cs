@@ -2,34 +2,36 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using static ConditionComponent;
 using static StateComponent;
+using static UnityEngine.Rendering.DebugUI;
 
 public class AirborneComponent : MonoBehaviour
 
 {
-    // � ������ ������ ������� ���� ���� 
     [SerializeField] private ForceMode forceMode;
-    // ����� �� ���ӵ��� 
+    
     [Range(1.0f, 100.0f)][SerializeField] private float acceleration = 1.0f;
-    // �߰� ���� ��ġ 
+    
     [SerializeField] private float additionalAccel = 0.0f;
-    // ���� ���� �ð� 
+    
     [SerializeField] private float airMaintainTime = 0.0f;
-    // �ּ� ���� ���� ��
+    
     [SerializeField] private float minLaunchHeight = 0.1f;
-    // ���� ��� 
+    
     [SerializeField] private float heightReductionFactor = 0.5f;
 
     private new Rigidbody rigidbody;
     private NavMeshAgent agent;
     private Animator animator;
 
+    private ConditionComponent condition;
     private StateComponent state;
     private GroundedComponent ground;
     private OtherStateColliderComponent otherCollider;
 
     private bool bSuperArmor = false;
-    private StateType prevType;
+    private ConditionType conditionType;
 
     private Coroutine airCoroutine;
     private Coroutine useGravityCoroutine;
@@ -42,11 +44,11 @@ public class AirborneComponent : MonoBehaviour
         Debug.Assert(rigidbody != null);
 
         animator = GetComponent<Animator>();
-
-        state = GetComponent<StateComponent>();
+        condition = GetComponent<ConditionComponent>();
+        if (condition != null)
+             condition.OnConditionChanged += OnConditionChanged;
+       state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
-        state.OnStateTypeChanging += OnStateTypeChanging;
-        state.OnStateTypeChanged += OnStateTypeChanged;
 
         ground = GetComponent<GroundedComponent>();
         Debug.Assert(ground != null);
@@ -66,27 +68,41 @@ public class AirborneComponent : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.V))
             {
                 StopAllCoroutines();
-                rigidbody.isKinematic = true;
-                rigidbody.useGravity = false;
-                transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+                StartCoroutine(Change_Airbone(5));
+                //rigidbody.isKinematic = true;
+                //rigidbody.useGravity = false;
+                //transform.position = new Vector3(transform.position.x, 0, transform.position.z);
             }
         }
 #endif
     }
-    private void OnStateTypeChanging(StateType prevType)
-    {
-        this.prevType = prevType;
-    }
 
-    private void OnStateTypeChanged(StateType prevType, StateType newType)
+    //private void OnStateTypeChanging(StateType prevType)
+    //{
+    //    this.prevType = prevType;
+    //}
+
+    private void OnConditionChanged(ConditionType prevType, ConditionType newType)
     {
-        if (newType == StateType.Airborne && 
-            state.DownCondition == false)
+        if (condition == null)
+            return;
+
+        bool bEnable = false; 
+        conditionType = newType;
+        if (newType == ConditionType.Airborne &&
+            condition.DownCondition == false)
         {
+            bEnable = false;
             animator.SetBool("Airial", true);
         }
         else
+        {
+            bEnable = true; 
             animator.SetBool("Airial", false);
+        }
+        
+        if(agent != null)
+            agent.enabled = bEnable;
     }
 
     private void OnGround()
@@ -117,19 +133,19 @@ public class AirborneComponent : MonoBehaviour
         if (result == false)
             return;
 
-        //TODO: ���� ������
+        
         if (grade == CharacterGrade.Boss)
             bSuperArmor = true;
 
         BeginDoAir(data);
 
         if (causer.SubAction)
-            DoAirFreeze(0.75f);
+            DoAirFreeze(1);
       //  DoAirborneLaunch(attacker, causer, data);
     }
 
     #region Air_Launch
-    // ���� ���¿� �¾Ҵٸ� ���õ� ������Ʈ�� �������� ���� �Ѵ�. 
+    
     private void DoAirborneLaunch(GameObject attacker, Weapon causer, ActionData data)
     {
         bool result = CheckAttackerAboutData(attacker, causer, data);
@@ -139,7 +155,7 @@ public class AirborneComponent : MonoBehaviour
         if (ground.IsGround == true)
             return;
 
-        if (state?.AirborneMode == false)
+        if (condition?.AirborneCondition == false)
             return;
 
         if (useGravityCoroutine != null)
@@ -161,7 +177,7 @@ public class AirborneComponent : MonoBehaviour
 
         Debug.Log($"Change_UseGravity time is over- {true}");
 
-        if (state?.AirborneMode ?? true)
+        if (condition?.AirborneCondition ?? true)
             rigidbody.useGravity = true;
 
     }
@@ -171,62 +187,54 @@ public class AirborneComponent : MonoBehaviour
 
     #region Airbone
 
-    // ���߿� ����
     private void BeginDoAir(ActionData data)
     {
         if (bSuperArmor)
             return;
 
-        // ���� �����̰� ������� �Դٸ� ������ ��Ʈ�� ���ߴٴ� �ǹ��̴�. 
-        // �� ����� �����ȴٴ� �� ���� ������ �� �� �ִ�.
         float value = data.heightValue;
+        //Debug.Log($"Air comobo first step {value}");
         if (data.heightValue == 0)
             value = additionalAccel;
-        if(prevType == StateType.Airborne)
+        if(condition.MyCondition == ConditionType.Airborne)
         {
             float reducedHeight = value * Mathf.Pow(heightReductionFactor, transform.position.y);
             value = Mathf.Max(reducedHeight, minLaunchHeight);
+            Debug.Log($"Air comobo second step{value}");
         }
 
-        Debug.Log($"���� �޺� �ǽ�! {value} �� ���ϴ�.");
 
-
-        // ���߿� �� �ִٸ� ���� ���� ���� �ڷ�ƾ�� ���� �ʿ䰡 ����. 
         if (airCoroutine != null)
             StopCoroutine(airCoroutine);
 
         airCoroutine = StartCoroutine(Change_Airbone(value));
     }
 
-    // ���߿� ������� �ڷ�ƾ 
     private IEnumerator Change_Airbone(float distance)
     {
-        // �ش� ������ ���� �޺� ���¸� ���صǴ� ���� 
         //if (ground.IsGround == false)
         //    yield break;
         if (distance == 0)
             yield break;
 
-        Debug.Log($"���� ����? {distance}");
         float startY = transform.localPosition.y;
         float endY = (transform.localPosition + (Vector3.up * distance)).y;
-        // ��ǥ ���� 
         float targetDistance = endY - startY;
 
         rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
         rigidbody.drag = 0;
         rigidbody.isKinematic = false;
-        // ����s�� �������� ������ ��� ���߱� 
+        
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 
-        // ������Ʈ ���� 
-        state?.SetAirborneMode();
+        
+        condition?.SetAirborneCondition();
 
         otherCollider?.SetAirStateCollider(true);
         OnAirborneChange?.Invoke();
 
-        // ��ǥ ���̱��� �ö󰬴��� �� FixedUpdate���� üũ 
+        
         while (targetDistance >= 0)
         {
             targetDistance = endY - transform.position.y;
@@ -234,10 +242,6 @@ public class AirborneComponent : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-
-        // ��ǥ���� ����ٸ� ���õ� ������ ���� 
-        Debug.Log("�� �����");
-        // �����Ÿ����� �ö󰡸� ���߰���.
         rigidbody.velocity = Vector3.zero;
         rigidbody.useGravity = true;
     }
@@ -248,7 +252,9 @@ public class AirborneComponent : MonoBehaviour
     Coroutine airFreezeCoroutine;
     public void DoAirFreeze(float delay)
     {
-        if (state.AirborneMode == false)
+        if (condition == null)
+            return;
+        if (condition.AirborneCondition == false)
             return;
 
         if (ground.IsGround)

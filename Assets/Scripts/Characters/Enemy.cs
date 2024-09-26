@@ -139,8 +139,7 @@ public class Enemy :
             aiController?.SetDamagedMode();
             bTAIController?.SetDamagedMode();
             state.SetDamagedMode();
-
-            //airborne?.DoAir(attacker, causer, data, false, grade);
+            
             launch?.DoHit(attacker, causer, data, true, grade);
 
             // 다운 시키는 공격인가
@@ -153,25 +152,12 @@ public class Enemy :
                 if (bCheck == false)
                 {
                     // 아니라면 해당 피격 이벤트로 애니메이션 실행
-                    animator.SetInteger("ImpactIndex", data.HitImpactIndex);
-                    animator.SetTrigger("Impact");
+                    animator.SetInteger(HitIndex, data.HitImpactIndex);
+                    animator.SetTrigger(HitImapact);
                 }
             }
             else
-            {
-                state.SetDownCondition();
-                // 다운 상태 기술을 맞으면 관련된 값이 변경된다. 
-                animator.SetBool("IsDownCondition", true);
-
-                // 다운 상태가 아니면 다운 애니 실행
-                if (animator.GetBool("IsDownCondition"))
-                    animator.SetTrigger("Down_Trigger");
-
-                if (downConditionCoroutine != null)
-                    StopCoroutine(downConditionCoroutine);
-
-
-            }
+                Begin_DownImpact();
 
             return;
         }
@@ -182,8 +168,8 @@ public class Enemy :
         Collider collider = GetComponent<Collider>();
         collider.enabled = false;
 
-        if (!state.DownCondition)
-            animator.SetTrigger("Dead");
+        if (!condition.DownCondition)
+            animator.SetTrigger(DeadTrigger);
 
         MovableStopper.Instance.Delete(this);
         MovableSlower.Instance.Delete(this);
@@ -216,14 +202,14 @@ public class Enemy :
     {
         base.End_Damaged();
 
-        animator.SetInteger("ImpactIndex", 0);
+        animator.SetInteger(HitIndex, 0);
 
         if (ground != null)
         {
             if (ground.IsGround)
                 state.SetIdleMode();
             else
-                state.SetAirborneMode();
+                condition.SetAirborneCondition();
         }
         else
         {
@@ -235,16 +221,6 @@ public class Enemy :
         bTAIController?.End_Damage();
     }
 
-    protected override void Begin_DownCondition()
-    {
-        if (downConditionCoroutine != null)
-            StopCoroutine(downConditionCoroutine);
-
-        if (ground.IsGround == false)
-            return;
-
-        base.Begin_DownCondition();
-    }
 
     public override void ApplySlow(float duration, float slowFactor)
     {

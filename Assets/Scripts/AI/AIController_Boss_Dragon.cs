@@ -139,7 +139,7 @@ public class AIController_Boss_Dragon : AIController
         if (state.DeadMode)
             return;
 
-        if (state.DownCondition)
+        if (condition.DownCondition)
         {
             Debug.Log("is Down");
             return;

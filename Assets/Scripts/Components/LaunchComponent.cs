@@ -2,24 +2,22 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using static ConditionComponent;
 using static StateComponent;
 
 /// <summary>
-/// °ø°İÀ» ¸ÂÀ¸¸é °æÁ÷À¸·Î ÀÎÇØ ¹Ğ¸®´Â ±â´ÉÀ» ÇØÁÖ´Â ÄÄÆ÷³ÍÆ®
+/// ê³µê²©ì„ ë§ìœ¼ë©´ ê²½ì§ìœ¼ë¡œ ì¸í•´ ë°€ë¦¬ëŠ” ê¸°ëŠ¥ì„ í•´ì£¼ëŠ” ì»´í¬ë„ŒíŠ¸
 /// </summary>
 public class LaunchComponent : MonoBehaviour
 {
+    private ConditionComponent condition;
     private StateComponent state;
     private AirborneComponent airborne;
     private OtherStateColliderComponent otherCollider;
     private new Rigidbody rigidbody;
-    private NavMeshAgent agent;
 
     [SerializeField] private AnimationCurve knockbackCurve;
     [SerializeField] private float knockbackTime = 1.0f;
-
-    private bool bSuperArmor = false;
-    private StateType prevType;
 
     private float originDrag;
     private float originMass;
@@ -27,13 +25,12 @@ public class LaunchComponent : MonoBehaviour
 
     private void Awake()
     {
+        condition = GetComponent<ConditionComponent>();
         state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
-        state.OnStateTypeChanging += OnStateTypeChanging;
 
         otherCollider = GetComponent<OtherStateColliderComponent>();
         airborne = GetComponent<AirborneComponent>();    
-        agent = GetComponent<NavMeshAgent>();
 
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
@@ -43,12 +40,7 @@ public class LaunchComponent : MonoBehaviour
 
     }
 
-    private void OnStateTypeChanging(StateType prevType)
-    {
-        this.prevType = prevType;
-    }
-
-    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
+     private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
     {
         bool bCheck = true;
         bCheck &= (attacker != null);
@@ -68,14 +60,14 @@ public class LaunchComponent : MonoBehaviour
         if (result == false)
             return;
 
-        if (grade == CharacterGrade.Boss)
-            bSuperArmor = true;
+        //if (grade == CharacterGrade.Boss)
+        //    bSuperArmor = true;
 
-        // ³ª¸¦ ¹Ù¶óº» ´ë»ó ¹Ù¶óº¸±â 
+        // ë‚˜ë¥¼ ë°”ë¼ë³¸ ëŒ€ìƒ ë°”ë¼ë³´ê¸° 
         if (targetView)
             StartCoroutine(Change_Rotate(attacker));
 
-        // ·±Ä¡ ½ÇÇà
+        // ëŸ°ì¹˜ ì‹¤í–‰
         DoLaunch(attacker, causer, data);
     }
 
@@ -86,18 +78,18 @@ public class LaunchComponent : MonoBehaviour
     private IEnumerator Change_Rotate(GameObject target)
     {
 
-        // ÀÌ ÄÚµå´Â y Ãà Â÷ÀÌ°¡ ÀÏ¾î³ª¸é xÃà È¸ÀüÀ» ÇØ¹ö¸°´Ù. 
+        // ì´ ì½”ë“œëŠ” y ì¶• ì°¨ì´ê°€ ì¼ì–´ë‚˜ë©´ xì¶• íšŒì „ì„ í•´ë²„ë¦°ë‹¤. 
         //transform.LookAt(target.transform, Vector3.up);
 
         Vector3 direction = target.transform.position - transform.position;
-        direction.y = 0; // YÃà È¸ÀüÀ» ¹«½ÃÇÕ´Ï´Ù.
+        direction.y = 0; // Yì¶• íšŒì „ì„ ë¬´ì‹œí•©ë‹ˆë‹¤.
 
-        // ¹æÇâÀÌ 0ÀÌ ¾Æ´Ï¸é È¸ÀüÇÕ´Ï´Ù.
+        // ë°©í–¥ì´ 0ì´ ì•„ë‹ˆë©´ íšŒì „í•©ë‹ˆë‹¤.
         if (direction != Vector3.zero)
         {
-            // »õ·Î¿î È¸Àü °ªÀ» °è»êÇÕ´Ï´Ù.
+            // ìƒˆë¡œìš´ íšŒì „ ê°’ì„ ê³„ì‚°í•©ë‹ˆë‹¤.
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            // ÇöÀç È¸ÀüÀ» »õ·Î¿î È¸Àü °ªÀ¸·Î ¼³Á¤ÇÕ´Ï´Ù.
+            // í˜„ì¬ íšŒì „ì„ ìƒˆë¡œìš´ íšŒì „ ê°’ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
             transform.rotation = targetRotation;
         }
 
@@ -108,14 +100,14 @@ public class LaunchComponent : MonoBehaviour
     #region Launch
 
     /// <summary>
-    /// °ø°İÀ» ¸Â°Ô µÇ¸é ¹«±âÀÇ Å¸ÀÔ¿¡ µû¶ó ¹Ğ¸®´Â Á¤µµ¸¦ ÆÇº°ÇÑ´Ù. 
+    /// ê³µê²©ì„ ë§ê²Œ ë˜ë©´ ë¬´ê¸°ì˜ íƒ€ì…ì— ë”°ë¼ ë°€ë¦¬ëŠ” ì •ë„ë¥¼ íŒë³„í•œë‹¤. 
     /// </summary>
     /// <param name="attacker"></param>
     /// <param name="causer"></param>
     /// <param name="data"></param>
     private bool CheckDoLauch(GameObject attacker, Weapon causer, ActionData data)
     {
-        // ±ÙÁ¢ ¹«±â°¡ ¾Æ´Ï¶ó¸é ¾î´À °Å¸®µç »ó°ü ¾øÀÌ ÇØ´ç ¹«±âÀÇ µ¥ÀÌÅÍ·Î Ã³¸®ÇÑ´Ù. 
+        // ê·¼ì ‘ ë¬´ê¸°ê°€ ì•„ë‹ˆë¼ë©´ ì–´ëŠ ê±°ë¦¬ë“  ìƒê´€ ì—†ì´ í•´ë‹¹ ë¬´ê¸°ì˜ ë°ì´í„°ë¡œ ì²˜ë¦¬í•œë‹¤. 
         Melee melee = causer as Melee;
         if (melee == null)
             return true;
@@ -123,11 +115,11 @@ public class LaunchComponent : MonoBehaviour
 
         float distance = Vector3.Distance(attacker.transform.localPosition, transform.localPosition);
 
-        //TODO: Á» Â¥Ä¡Áö¸¸..
+        //TODO: ì¢€ ì§œì¹˜ì§€ë§Œ..
         SkillActionData skillData = data as SkillActionData;
         if (skillData == null && causer is not Gun)
         {
-            // °ø°İÀÚ¿ÍÀÇ °Å¸®°¡ ¹Ğ¸®´Â °Å¸®¿ÍÀÇ Â÷ÀÌ°¡ Å©°Å³ª °°´Ù¸é ¹Ğ¸®Áö ¾Ê´Â´Ù.
+            // ê³µê²©ìì™€ì˜ ê±°ë¦¬ê°€ ë°€ë¦¬ëŠ” ê±°ë¦¬ì™€ì˜ ì°¨ì´ê°€ í¬ê±°ë‚˜ ê°™ë‹¤ë©´ ë°€ë¦¬ì§€ ì•ŠëŠ”ë‹¤.
             if (distance >= data.Distance)
             {
                 //Debug.Log("Too far");
@@ -145,9 +137,8 @@ public class LaunchComponent : MonoBehaviour
         for (int i = 0; i < frame; i++)
             yield return new WaitForFixedUpdate();
 
-        if (state?.AirborneMode == false)
+        if (condition?.AirborneCondition == false)
         {
-
             rigidbody.isKinematic = true;
         }
     }
@@ -171,21 +162,21 @@ public class LaunchComponent : MonoBehaviour
             return; 
         }
             
-        if (prevType == StateType.Airborne)
+        if (condition.MyCondition == ConditionType.Airborne)
         {
             rigidbody.mass = originMass /** 0.05f*/;
             fm = ForceMode.Impulse;
             launch = rigidbody.mass * distanace * 2.5f;
-            Debug.Log($"air launcher => {launch}");
+            bResult &= true;
         }
-
+        
         if (bResult)
         {
             rigidbody.isKinematic = false;
             rigidbody.AddForce(forceDir * launch, fm);
         }
 
-        if(airborne != null && data.heightValue > 0.0f || prevType == StateType.Airborne)
+        if(airborne != null && data.heightValue > 0.0f || condition.MyCondition == ConditionType.Airborne)
             airborne.DoAir(attacker, causer, data);
         else 
             StartCoroutine(Change_IsKinematics(data, 5));

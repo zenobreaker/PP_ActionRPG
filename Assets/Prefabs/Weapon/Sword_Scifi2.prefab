@@ -191,24 +191,6 @@ MonoBehaviour:
     HitParticleSacleOffset: {x: 1.5, y: 1.5, z: 1.5}
     bCanMove: 0
     Particle: {fileID: 7462478408933682410, guid: 06969681a2a64ea4eadbcc9703ff3e20, type: 3}
-  isAnimating: 0
-  comboObjData: {fileID: 11400000, guid: 4626d0966bfb0304f906846fa073cbe9, type: 2}
-  index: 0
-  slashTransformName: Slash_Transform
-  startPosObj: {fileID: 5206477538750415318}
-  endPosObj: {fileID: 4535424573569921740}
-  particlePrefabs:
-  - {fileID: 653663795736761072, guid: 6836dcd13b4c27b45b51e86ce0475495, type: 3}
-  particleTransformNames:
-  - StartPos
-  myCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  holsterName: Holster_Sword
-  handName: Hand_Sword
   subActionDatas:
   - bDownable: 0
     bLauncher: 0
@@ -226,6 +208,18 @@ MonoBehaviour:
     HitParticleSacleOffset: {x: 0, y: 0, z: 0}
     bCanMove: 0
     Particle: {fileID: 0}
+  isAnimating: 0
+  comboObjData: {fileID: 11400000, guid: 4626d0966bfb0304f906846fa073cbe9, type: 2}
+  index: 0
+  slashTransformName: Slash_Transform
+  startPosObj: {fileID: 5206477538750415318}
+  endPosObj: {fileID: 4535424573569921740}
+  particlePrefabs:
+  - {fileID: 653663795736761072, guid: 6836dcd13b4c27b45b51e86ce0475495, type: 3}
+  particleTransformNames:
+  - StartPos
+  holsterName: Holster_Sword
+  handName: Hand_Sword
 --- !u!114 &4428589776670971191
 MonoBehaviour:
   m_ObjectHideFlags: 0

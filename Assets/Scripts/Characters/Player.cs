@@ -116,7 +116,6 @@ public class Player
 
     private void OnNonForwardAttackAnim()
     {
-        // -z�� �������� �ִٸ� 
         Vector3 position;
         position = animator.deltaPosition;
         position.y = 0.0f;
@@ -152,9 +151,7 @@ public class Player
 
         healthPoint.Damage(data.Power);
 
-        //TODO: ���� ���ϴµ� �������� ���߸� ������?
         // MovableStopper.Instance.Start_Delay(data.StopFrame);
-
 
         if (data.HitParticle != null)
         {
@@ -168,28 +165,13 @@ public class Player
             state.SetDamagedMode();
             launch.DoHit(attacker, causer, data, false);
 
-            // �ٿ� ��Ű�� �����ΰ�
             if (data.bDownable == false)
             {
-                // �ƴ϶�� �ش� �ǰ� �̺�Ʈ�� �ִϸ��̼� ����
-                animator.SetInteger("ImpactIndex", data.HitImpactIndex);
-                animator.SetTrigger("Impact");
+                animator.SetInteger(HitIndex, data.HitImpactIndex);
+                animator.SetTrigger(HitImapact);
             }
             else
-            {
-
-                // �ٿ� ���� ����� ������ ���õ� ���� ����ȴ�. 
-                animator.SetBool("IsDownCondition", true);
-
-                // �ٿ� ���°� �ƴϸ� �ٿ� �ִ� ����
-                if (animator.GetBool("IsDownCondition"))
-                    animator.SetTrigger("Down_Trigger");
-
-                if (downConditionCoroutine != null)
-                    StopCoroutine(downConditionCoroutine);
-
-
-            }
+                Begin_DownImpact();
 
             return;
         }

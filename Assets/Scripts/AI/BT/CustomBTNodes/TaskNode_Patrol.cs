@@ -1,3 +1,4 @@
+using AI.BT.Helpers;
 using AI.BT.Nodes;
 using System;
 using System.Collections;
@@ -19,7 +20,7 @@ namespace AI.BT.CustomBTNodes
 
         private BTAIController controller; 
         private NavMeshAgent agent;
-        //private NavMeshPath navMeshPath;
+        private NavMeshPath navMeshPath;
         private PatrolPoints patrolPoints; 
         private Vector3 initPosition;
         private Vector3 goalPosition;
@@ -31,6 +32,7 @@ namespace AI.BT.CustomBTNodes
         private int loopCount;
 
         public Action<Vector3> OnDestination;
+        private Coroutine patrolCoroutine;
 
         public TaskNode_Patrol(GameObject ownerObject, SO_Blackboard blackboard, float radius)
             : base(ownerObject, blackboard)
@@ -46,9 +48,19 @@ namespace AI.BT.CustomBTNodes
             onEnd = OnEnd;
             onAbort = OnAbort;
         }
+
+        private bool AgentCheck()
+        {
+            bool bCheck = true;
+            bCheck &= agent != null;
+            bCheck &= agent.enabled;
+
+            return bCheck;
+        }
+
         protected override NodeState OnBegin()
         {
-            if (agent == null || blackboard == null)
+            if (AgentCheck() == false || blackboard == null)
             {
                 ChangeActionState(ActionState.End);
                 return NodeState.Failure;
@@ -67,13 +79,13 @@ namespace AI.BT.CustomBTNodes
             patrolPoints = controller.PatrolPoints;
             hasPatrolPoints = patrolPoints != null;
 
-            NavMeshPath path = CreateNavMeshPathRoutine();
+            patrolCoroutine = CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
             // 경로에 따른 처리 
-            if (path != null)
+            if (navMeshPath != null)
             {
                 OnDestination?.Invoke(goalPosition);
                 ChangeActionState(ActionState.Update);
-                agent.SetPath(path);
+                agent.SetPath(navMeshPath);
 
                 return NodeState.Running;
             }
@@ -113,7 +125,7 @@ namespace AI.BT.CustomBTNodes
         }
 
 
-        private NavMeshPath CreateNavMeshPathRoutine()
+        private IEnumerator CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
 
@@ -124,10 +136,11 @@ namespace AI.BT.CustomBTNodes
                 path = new NavMeshPath();
                 bool bCheck = agent.CalculatePath(goalPosition, path); 
                 Debug.Assert(bCheck);
+                navMeshPath = path;
 
                 patrolPoints.UpdateNextIndex();
 
-                return path; 
+                yield break;
             }
 
 
@@ -140,7 +153,7 @@ namespace AI.BT.CustomBTNodes
                 if (loopCount >= loopBreakMaxCount)
                 {
                     Debug.Log("Not find Goal Poistion");
-                    return null;
+                    yield break;
                 }
 
                 loopCount++; 
@@ -157,11 +170,12 @@ namespace AI.BT.CustomBTNodes
 
                 path = new NavMeshPath();
 
-                if (agent.CalculatePath(goalPosition, path) == true)
+                if (AgentCheck() && agent.CalculatePath(goalPosition, path) == true)
                 {
-                    //navMeshPath = path;
+                    initPosition = goalPosition;
+                    navMeshPath = path;
                     loopCount = 0;
-                    return path; 
+                    yield break;
                 }
             }
         }
@@ -173,11 +187,15 @@ namespace AI.BT.CustomBTNodes
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
+            CoroutineHelper.Instance.StopHelperCoroutine(patrolCoroutine);
             return base.OnAbort();
         }
 
         private void ResetAgent()
         {
+            if (AgentCheck() == false)
+                return;
+
             agent.ResetPath();
             agent.velocity = Vector3.zero;
             //agent.isStopped = true;
@@ -198,6 +216,10 @@ namespace AI.BT.CustomBTNodes
 
         private bool CheckPath()
         {
+            if (AgentCheck() == false)
+                return false;
+
+
             NavMeshPath path = new NavMeshPath();
             return agent.CalculatePath(goalPosition, path);
         }
