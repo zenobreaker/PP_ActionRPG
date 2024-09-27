@@ -5,20 +5,15 @@ using AI.BT.TaskNodes;
 using UnityEditor;
 using UnityEngine;
 
-public class BTAIController_Melee : BTAIController
+public class BTAIController_Boss : BTAIController
 {
+
+
+  
     /// <summary>
     /// 0 = action 1 = backstep 2 = straife
     /// </summary>
     [SerializeField] int maxWaitCondtionPattern = 0;
-
-    HealthPointComponent health;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        health = GetComponent<HealthPointComponent>();
-    }
 
     protected override void Start()
     {
@@ -94,9 +89,8 @@ public class BTAIController_Melee : BTAIController
         // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
         blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
         blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
-        blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
         blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
-        blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
+        //blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
     }
 
     protected override RootNode CreateBTTree()
@@ -141,7 +135,7 @@ public class BTAIController_Melee : BTAIController
             {
                 waitBackwardParallel.NodeName = "WaitBackWardParallel";
 
-                WaitNode bwWaitNode = new WaitNode(1.5f, 0.5f);
+                WaitNode bwWaitNode = new WaitNode(waitDelay, waitDelayRandom);
                 TaskNode_Speed bwSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
                 TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
                 bwWaitNode.NodeName = "Backward";
@@ -164,20 +158,11 @@ public class BTAIController_Melee : BTAIController
                 WaitNode sfWaitNode = new WaitNode(5.0f, 0.5f);
                 sfWaitNode.NodeName = "StrafeWait";
                 TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
-
-                SelectorNode strafeSelector = new SelectorNode();
-
                 TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 2.5f);
                 strafeNode.OnDestination += OnDestination;
-                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
-                backward.OnDestination += OnDestination;
-                
-                strafeSelector.AddChild(strafeNode);
-                strafeSelector.AddChild(backward);
-
                 SequenceNode sequenceNode = new SequenceNode();
                 sequenceNode.AddChild(sfSpeed);
-                sequenceNode.AddChild(strafeSelector);
+                sequenceNode.AddChild(strafeNode);
 
                 strafeParallel.AddChild(sfWaitNode);
                 strafeParallel.AddChild(sequenceNode);
@@ -286,15 +271,6 @@ public class BTAIController_Melee : BTAIController
             return false;
     }
 
-    protected override bool CheckMode()
-    {
-        bool bCheck = base.CheckMode();
-
-        if (health != null)
-            bCheck |= health.Dead;
-
-        return bCheck;
-    }
 
     public override void SetWaitMode(bool isDamaged = false)
     {

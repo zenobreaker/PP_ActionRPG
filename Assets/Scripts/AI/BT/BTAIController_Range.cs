@@ -85,8 +85,8 @@ public class BTAIController_Range : BTAIController
         DamagedSequence.AddChild(damagedNode);
         DamagedSequence.AddChild(damagedWaitNode);
 
-        BlackboardConditionDecorator<AIStateType> damagedDeco =
-            new BlackboardConditionDecorator<AIStateType>("DamagedDeco", DamagedSequence,
+        Decorator_Blackboard<AIStateType> damagedDeco =
+            new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
             this.gameObject, blackboard, "AIStateType", "Damaged");
 
         DamagedSelector.AddChild(damagedDeco);
@@ -97,8 +97,8 @@ public class BTAIController_Range : BTAIController
         // 대기 
         WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
 
-        BlackboardConditionDecorator<AIStateType> waitDeco =
-            new BlackboardConditionDecorator<AIStateType>("WaitDeco", waitNode, this.gameObject,
+        Decorator_Blackboard<AIStateType> waitDeco =
+            new Decorator_Blackboard<AIStateType>("WaitDeco", waitNode, this.gameObject,
             blackboard, "AIStateType", "Wait");
 
 
@@ -125,8 +125,8 @@ public class BTAIController_Range : BTAIController
         patrolSequence.AddChild(patrolSpeed);
         patrolSequence.AddChild(patrolSelector);
 
-        BlackboardConditionDecorator<AIStateType> patrolDeco =
-         new BlackboardConditionDecorator<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
+        Decorator_Blackboard<AIStateType> patrolDeco =
+         new Decorator_Blackboard<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
          blackboard, "AIStateType", "Patrol");
 
         // 공격 
@@ -147,8 +147,8 @@ public class BTAIController_Range : BTAIController
         attackSequence.AddChild(actionNode);
         attackSequence.AddChild(attackWaitNode);
 
-        BlackboardConditionDecorator<AIStateType> attackDeco =
-            new BlackboardConditionDecorator<AIStateType>("ActionDeco",
+        Decorator_Blackboard<AIStateType> attackDeco =
+            new Decorator_Blackboard<AIStateType>("ActionDeco",
             attackSequence, this.gameObject, blackboard, "AIStateType", "Action");
 
         selector.AddChild(waitDeco);

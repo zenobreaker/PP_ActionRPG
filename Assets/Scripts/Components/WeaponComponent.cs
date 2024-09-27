@@ -8,7 +8,11 @@ public enum WeaponType
     Unarmed = 0, Fist = 1, Sword, Hammer, FireBall, Dual, Gun, Warp, MAX,
 }
 
-public class WeaponComponent : MonoBehaviour
+public class WeaponComponent 
+    : MonoBehaviour
+    , IActionComponent
+    , ICollisionHandler
+
 {
     [SerializeField] private GameObject[] originPrefabs;
 

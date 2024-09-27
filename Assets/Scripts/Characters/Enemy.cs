@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -27,18 +28,19 @@ public class Enemy :
     private Color originColor;
     private Material skinMaterial;
 
-    //private DetectComponent detect; 
-    //private EnemyMovingComponent moving;
-
     private GroundedComponent ground;
     private LaunchComponent launch;
     private AirborneComponent airborne;
+    
     private AIController aiController;
     private BTAIController bTAIController;
 
     public WeaponType weaponType;
     [SerializeField] private CharacterGrade grade = CharacterGrade.Common;
     public CharacterGrade Grade { get => grade; }
+
+    private ICollisionHandler collisionHandler;
+
     protected override void Awake()
     {
         base.Awake();
@@ -57,19 +59,18 @@ public class Enemy :
         airborne = GetComponent<AirborneComponent>();
         Debug.Assert(airborne);
 
-        Debug.Assert(weapon != null);
-
-
         aiController = GetComponent<AIController>();
         bTAIController = GetComponent<BTAIController>();
 
+        collisionHandler = GetComponent<ICollisionHandler>();
     }
 
     protected override void Start()
     {
         base.Start();
-
-        weapon.SetWeaponVisibleByType(weaponType, false);
+        
+        if(action is WeaponComponent weapon)
+            weapon.SetWeaponVisibleByType(weaponType, false);
     }
 
     protected virtual void OnDestroy()
@@ -88,30 +89,33 @@ public class Enemy :
 
     private void StartEquipWeapon()
     {
-        switch (weaponType)
+        if (action is WeaponComponent weapon)
         {
+            switch (weaponType)
+            {
 
-            case WeaponType.Fist:
-            weapon.SetFistMode();
-            break;
+                case WeaponType.Fist:
+                weapon.SetFistMode();
+                break;
 
-            case WeaponType.Sword:
-            weapon.SetSwordMode();
-            break;
-            case WeaponType.Hammer:
-            weapon.SetHammerMode();
-            break;
+                case WeaponType.Sword:
+                weapon.SetSwordMode();
+                break;
+                case WeaponType.Hammer:
+                weapon.SetHammerMode();
+                break;
 
-            case WeaponType.FireBall:
-            weapon.SetFireBallMode();
-            break;
-            case WeaponType.Dual:
-            weapon.SetDualMode();
-            break;
-            case WeaponType.Unarmed:
-            weapon.SetUnarmedMode();
-            break;
+                case WeaponType.FireBall:
+                weapon.SetFireBallMode();
+                break;
+                case WeaponType.Dual:
+                weapon.SetDualMode();
+                break;
+                case WeaponType.Unarmed:
+                weapon.SetUnarmedMode();
+                break;
 
+            }
         }
     }
 
@@ -132,7 +136,8 @@ public class Enemy :
             obj.transform.localScale = data.HitParticleSacleOffset;
         }
 
-        weapon.End_Collision();
+        // 공격 중에 맞았다면 
+        collisionHandler?.End_Collision();
 
         if (healthPoint.Dead == false)
         {

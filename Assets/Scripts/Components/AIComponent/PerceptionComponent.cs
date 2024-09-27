@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class PerceptionComponent : MonoBehaviour
 {
@@ -11,12 +13,12 @@ public class PerceptionComponent : MonoBehaviour
     [SerializeField] private float lostTime = 2.0f;
     [SerializeField] private LayerMask layerMask;
 
-    //
     private Dictionary<GameObject, float> percievedTable;
 
     public event Action<List<GameObject>> OnPerceptionUpdated;
     public Action OnValueChange;
 
+    private bool bDrawCheckDebug;
     private void Reset()
     {
         layerMask = 1 << LayerMask.NameToLayer("Character");
@@ -81,6 +83,40 @@ public class PerceptionComponent : MonoBehaviour
         return null;
     }
 
+    private Vector3 debug_direction;
+    private float debug_radius;
+    public bool CheckPositionOther(GameObject owner, Vector3 position, bool debug = false)
+    {
+        if (owner == null)
+            return false; 
+
+        Vector3 direction = position - owner.transform.position;
+        float radius = owner.transform.FindGreaterBounds().magnitude * 0.5f;
+        Collider[] colliders = Physics.OverlapSphere(direction, radius);
+        int myLayer = owner.layer;
+
+        if(debug)
+        {
+            debug_direction = direction;
+            debug_radius = radius;  
+            bDrawCheckDebug = debug;
+        }
+
+        int count = 0;
+        foreach (Collider collider in colliders)
+        {
+            if (collider.gameObject.layer.Equals(LayerMask.NameToLayer("Ground")))
+                continue;
+            if (collider.gameObject.layer.Equals(myLayer))
+                continue;
+
+            count++; 
+        }
+
+        return count > 0; 
+    }
+
+
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -94,12 +130,18 @@ public class PerceptionComponent : MonoBehaviour
 
         Vector3 direction = Vector3.zero;
         Vector3 forward = transform.forward;
-        // ���� ȸ�� ���� ��� 
         direction = Quaternion.AngleAxis(angle, Vector3.up) * forward;
         Gizmos.DrawLine(transform.position, transform.position + direction.normalized * distance);
 
         direction = Quaternion.AngleAxis(-angle, Vector3.up) * forward;
         Gizmos.DrawLine(transform.position, transform.position + direction.normalized * distance);
+
+
+        if (bDrawCheckDebug)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.transform.position + debug_direction.normalized, debug_radius);
+        }
 
 
         GameObject player = GetPercievedPlayer();
@@ -116,6 +158,8 @@ public class PerceptionComponent : MonoBehaviour
 
         Gizmos.DrawLine(position, playerPosition);
         Gizmos.DrawWireSphere(playerPosition, 0.25f);
+
+
     }
 
 #endif

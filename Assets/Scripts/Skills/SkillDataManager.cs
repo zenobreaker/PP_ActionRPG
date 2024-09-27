@@ -36,7 +36,7 @@ public class SkillDataManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // °ÔÀÓ ½ÃÀÛ ½Ã, ¹«±â Å¸ÀÔº°·Î ½ºÅ³À» ÂüÁ¶ÇÏ¿© ÀúÀå
+        // ê²Œì„ ì‹œì‘ ì‹œ, ë¬´ê¸° íƒ€ì…ë³„ë¡œ ìŠ¤í‚¬ì„ ì°¸ì¡°í•˜ì—¬ ì €ì¥
         skillDataTable = new Dictionary<WeaponType, List<SkillData>>();
 
         foreach (var skill in skillDatas)
@@ -54,7 +54,7 @@ public class SkillDataManager : MonoBehaviour
 
     public List<SkillData> GetSkillForWeaponType(WeaponType type)
     {
-        Debug.Log($"{type}");
+        //Debug.Log($"{type}");
         if (skillDataTable.ContainsKey(type))
             return skillDataTable[type];
         return new List<SkillData>();

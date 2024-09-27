@@ -7,6 +7,7 @@ using StateType = StateComponent.StateType;
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(PlayerMovingComponent))]
 [RequireComponent(typeof(ComboComponent))]
+[RequireComponent(typeof(WeaponComponent))]
 public class Player
     : Character,
     IDamagable
@@ -17,6 +18,7 @@ public class Player
     private GroundedComponent ground;
     private LaunchComponent launch;
     private ComboComponent combo;
+    private WeaponComponent weapon;
 
     private Color originColor; 
     private Color targetColor;
@@ -37,6 +39,8 @@ public class Player
         Debug.Assert(ground != null);
         combo = GetComponent<ComboComponent>();
         //sprint = GetComponent<SprintComponent>();
+
+        weapon = action as WeaponComponent;
 
         PlayerInput input = GetComponent<PlayerInput>();
         InputActionMap actionMap = input.actions.FindActionMap("Player");

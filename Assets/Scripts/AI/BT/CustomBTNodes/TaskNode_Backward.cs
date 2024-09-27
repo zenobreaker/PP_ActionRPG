@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -13,7 +14,8 @@ namespace AI.BT.CustomBTNodes
     public class TaskNode_Backward : TaskNode
     {
 
-        private BTAIController controller; 
+        private BTAIController controller;
+        private PerceptionComponent perception;
         private NavMeshAgent agent;
         private NavMeshPath navMeshPath;
         private Vector3 initPosition;
@@ -32,7 +34,8 @@ namespace AI.BT.CustomBTNodes
             nodeName = "Backward";
 
             controller = ownerObject.GetComponent<BTAIController>();
-            agent = ownerObject.GetComponent<NavMeshAgent>();
+            agent = owner.GetComponent<NavMeshAgent>();
+            perception = owner.GetComponent<PerceptionComponent>();
             this.radius = radius;
 
             onBegin = OnBegin;
@@ -99,7 +102,6 @@ namespace AI.BT.CustomBTNodes
             if (CalcArrive() == false)
             {
                 //ChangeActionState(ActionState.Begin);
-                //agent.SetDestination(goalPosition);
                 return NodeState.Running;
             }
 
@@ -129,8 +131,16 @@ namespace AI.BT.CustomBTNodes
                 }
 
                 loopCount++;
+                int smalLoop = 0;
                 while (true)
                 {
+                    smalLoop++;
+                    if (smalLoop >= loopBreakMaxCount)
+                    {
+                        Debug.Log("Not find Goal small scope ");
+                        break;
+                    }
+
                     // 캐릭터의 현재 방향을 얻습니다.
                     Vector3 forwardDirection = owner.transform.forward;
 
@@ -138,11 +148,14 @@ namespace AI.BT.CustomBTNodes
                     Vector3 backwardDirection = -forwardDirection;
 
                     // 후방으로 일직선 상의 좌표를 얻기 위해 z 축 값을 설정합니다.
-                    float z = UnityEngine.Random.Range(1.0f, radius);
+                    float z = 2.5f + Random.Range(1, radius);
 
                     // 후방 방향으로 일정 거리만큼 이동한 좌표를 계산합니다.
                     goalPosition = initPosition + backwardDirection * z;
 
+                    if (CanNextStep(goalPosition) == false)
+                        continue;
+                    
                     // 이전 목표 지점과 너무 가까운지 확인합니다.
                     if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
                         break;
@@ -154,8 +167,7 @@ namespace AI.BT.CustomBTNodes
                     agent.CalculatePath(goalPosition, path) 
                     && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    if (CanNextStep(goalPosition) == false )
-                        continue;
+               
 
                     initPosition = goalPosition;
                     navMeshPath = path;
@@ -194,25 +206,26 @@ namespace AI.BT.CustomBTNodes
 
         private bool CanNextStep(Vector3 pos)
         {
-            Vector3 direction = pos - owner.transform.localPosition;
-            float posToDistance = direction.magnitude * 2.0f;
+            if (perception == null)
+            {
+                return true;
+            }
+            bool debug = false;
+#if UNITY_EDITOR
+            debug = true;
+#endif
+            bool bCheck = perception.CheckPositionOther(owner, pos, debug);
 
-            Vector3 myPosition = owner.transform.localPosition + Vector3.up;
-            Ray ray = new Ray(myPosition, direction);
 
-            bool bCheck = true;
-            if (Physics.Raycast(ray, posToDistance))
-                bCheck = false;
-
-            Debug.Log($"{owner.name} Backwalk avoid ? : {bCheck}");
-            return bCheck;
+            Debug.Log($"{owner.name} Backwalk avoid ? : {bCheck == false}");
+            return bCheck == false;
         }
         private bool CalcArrive()
         {
-            float distanceSquared = (goalPosition - agent.transform.position).sqrMagnitude;
+            float distance = Vector3.Distance(goalPosition, agent.transform.position);
 
-            if (distanceSquared <= agent.stoppingDistance 
-                || agent.remainingDistance <= agent.stoppingDistance)
+            if (distance <= agent.stoppingDistance 
+                || agent.remainingDistance <= agent.stoppingDistance + 1.5f)
             {
                // Debug.Log("도착");
                 return true;

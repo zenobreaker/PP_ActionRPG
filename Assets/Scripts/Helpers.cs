@@ -29,6 +29,23 @@ public static class Extend_TransformHelpers
 
         return gameObjects.ToArray();
     }
+
+    public static Vector3 FindGreaterBounds(this Transform transform)
+    {
+        Renderer[] renderers = transform.GetComponentsInChildren<Renderer>();
+
+        Vector3 result = Vector3.zero; 
+        foreach(Renderer r in renderers)
+        {
+            Vector3 size = r.bounds.size;
+            if(size.magnitude > result.magnitude)
+                result = size;
+        }
+
+        return result;
+    }
+
+    
 }
 
 public static class Extend_Vector3

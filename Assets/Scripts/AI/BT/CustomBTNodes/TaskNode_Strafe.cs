@@ -2,9 +2,11 @@ using AI.BT.Helpers;
 using AI.BT.Nodes;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEditor.PlayerSettings;
+using Debug = UnityEngine.Debug;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -22,7 +24,6 @@ namespace AI.BT.CustomBTNodes
         private float radius;
 
         private int loopBreakMaxCount = 10;     // 루프를 강제로 탈출시킬 최대 수치 
-        private int loopCount;
 
         private bool hasFirst = true;
         private bool bRight = true; // 왼쪽으로 갈지 오른쪽으로 갈지 정하기 
@@ -36,6 +37,8 @@ namespace AI.BT.CustomBTNodes
         public Action<Vector3> OnDestination;
         private Coroutine strafCoroutine;
 
+        private bool bSuceess = false;
+
         public TaskNode_Strafe(GameObject ownerObject, SO_Blackboard blackboard, float radius)
             : base(ownerObject, blackboard)
         {
@@ -43,7 +46,7 @@ namespace AI.BT.CustomBTNodes
 
             controller = ownerObject.GetComponent<BTAIController>();
             perception = ownerObject.GetComponent<PerceptionComponent>();
-            agent = owner.GetComponent<NavMeshAgent>(); 
+            agent = owner.GetComponent<NavMeshAgent>();
 
             this.radius = radius;
 
@@ -65,7 +68,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnBegin()
         {
-            if (AgentCheck() == false|| blackboard == null)
+            if (AgentCheck() == false || blackboard == null)
             {
                 return NodeState.Failure;
             }
@@ -74,30 +77,33 @@ namespace AI.BT.CustomBTNodes
             {
                 return NodeState.Failure;
             }
-            
+
             GameObject player = perception.GetPercievedPlayer();
             if (player == null)
                 return NodeState.Failure;
 
-            bRunning = true; 
-            agent.updateRotation = false;
+        
             navMeshPath = null;
 
-            targetPos = player.transform.position - owner.transform.position;
-            targetPos.y = 0;
-            owner.transform.localRotation = Quaternion.LookRotation(targetPos.normalized, Vector3.up);
             if (hasFirst == true)
             {
                 centerPos = player.transform.position;
+                DecideDirection();
             }
-            DecideDirection();
-            loopCount = 0;
 
+            bSuceess = true;
 
-            strafCoroutine = CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
+            strafCoroutine ??= CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
+            
+            if (bSuceess == false)
+                return NodeState.Failure;
+
+            agent.updateRotation = false;
+
             // 경로에 따른 처리 
             if (navMeshPath != null)
             {
+                bRunning = true;
                 OnDestination?.Invoke(goalPosition);
                 ChangeActionState(ActionState.Update);
                 agent.SetPath(navMeshPath);
@@ -121,27 +127,40 @@ namespace AI.BT.CustomBTNodes
             if (player == null)
                 return NodeState.Failure;
 
+            bool bCheck = perception.CheckPositionOther(owner, goalPosition, true);
+            if (bCheck)
+            {
+                return NodeState.Failure;
+            }
+
+
             targetPos = player.transform.position - owner.transform.position;
-            targetPos.y = 0;    
+            targetPos.y = 0;
             owner.transform.localRotation = Quaternion.LookRotation(targetPos.normalized, Vector3.up);
-            
+
             // 도착하면 값 다시 세팅하도록 
             if (CalcArrive() == true)
+            {
+                strafCoroutine = null;
                 ChangeActionState(ActionState.Begin);
+            }
             // 정해진 각도가 될 때까지 움직이기 
             if (Mathf.Abs(currentAngle) < maxAngle)
             {
                 return NodeState.Running;
             }
 
-            
-            return base.OnUpdate();
+            ChangeActionState(ActionState.Begin);
+            hasFirst = true;
+            currentAngle = 0;
+            strafCoroutine = null;
+            return NodeState.Success;
         }
 
         protected override NodeState OnEnd()
         {
             ResetAgent();
-
+            
             hasFirst = true;
             currentAngle = 0;
             return base.OnEnd();
@@ -171,6 +190,8 @@ namespace AI.BT.CustomBTNodes
         private IEnumerator CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
+            navMeshPath = null;
+            int loopCount = 0;
 
             Vector3 prevGoalPos = goalPosition;
             // 현재 캐릭터의 위치에서 시작 각도 계산
@@ -182,18 +203,20 @@ namespace AI.BT.CustomBTNodes
                 if (loopCount >= loopBreakMaxCount)
                 {
                     Debug.Log("Not find Goal Poistion");
-                    break;
+                    bSuceess = false;
+                    yield break;
                 }
 
                 loopCount++;
-                
+
                 int smalLoop = 0;
                 while (true)
                 {
                     smalLoop++;
-                    if(smalLoop >= loopBreakMaxCount)
+                    if (smalLoop >= loopBreakMaxCount)
                     {
                         Debug.Log("Not find Goal small scope ");
+                        bSuceess = false;
                         break;
                     }
 
@@ -204,27 +227,25 @@ namespace AI.BT.CustomBTNodes
                     float radian = currentAngle * Mathf.Deg2Rad;
 
                     // 새로운 위치 계산 (극좌표 -> 직교좌표로 변환)
-                    float x =  Mathf.Cos(radian) * radius;
-                    float z =  Mathf.Sin(radian) * radius;
+                    float x = Mathf.Cos(radian) * radius;
+                    float z = Mathf.Sin(radian) * radius;
 
                     // 중심점에서 떨어진 위치로 계산 (B의 목표 위치)
                     Vector3 offset = new Vector3(x, 0, z);
                     goalPosition = centerPos + offset;
+                    if (CanNextStep(goalPosition) == false)
+                        continue;
 
                     break;
                 }
 
                 // NavMesh 상에서 해당 좌표로 이동할 수 있는지 확인합니다.
                 path = new NavMeshPath();
-                if (AgentCheck() && 
-                    agent.CalculatePath(goalPosition, path) 
+                if (AgentCheck() &&
+                    agent.CalculatePath(goalPosition, path)
                     && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    if (CanNextStep(goalPosition) == false)
-                        continue;
-
                     navMeshPath = path;
-                    loopCount = 0;
                     // 유효한 경로가 있으면 루프를 종료하고 목표 좌표를 반환합니다.
                     yield break;
                 }
@@ -240,7 +261,6 @@ namespace AI.BT.CustomBTNodes
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
-            loopCount = 0;
             hasFirst = true;
             currentAngle = 0;
             CoroutineHelper.Instance.StopHelperCoroutine(strafCoroutine);
@@ -250,8 +270,8 @@ namespace AI.BT.CustomBTNodes
         private void ResetAgent()
         {
             if (AgentCheck() == false)
-                return; 
-
+                return;
+            strafCoroutine = null;
             agent.ResetPath();
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
@@ -260,29 +280,26 @@ namespace AI.BT.CustomBTNodes
 
         private bool CanNextStep(Vector3 pos)
         {
-            float radius = owner.transform.lossyScale.magnitude;
+            if (perception == null)
+            {
+                return true;
+            }
+            bool debug = false;
+#if UNITY_EDITOR
+            debug = true;
+#endif
+            bool bCheck = perception.CheckPositionOther(owner, pos, debug);
 
-            Vector3 direction = pos - owner.transform.localPosition; 
-            float posToDistance = direction.magnitude * 2.0f;
+            Debug.Log($"{owner.name} Strafe avoid ? : {bCheck == false}");
 
-            Vector3 myPosition = owner.transform.localPosition + Vector3.up;
-            Ray ray = new Ray(myPosition, direction);
-
-            bool bCheck = true; 
-            
-            if(Physics.Raycast(ray, posToDistance))
-                bCheck = false;
-
-            Debug.Log($"{owner.name} Strafe avoid ? : {bCheck}");
-
-            return bCheck;
+            return bCheck == false;
         }
 
         private bool CalcArrive()
         {
-            float distanceSquared = (goalPosition - agent.transform.position).magnitude;
+            float distance = Vector3.Distance(goalPosition, agent.transform.position);
 
-            if (distanceSquared <= agent.stoppingDistance
+            if (distance <= agent.stoppingDistance
                 || agent.remainingDistance <= agent.stoppingDistance + 2.5f)
             {
                 // Debug.Log("도착");
@@ -295,7 +312,7 @@ namespace AI.BT.CustomBTNodes
         private bool CheckPath()
         {
             if (AgentCheck() == false)
-                return false; 
+                return false;
 
             NavMeshPath path = new NavMeshPath();
             return agent.CalculatePath(goalPosition, path);

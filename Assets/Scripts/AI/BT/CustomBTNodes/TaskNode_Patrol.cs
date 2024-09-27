@@ -146,8 +146,6 @@ namespace AI.BT.CustomBTNodes
 
             Vector3 prevGoalPosition = goalPosition;
             // 지정한 지점이 없다면 인위적을 선택하여 처리 
-            //TODO: 비동기나 코루틴으로 빼야할 듯한 로직 
-            //TODO: 코루틴 러너나 헬퍼로 넘겨준다.
             while (true)
             {
                 if (loopCount >= loopBreakMaxCount)
@@ -157,13 +155,20 @@ namespace AI.BT.CustomBTNodes
                 }
 
                 loopCount++; 
+                int semiLoopCount = 0;
                 while (true)
                 {
+                    if (semiLoopCount >= loopBreakMaxCount)
+                    {
+                        Debug.Log("Not find Goal Poistion2");
+                        break;
+                    }
+                    semiLoopCount++;
+
                     float x = UnityEngine.Random.Range(-radius * 0.5f, radius * 0.5f);
                     float z = UnityEngine.Random.Range(-radius * 0.5f, radius * 0.5f);
 
                     goalPosition = new Vector3(x, 0, z) + initPosition;
-
                     if (Vector3.Distance(goalPosition, prevGoalPosition) > radius * 0.25f)
                         break;
                 }
@@ -172,7 +177,6 @@ namespace AI.BT.CustomBTNodes
 
                 if (AgentCheck() && agent.CalculatePath(goalPosition, path) == true)
                 {
-                    initPosition = goalPosition;
                     navMeshPath = path;
                     loopCount = 0;
                     yield break;
@@ -202,7 +206,7 @@ namespace AI.BT.CustomBTNodes
         }
         private bool CalcArrive()
         {
-            float distanceSquared = (goalPosition - agent.transform.position).sqrMagnitude;
+            float distanceSquared = (goalPosition - agent.transform.position).magnitude;
 
             if (distanceSquared <= agent.stoppingDistance 
                 || agent.remainingDistance <= agent.stoppingDistance)

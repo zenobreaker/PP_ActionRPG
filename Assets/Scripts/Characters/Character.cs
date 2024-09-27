@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(ConditionComponent))]
 [RequireComponent(typeof(StateComponent))]
 [RequireComponent(typeof(HealthPointComponent))]
-[RequireComponent(typeof(WeaponComponent))]
 [RequireComponent(typeof(Rigidbody))]
 
 public abstract class Character
@@ -20,7 +19,7 @@ public abstract class Character
     protected ConditionComponent condition;
     protected StateComponent state;
     protected HealthPointComponent healthPoint;
-    protected WeaponComponent weapon;
+    protected IActionComponent action;
 
     protected Coroutine downConditionCoroutine;
 
@@ -42,7 +41,7 @@ public abstract class Character
         condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
         healthPoint = GetComponent<HealthPointComponent>();
-        weapon = GetComponent<WeaponComponent>();
+        action = GetComponent<IActionComponent>();
     }
 
     protected virtual void Start()

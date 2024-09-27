@@ -36,7 +36,10 @@ namespace AI.BT
 
             isRunning = true;
             if (btRunCoroutine == null)
+            {
+                Debug.Log("Run Behaivor !!");
                 btRunCoroutine = ownerMBH.StartCoroutine(StartBTRunCoroutine(debugMode, interval));
+            }
         }
 
         public void OperateNode()

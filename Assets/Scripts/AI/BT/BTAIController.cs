@@ -12,7 +12,7 @@ public abstract class BTAIController : MonoBehaviour
 {
     public enum AIStateType
     {
-        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Max,
+        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Dead, Max,
     }
 
     protected AIStateType type;
@@ -26,7 +26,7 @@ public abstract class BTAIController : MonoBehaviour
 
     public enum WaitCondition
     {
-        None = 0, Idle = 1, Backward, Strafe,
+        None = 0, Idle = 1, Strafe, Backward,
     }
 
     protected WaitCondition waitCondition;
@@ -104,7 +104,7 @@ public abstract class BTAIController : MonoBehaviour
     protected PerceptionComponent perception;
     protected ConditionComponent condition;
     protected StateComponent state;
-    protected WeaponComponent weapon;
+    protected IActionComponent action;
 
     protected Vector3 dest;
 
@@ -117,7 +117,7 @@ public abstract class BTAIController : MonoBehaviour
         enemy = GetComponent<Enemy>();
         condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
-        weapon = GetComponent<WeaponComponent>();
+        action = GetComponent<IActionComponent>();
         perception = GetComponent<PerceptionComponent>();
         Debug.Assert(perception != null);
     }
@@ -158,8 +158,13 @@ public abstract class BTAIController : MonoBehaviour
 
 
     protected abstract RootNode CreateBTTree();
-   
 
+
+    protected void NavMeshUpdateRotationSet()
+    {
+        if (navMeshAgent.updateRotation == false)
+            navMeshAgent.updateRotation = true;
+    }
 
 
     private void OnPerceptionUpdated(List<GameObject> gameObjects)
@@ -179,8 +184,7 @@ public abstract class BTAIController : MonoBehaviour
         bool check = false;
         check |= ActionMode;
         check |= DamagedMode;
-
-
+        
         return check;
     }
 
@@ -227,7 +231,7 @@ public abstract class BTAIController : MonoBehaviour
     }
 
 
-    protected void ChangeType(AIStateType type)
+    protected virtual void ChangeType(AIStateType type)
     {
         //Debug.Log($"new type : {type}");
         AIStateType prevType = this.type;
@@ -294,6 +298,7 @@ public abstract class BTAIController : MonoBehaviour
 
     public void SetSpeed(float speed)
     {
+        Debug.Log($"Set Speed {speed} == ");
         navMeshAgent.speed = speed;
     }
 
@@ -312,11 +317,17 @@ public abstract class BTAIController : MonoBehaviour
         navMeshAgent.angularSpeed = navOriginAngularSpeed;
     }
 
-    public void End_Damage()
+    public virtual void End_Damage()
     {
         // coroutineEndDamage = StartCoroutine(Wait_End_Damage());
         //SetCoolTime(damageDelay, damageDelayRandom);
 
         SetWaitMode(true);
+    }
+
+
+    protected virtual void OnEndDoAction()
+    {
+        SetWaitMode();
     }
 }

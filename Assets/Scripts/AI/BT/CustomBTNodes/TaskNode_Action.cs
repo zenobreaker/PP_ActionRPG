@@ -5,11 +5,17 @@ namespace AI.BT.CustomBTNodes
 {
     public class TaskNode_Action : TaskNode
     {
+
+        StateComponent state;
+        IActionComponent action; 
+
         public TaskNode_Action(GameObject owner, SO_Blackboard blackboard)
             :base(owner, blackboard)
         {
             this.nodeName = "Action";
 
+            action = owner.GetComponent<IActionComponent>();
+            state = owner.GetComponent<StateComponent>();
             onBegin = OnBegin;
             onUpdate = OnUpdate;
             onEnd = OnEnd;
@@ -19,14 +25,14 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnBegin()
         {
-            if(!owner.TryGetComponent<WeaponComponent>(out WeaponComponent weapon))
+            if(action == null)
             {
                 return NodeState.Failure;
             }
-            //Debug.Log("Action Node Begin ");
+            Debug.Log($"{nodeName} Action Node Begin ");
 
             ChangeActionState(ActionState.Update);
-            weapon.DoAction();
+            action.DoAction();
 
             return NodeState.Running;
         }
@@ -34,7 +40,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnUpdate()
         {
-            if(!owner.TryGetComponent<StateComponent>(out StateComponent state))
+            if(state == null)
             {
                 ChangeActionState(ActionState.Begin);
                 return NodeState.Failure;

@@ -22,7 +22,7 @@ namespace AI.BT.TaskNodes
             onEnd = OnEnd;
         }
 
-        public WaitNode(float waitTime, float waitRandDelay)
+        public WaitNode(float waitTime, float waitRandDelay = 0.0f)
             : base(null, null, null)
         {
             nodeName = "Wait";

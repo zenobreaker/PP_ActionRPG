@@ -19,7 +19,7 @@ public class HealthPointComponent : MonoBehaviour
 
     public float GetMaxHP { get => maxHealthPoint; }
     public float GetCurrentHP { get => currHealthPoint; }
-
+    public float GetCurrentHPByPercent { get => currHealthPoint / maxHealthPoint; }
     public bool Dead { get => currHealthPoint <= 0.0f; }
 
     private void Start()
@@ -29,7 +29,7 @@ public class HealthPointComponent : MonoBehaviour
         if (GetComponent<Player>() != null)
         {
             GameObject ui = GameObject.Find(uiPlayerName);
-            Debug.Assert(ui != null);
+            Debug.Assert(ui != null, gameObject.name + " error ");
             if (ui != null)
             {
                 userInterface = ui.GetComponent<Image>();

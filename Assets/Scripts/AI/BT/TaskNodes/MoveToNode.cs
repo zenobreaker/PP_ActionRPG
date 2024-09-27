@@ -63,9 +63,6 @@ namespace AI.BT.TaskNodes
 
                 target = targetObject.transform.position;   
             }
-            
-            if (agent.updateRotation == false)
-                agent.updateRotation = true;
 
             agent.SetDestination(target);
             //Debug.Log("Move Begin");
