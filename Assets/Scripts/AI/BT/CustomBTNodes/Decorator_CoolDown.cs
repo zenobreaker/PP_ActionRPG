@@ -81,5 +81,11 @@ namespace AI.BT.CustomBTNodes
             coolDown = 0.0f;
         }
 
+        public override void StopEvaluate()
+        {
+            isRunning = false;
+            CoroutineHelper.Instance.StopHelperCoroutine(coolDownCoroutine);
+            childNode.StopEvaluate();
+        }
     }
 }

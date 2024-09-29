@@ -276,7 +276,6 @@ public class Fist : Melee
 
             angle = dot;
             candidate = collider.gameObject;
-            Debug.Log("�� ����  " + candidate.name);
         }
 
         return candidate;

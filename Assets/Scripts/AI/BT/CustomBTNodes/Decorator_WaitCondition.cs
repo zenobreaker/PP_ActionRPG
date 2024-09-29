@@ -17,9 +17,8 @@ namespace AI.BT.CustomBTNodes
             GameObject owner = null, 
             SO_Blackboard blackboard = null, 
             string boardKey = null,
-            string key = null, 
             BTAIController.WaitCondition waitCondition = BTAIController.WaitCondition.None) 
-            : base(nodeName, childNode, owner, blackboard, boardKey, key)
+            : base(nodeName, childNode, owner, blackboard, boardKey)
         {
             controller = owner.GetComponent<BTAIController>();
 
@@ -52,6 +51,15 @@ namespace AI.BT.CustomBTNodes
                 return false;
 
             return controller.MyWaitCondition == waitCondition;
+        }
+
+        public override void StopEvaluate()
+        {
+            //TODO: Reset 만들면 옮길까..
+            waitCondition = BTAIController.WaitCondition.None;
+
+            isRunning = false;
+            childNode.StopEvaluate();
         }
     }
 }

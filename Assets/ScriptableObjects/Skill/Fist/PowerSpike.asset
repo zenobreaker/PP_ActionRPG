@@ -20,11 +20,11 @@ MonoBehaviour:
   skillRange: 4.5
   animationName: Fist_Skill1
   skillMainSound: PowerSpike
-  repeatDelayTime: 0
+  DelayTime: 0
   skillActions:
   - bDownable: 1
     bLauncher: 0
-    Power: 10
+    Power: 50
     Distance: 1
     heightValue: 2.5
     StopFrame: 2
@@ -36,6 +36,7 @@ MonoBehaviour:
     HitParticle: {fileID: 7226583673155636401, guid: 07b11b34e0150d744bbb5b3d00917410, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0
   EffectParticle: {fileID: 0}
   additionalPos: {x: 0, y: 0.2, z: 0}
   bSameOwner: 0

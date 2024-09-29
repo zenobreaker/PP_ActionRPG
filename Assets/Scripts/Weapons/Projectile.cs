@@ -10,6 +10,10 @@ public class Projectile : MonoBehaviour
 
     private new Rigidbody rigidbody;
     private new Collider collider;
+    private bool bTargetDestroy = true; 
+    public bool TargetDestroy { set { bTargetDestroy = value; } }
+    private float destroyTime = 0.0f; 
+    public float DestroyTime { set { destroyTime = value; } }
 
     [SerializeField]
     private GameObject hitPrefab;
@@ -36,8 +40,10 @@ public class Projectile : MonoBehaviour
     {
         OnProjectileHit?.Invoke(collider, other, transform.position);
 
-        Destroy(gameObject);
-
+        if (bTargetDestroy)
+            Destroy(gameObject);
+        else
+            Destroy(gameObject, destroyTime);
     }
 
 }

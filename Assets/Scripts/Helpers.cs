@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class Extend_TransformHelpers
 {
+
     public static Transform FindChildByName(this Transform transform, string name)
     {
         Transform[] trasnforms = transform.GetComponentsInChildren<Transform>();
@@ -16,6 +17,20 @@ public static class Extend_TransformHelpers
         return null;
     }
 
+    public static Transform FindChildByNameDeeper(this Transform transform, string name)
+    {
+        Transform[] trasnforms = transform.GetComponentsInChildren<Transform>();
+
+        foreach (Transform t in trasnforms)
+        {
+            if (t.gameObject.name.Equals(name))
+                return t;
+
+            FindChildByNameDeeper(t, name);
+        }
+
+        return null; 
+    }
     public static GameObject[] FindChildrenByComponentType<T>(this Transform transform) where T : Component
     {
         T[] trasnforms = transform.GetComponentsInChildren<T>();

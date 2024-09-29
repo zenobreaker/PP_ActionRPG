@@ -36,13 +36,11 @@ namespace AI.BT.CustomBTNodes
         {
             if (weapon == null)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
             if (weaponType == WeaponType.Unarmed)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
@@ -67,22 +65,14 @@ namespace AI.BT.CustomBTNodes
                 break;
             }
 
-            ChangeActionState(ActionState.Update);
-            
             return NodeState.Running;
         }
 
         protected override NodeState OnUpdate()
         {
-            if (weapon == null)
+            if (weapon == null 
+                || stateComponent == null)
             {
-                ChangeActionState(ActionState.End);
-                return NodeState.Failure;
-            }
-
-            if (stateComponent == null)
-            {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
@@ -91,11 +81,8 @@ namespace AI.BT.CustomBTNodes
             bool bIdle = stateComponent.IdleMode;
             bCheck = bEquippd && bIdle;
 
-            
-
             if (bCheck)
             {
-                ChangeActionState (ActionState.Begin);
                 return NodeState.Success;
             }
 
@@ -109,7 +96,6 @@ namespace AI.BT.CustomBTNodes
 
             if (weapon == null)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Abort;
             }
 
@@ -119,7 +105,6 @@ namespace AI.BT.CustomBTNodes
                 weapon.Begin_Equip();
 
             weapon.End_Equip();
-
 
             return base.OnAbort();
         }

@@ -51,7 +51,10 @@ public class BTAIController_Dragon : BTAIController
 
         health = GetComponent<HealthPointComponent>();
         if (action != null)
+        {
+            action.OnBeginDoAction += OnBeginDoAction;
             action.OnEndDoAction += OnEndDoAction;
+        }
     }
 
     protected override void Start()
@@ -90,10 +93,21 @@ public class BTAIController_Dragon : BTAIController
         StartCoroutine(CoolDownCoroutine());
     }
 
+    protected void OnDisable()
+    {
+        btRunner.StopBehaviorTree();    
+    }
+
     protected override void Update()
     {
         base.Update();
         userInterface.text += "\n" + waitCondition.ToString();
+        userInterface.text += "\n" + state.Type.ToString();
+
+        if(health.Dead)
+        {
+            btRunner.StopBehaviorTree();
+        }
     }
 
     protected override void FixedUpdate()
@@ -131,6 +145,11 @@ public class BTAIController_Dragon : BTAIController
 
     protected override void LateUpdate()
     {
+        LateUpdate_DeathMotion();
+
+        if (health.Dead)
+            return;
+
         if (WaitMode && IdleCondition)
         {
             animator.SetFloat("Vertical", 0.0f);
@@ -160,6 +179,19 @@ public class BTAIController_Dragon : BTAIController
         animator.SetFloat("Vertical", deltaSpeed);
     }
 
+
+    private void LateUpdate_DeathMotion()
+    {
+        if (health.Dead == false)
+            return;
+        
+        if(cur_DragonState == DragonState.Fly)
+            animator.SetInteger("LastState", 3);
+
+        animator.SetInteger("State", 7);
+    }
+
+
     #region BehaviorTree 
     protected override void CreateBlackboardKey()
     {
@@ -167,17 +199,7 @@ public class BTAIController_Dragon : BTAIController
         blackboard.SetValue<AIStateType>("AIStateType", AIStateType.Wait);
 
         // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
-        blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
-        blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
-        blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
-        blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
-
         blackboard.SetValue<int>("DragonPattern", 0);
-        blackboard.SetValue<int>("1", 1);
-        blackboard.SetValue<int>("2", 2);
-        blackboard.SetValue<int>("3", 3);
-        blackboard.SetValue<int>("4", 4);
-        blackboard.SetValue<int>("5", 5);
     }
 
     protected override RootNode CreateBTTree()
@@ -199,7 +221,7 @@ public class BTAIController_Dragon : BTAIController
 
         Decorator_Blackboard<AIStateType> damagedDeco =
             new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", "Damaged");
+            this.gameObject, blackboard, "AIStateType", AIStateType.Damaged);
 
         DamagedSelector.AddChild(damagedDeco);
 
@@ -217,33 +239,35 @@ public class BTAIController_Dragon : BTAIController
                 WaitCondition.Idle);
             idleDeco.NodeName = "Idle";
 
+
             // 옆 걸음
-            ParallelNode strafeParallel = new ParallelNode(ParallelNode.FinishCondition.All);
-            {
-                strafeParallel.NodeName = "StarfeParallel";
+            WaitNode sfWaitNode = new WaitNode(waitDelay, waitDelayRandom);
+            sfWaitNode.NodeName = "StrafeWait";
+            TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
+            SelectorNode strafeSelector = new SelectorNode();
 
-                WaitNode sfWaitNode = new WaitNode(5.0f, 0.5f);
-                sfWaitNode.NodeName = "StrafeWait";
-                TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
-                SelectorNode strafeSelector = new SelectorNode();
+            TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 10.0f);
+            strafeNode.OnDestination += OnDestination;
+            TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
+            backward.OnDestination += OnDestination;
 
-                TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 10.0f);
-                strafeNode.OnDestination += OnDestination;
-                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
-                backward.OnDestination += OnDestination;
+            strafeSelector.AddChild(strafeNode);
+            strafeSelector.AddChild(backward);
 
-                strafeSelector.AddChild(strafeNode);
-                strafeSelector.AddChild(backward);
+            SequenceNode strafeSequence = new SequenceNode();
+            strafeSequence.AddChild(sfSpeed);
+            strafeSequence.AddChild(strafeSelector);
 
-                SequenceNode sequenceNode = new SequenceNode();
-                sequenceNode.AddChild(sfSpeed);
-                sequenceNode.AddChild(strafeSelector);
 
-                strafeParallel.AddChild(sfWaitNode);
-                strafeParallel.AddChild(sequenceNode);
-            }
+            //ParallelNode strafeParallel = new ParallelNode(ParallelNode.FinishCondition.All);
+            //{
+            //    strafeParallel.NodeName = "StarfeParallel";
+
+            //    strafeParallel.AddChild(sfWaitNode);
+            //    strafeParallel.AddChild(sequenceNode);
+            //}
             Decorator_WaitCondition strafeDeco = new Decorator_WaitCondition(
-                strafeParallel, this.gameObject, WaitCondition.Strafe);
+                strafeSequence, this.gameObject, WaitCondition.Strafe);
             strafeDeco.NodeName = "Strafe";
 
 
@@ -253,7 +277,7 @@ public class BTAIController_Dragon : BTAIController
 
         Decorator_Blackboard<AIStateType> waitDeco =
             new Decorator_Blackboard<AIStateType>("WaitDeco", waitSelector, this.gameObject,
-            blackboard, "AIStateType", "Wait");
+            blackboard, "AIStateType", AIStateType.Wait);
 
 
         // 타겟으로 이동
@@ -269,13 +293,14 @@ public class BTAIController_Dragon : BTAIController
 
         Decorator_Blackboard<AIStateType> moveDeco =
             new Decorator_Blackboard<AIStateType>("MoveDeco", approachSequence, this.gameObject,
-            blackboard, "AIStateType", "Approach");
+            blackboard, "AIStateType", AIStateType.Approach);
 
 
         // 공격 
         Decorator_Blackboard<AIStateType> attackDeco =
             new Decorator_Blackboard<AIStateType>("ActionDeco",
-            CreatePatternActionBTTree(), this.gameObject, blackboard, "AIStateType", "Action");
+            CreatePatternActionBTTree(), this.gameObject, blackboard, "AIStateType",
+            AIStateType.Action);
 
         selector.AddChild(waitDeco);
         selector.AddChild(moveDeco);
@@ -298,10 +323,9 @@ public class BTAIController_Dragon : BTAIController
             TaskNode_SetupPattern bitePattern = new TaskNode_SetupPattern(this.gameObject, 1);
             Decorator_CoolDown biteCoolDown = new Decorator_CoolDown(bitePattern, this.gameObject, 4.0f);
             biteCoolDown.NodeName = "Bite";
-
             TaskNode_Action biteAction = new TaskNode_Action(this.gameObject, blackboard);
             biteAction.NodeName = "Bite";
-            WaitNode bitWait = new WaitNode(1.0f);
+            WaitNode bitWait = new WaitNode(attackDelay, attackDelayRandom);
 
             biteSequence.AddChild(bitePattern);
             biteSequence.AddChild(biteAction);
@@ -310,7 +334,7 @@ public class BTAIController_Dragon : BTAIController
         }
         Decorator_Blackboard<int> biteDeco =
             new Decorator_Blackboard<int>("BiteNode", biteSequence, this.gameObject,
-            blackboard, "DragonPattern", "1");
+            blackboard, "DragonPattern", 1);
 
 
         // 날개 치기
@@ -320,10 +344,9 @@ public class BTAIController_Dragon : BTAIController
             TaskNode_SetupPattern wingPattern = new TaskNode_SetupPattern(this.gameObject, 2);
             Decorator_CoolDown wingCoolDown = new Decorator_CoolDown(wingPattern, this.gameObject, 5.0f);
             wingCoolDown.NodeName = "Wing";
-
             TaskNode_Action wingAction = new TaskNode_Action(this.gameObject, blackboard);
             wingAction.NodeName = "Wing";
-            WaitNode wingWait = new WaitNode(1.0f);
+            WaitNode wingWait = new WaitNode(attackDelay, attackDelayRandom);
 
             wingSequence.AddChild(wingPattern);
             wingSequence.AddChild(wingAction);
@@ -331,11 +354,10 @@ public class BTAIController_Dragon : BTAIController
         }
         Decorator_Blackboard<int> wingDeco =
             new Decorator_Blackboard<int>("WingNode", wingSequence, this.gameObject,
-            blackboard, "DragonPattern", "2");
+            blackboard, "DragonPattern", 2);
 
 
         // 화염탄 발사
-        // 날개 치기
         SequenceNode fireballSequence = new SequenceNode();
         {
 
@@ -343,18 +365,20 @@ public class BTAIController_Dragon : BTAIController
             Decorator_CoolDown fireballCoolDown = new Decorator_CoolDown(fireballPattern, this.gameObject, 6.5f);
             fireballCoolDown.NodeName = "Fireball";
 
+            TaskNode_Targeting target = new TaskNode_Targeting(this.gameObject, blackboard);
             TaskNode_Action fireballAction = new TaskNode_Action(this.gameObject, blackboard);
             fireballAction.NodeName = "Fireball";
-            WaitNode fireballWait = new WaitNode(1.0f);
+            WaitNode fireballWait = new WaitNode(attackDelay, attackDelayRandom);
 
 
             fireballSequence.AddChild(fireballPattern);
+            fireballSequence.AddChild(target);
             fireballSequence.AddChild(fireballAction);
             fireballSequence.AddChild(fireballWait);
         }
         Decorator_Blackboard<int> fireballDeco =
             new Decorator_Blackboard<int>("fireballNode", fireballSequence, this.gameObject,
-            blackboard, "DragonPattern", "3");
+            blackboard, "DragonPattern", 3);
 
 
 
@@ -367,18 +391,20 @@ public class BTAIController_Dragon : BTAIController
             Decorator_CoolDown firebreathCoolDown = new Decorator_CoolDown(firebreathPattern, this.gameObject, 6.5f);
             firebreathCoolDown.NodeName = "Firebreath";
 
+            TaskNode_Targeting target = new TaskNode_Targeting(this.gameObject, blackboard);
             TaskNode_Action firebreathAction = new TaskNode_Action(this.gameObject, blackboard);
             firebreathAction.NodeName = "Firebreath";
-            WaitNode firebreathWait = new WaitNode(1.0f);
+            WaitNode firebreathWait = new WaitNode(attackDelay, attackDelayRandom);
 
 
             firebreathSequence.AddChild(firebreathPattern);
+            firebreathSequence.AddChild(target);
             firebreathSequence.AddChild(firebreathAction);
             firebreathSequence.AddChild(firebreathWait);
         }
         Decorator_Blackboard<int> firebreathDeco =
             new Decorator_Blackboard<int>("firebreathNode", firebreathSequence, this.gameObject,
-            blackboard, "DragonPattern", "4");
+            blackboard, "DragonPattern", 4);
 
 
 
@@ -389,10 +415,10 @@ public class BTAIController_Dragon : BTAIController
             TaskNode_SetupPattern flyPattern = new TaskNode_SetupPattern(this.gameObject, 5);
             Decorator_CoolDown flyCoolDown = new Decorator_CoolDown(flyPattern, this.gameObject, 10.0f);
             flyCoolDown.NodeName = "Fly";
-
+            
             TaskNode_Action flyAction = new TaskNode_Action(this.gameObject, blackboard);
             flyAction.NodeName = "Fly";
-            WaitNode flyWait = new WaitNode(1.0f);
+            WaitNode flyWait = new WaitNode(attackDelay, attackDelayRandom);
 
             flySequence.AddChild(flyPattern);
             flySequence.AddChild(flyAction);
@@ -400,7 +426,7 @@ public class BTAIController_Dragon : BTAIController
 
         }
         Decorator_Blackboard<int> flyDeco = new Decorator_Blackboard<int>("flyNode", flySequence, this.gameObject,
-            blackboard, "DragonPattern", "5");
+            blackboard, "DragonPattern", 5);
 
         TaskNode_ActionEnd attkendNode = new TaskNode_ActionEnd(this.gameObject, blackboard);
 
@@ -409,7 +435,7 @@ public class BTAIController_Dragon : BTAIController
         patternSelector.AddChild(fireballDeco);
         patternSelector.AddChild(firebreathDeco);
         patternSelector.AddChild(flyDeco);
-        patternSelector.AddChild(attkendNode);
+        //patternSelector.AddChild(attkendNode);
 
         return patternSelector;
     }
@@ -419,6 +445,7 @@ public class BTAIController_Dragon : BTAIController
     protected override bool CheckMode()
     {
         bool bCheck = base.CheckMode();
+        bCheck &= state.IdleMode == false;
 
         if (health != null)
             bCheck |= health.Dead;
@@ -427,12 +454,19 @@ public class BTAIController_Dragon : BTAIController
     }
     public override void SetWaitMode(bool isDamaged = false)
     {
+        DeceideActionPattern();
+
+        ChangeAttackRange();
+
+        if (WaitMode == true)
+            return; 
+
         base.SetWaitMode(isDamaged);
 
         //waitCondition = WaitCondition.Idle;
         DeicideWaitCondition();
 
-        DeceideActionPattern();
+        //DeceideActionPattern();
     }
 
     public override void SetPatrolMode()
@@ -445,10 +479,31 @@ public class BTAIController_Dragon : BTAIController
         navMeshAgent.stoppingDistance = 2.5f;
     }
 
+    public override void SetDamagedMode()
+    {
+        if (DamagedMode == true)
+            return;
+        StartCoroutine(RecoveryDamage());
+        //ChangeType(AIStateType.Damaged);
+    }
+
+    private IEnumerator RecoveryDamage()
+    {
+        yield return new WaitForSeconds(0.5f);
+        End_Damage();
+    }
+
+    public override void End_Damage()
+    {
+        //base.End_Damage();
+        //state.SetIdleMode();
+        //SetWaitMode(true);
+    }
 
     protected override void ChangeType(AIStateType type)
     {
         base.ChangeType(type);
+        
         animator.SetInteger("State", (int)cur_DragonState);
     }
 
@@ -463,7 +518,7 @@ public class BTAIController_Dragon : BTAIController
 
 
         WaitCondition codition = (WaitCondition)num;
-        Debug.Log($"Decide Wait Condtion  {codition}");
+        Debug.Log($"Decide Wait Condition  {codition}");
 
         switch (codition)
         {
@@ -495,7 +550,7 @@ public class BTAIController_Dragon : BTAIController
 
 
         // 날아 오르고 화염 
-        if (health.GetCurrentHPByPercent <= 0.1f && dragonPatternTable[5].Usable)
+        if (health.GetCurrentHPByPercent <= 0.3f && dragonPatternTable[5].Usable)
         {
             currentAttackPattern = 5;
             blackboard.SetValue("DragonPattern", currentAttackPattern);
@@ -503,6 +558,27 @@ public class BTAIController_Dragon : BTAIController
         }
 
         StartCoroutine(DecidePatternCoroutine());
+
+    }
+
+    private void ChangeAttackRange()
+    {
+        if(currentAttackPattern == 1 || currentAttackPattern == 0)
+        {
+            attackRange = 4.5f;
+        }
+        else if(currentAttackPattern == 2)
+        {
+            attackRange = 4.1f;
+        }
+        else if (currentAttackPattern == 3)
+        {
+            attackRange = 9.0f;
+        }
+        else if (currentAttackPattern == 4 || currentAttackPattern == 5)
+        {
+            attackRange = 12.0f;
+        }
     }
 
     private IEnumerator CoolDownCoroutine()
@@ -532,7 +608,8 @@ public class BTAIController_Dragon : BTAIController
             if (loopCount >= maxLoopCount)
             {
                 currentAttackPattern = 0;
-
+                Debug.Log($"Dragon is No {currentAttackPattern} Decided pattern");
+                blackboard.SetValue("DragonPattern", currentAttackPattern);
                 yield break;
             }
 
@@ -545,10 +622,22 @@ public class BTAIController_Dragon : BTAIController
                 currentAttackPattern = num;
                 Debug.Log($"{currentAttackPattern} Decided pattern");
                 blackboard.SetValue("DragonPattern", currentAttackPattern);
+                yield break;
             }
 
-            yield break;
+            yield return null; 
+        }
+    }
 
+
+    protected override void OnBeginDoAction()
+    {
+        base.OnBeginDoAction();
+
+        dragonPatternTable[currentAttackPattern].SetCoolDown();
+        if(currentAttackPattern == 5)
+        {
+            cur_DragonState = DragonState.Fly;
         }
     }
 
@@ -556,8 +645,6 @@ public class BTAIController_Dragon : BTAIController
     protected override void OnEndDoAction()
     {
         base.OnEndDoAction();
-
-        dragonPatternTable[currentAttackPattern].SetCoolDown();
     }
 
     private void OnDestination(Vector3 destination)

@@ -54,16 +54,10 @@ namespace AI.BT.CustomBTNodes
         }
         protected override NodeState OnBegin()
         {
-            if (AgentCheck() == false || blackboard == null)
+            if (AgentCheck() == false 
+                || blackboard == null 
+                || controller == null)
             {
-                ChangeActionState(ActionState.End);
-                return NodeState.Failure;
-            }
-
-            // 특정 지점 위치를 반환
-            if (controller == null)
-            {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
@@ -77,15 +71,12 @@ namespace AI.BT.CustomBTNodes
             if (navMeshPath != null)
             {
                 OnDestination?.Invoke(goalPosition);
-                ChangeActionState(ActionState.Update);
                 agent.SetPath(navMeshPath);
-
                 return NodeState.Running;
             }
-            else
-            {
-                return NodeState.Failure;
-            }
+            
+
+            return NodeState.Failure;
         }
 
 
@@ -93,15 +84,11 @@ namespace AI.BT.CustomBTNodes
         {
             if (AgentCheck() == false || CheckPath() == false)
             {
-                ChangeActionState(ActionState.End);
-                ResetAgent();
-
                 return NodeState.Failure;
             }
 
             if (CalcArrive() == false)
             {
-                //ChangeActionState(ActionState.Begin);
                 return NodeState.Running;
             }
 
@@ -183,13 +170,18 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
-            //Debug.Log($"Backward Abort / {currActionState}");
-            ChangeActionState(ActionState.Begin);
-            ResetAgent();
+            if (currActionState == ActionState.Begin || currActionState == ActionState.Update)
+            {
+                //Debug.Log($"Backward Abort / {currActionState}");
+                CoroutineHelper.Instance.StopHelperCoroutine(backwardCoroutine);
 
-            loopCount = 0;
+                //TODO: Abort 중단되었을 때 상태를 돌리는게 좋은걸까?
+                //ChangeActionState(ActionState.Begin);
+                ResetAgent();
 
-            CoroutineHelper.Instance.StopHelperCoroutine(backwardCoroutine);
+                loopCount = 0;
+            }
+
             return base.OnAbort();
         }
 
@@ -244,6 +236,12 @@ namespace AI.BT.CustomBTNodes
             return agent.CalculatePath(goalPosition, path);
         }
 
+        public override void StopEvaluate()
+        {
+            base.StopEvaluate();
+
+            onAbort?.Invoke();
+        }
     }
 
 }

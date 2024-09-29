@@ -15,16 +15,18 @@ namespace AI.BT.CustomBTNodes
         }
         protected BB_KeyQuery keyQuery;
 
+        private T key;
         public Decorator_Blackboard(string nodeName, BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
             string boardKey = null,
-            string key = null,
+            T key = default(T),
             BB_KeyQuery keyQuery = BB_KeyQuery.Equals
            ) :
-            base(nodeName, childNode, owner, blackboard, boardKey, key/*, keyQuery*/)
+            base(nodeName, childNode, owner, blackboard, boardKey /*key, keyQuery*/)
         {
             this.keyQuery = keyQuery;
+            this.key = key;
         }
 
         protected override void OnEnd()
@@ -32,12 +34,56 @@ namespace AI.BT.CustomBTNodes
            base.OnEnd();
         }
 
+
+        protected virtual bool CompareValueToQuery<U>(string changedKey)
+        {
+            if (blackboard == null)
+                return false;
+
+            //Debug.Log($"{nodeName} == Compare {key}");
+            switch (keyQuery)
+            {
+                case BB_KeyQuery.Equals:
+                return blackboard.CompareValue(changedKey, key);
+
+                case BB_KeyQuery.NotEquals:
+                return blackboard.CompareValue(changedKey, key) == false;
+
+                case BB_KeyQuery.GreaterThan:
+                return blackboard.GreaterThanValue(changedKey, key);
+
+                case BB_KeyQuery.LessThan:
+                return blackboard.LessThanValue(changedKey, key);
+
+                case BB_KeyQuery.LessThanOrEqual:
+                {
+                    bool bCheck = false;
+                    bCheck |= blackboard.LessThanValue(changedKey, key);
+                    bCheck |= blackboard.CompareValue(changedKey, key);
+                    return bCheck;
+                }
+                case BB_KeyQuery.GreaterThanOrEqual:
+                {
+                    bool bCheck = false;
+                    bCheck |= blackboard.GreaterThanValue(changedKey, key);
+                    bCheck |= blackboard.CompareValue(changedKey, key);
+                    return bCheck;
+                }
+            }
+
+            return false;
+        }
+
         //TODO: 아래 이벤트용 함수는 정리가 필요하다.
         protected override void OnValueChanged(string changedKey)
         {
+            if (isRunning == false)
+                return; 
+
             // 여기에 등록된 키값이랑 값이 변경되는 키값이랑 같은 경우 
             if (changedKey == boardKey)
             {
+                //Debug.Log($"{nodeName} +  + Examine {changedKey}");
                 // 비교 했을 때 다르다면?
                 if(CompareValueToQuery<T>(changedKey) == false)
                 {
@@ -56,46 +102,10 @@ namespace AI.BT.CustomBTNodes
             return result;
         }
 
-         protected virtual bool CompareValueToQuery<T>(string changedKey)
+        public override void StopEvaluate()
         {
-            if (blackboard == null)
-                return false; 
-
-            T value = blackboard.GetValue<T>(key);
-
-            switch (keyQuery)
-            {
-                case BB_KeyQuery.Equals:
-                return blackboard.CompareValue(boardKey, value);
-                
-                case BB_KeyQuery.NotEquals:
-                return blackboard.CompareValue(boardKey, value) == false;
-                
-                case BB_KeyQuery.GreaterThan:
-                return blackboard.GreaterThanValue(boardKey, value);
-                
-                case BB_KeyQuery.LessThan:
-                return blackboard.LessThanValue(boardKey, value);
-
-                case BB_KeyQuery.LessThanOrEqual:
-                {
-                    bool bCheck = false;
-                    bCheck |= blackboard.LessThanValue(boardKey, value);
-                    bCheck |= blackboard.CompareValue(boardKey, value);
-                    return bCheck;
-                }
-                case BB_KeyQuery.GreaterThanOrEqual:
-                {
-                    bool bCheck = false;
-                    bCheck |= blackboard.GreaterThanValue(boardKey, value);
-                    bCheck |= blackboard.CompareValue(boardKey, value);
-                    return bCheck;
-                }
-            }
-
-            return false;
+            isRunning = false;
+            childNode.StopEvaluate();
         }
-
-
     }
 }

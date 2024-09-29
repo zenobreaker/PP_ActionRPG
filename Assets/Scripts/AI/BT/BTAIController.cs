@@ -210,6 +210,7 @@ public abstract class BTAIController : MonoBehaviour
         if (ApproachMode == true)
             return;
 
+        NavMeshUpdateRotationSet();
         navMeshAgent.stoppingDistance = attackRange;
         ChangeType(AIStateType.Approach);
     }
@@ -233,10 +234,11 @@ public abstract class BTAIController : MonoBehaviour
 
     protected virtual void ChangeType(AIStateType type)
     {
-        //Debug.Log($"new type : {type}");
         AIStateType prevType = this.type;
+        Debug.Log($"prev Type {prevType} new type : {type}");
         blackboard.SetValue("AIStateType", type);
         this.type = type;
+        
         OnAIStateTypeChanged?.Invoke(prevType, type);
     }
 
@@ -321,10 +323,19 @@ public abstract class BTAIController : MonoBehaviour
     {
         // coroutineEndDamage = StartCoroutine(Wait_End_Damage());
         //SetCoolTime(damageDelay, damageDelayRandom);
-
+        state.SetIdleMode();
         SetWaitMode(true);
     }
 
+    public virtual void ChangeAttackRange(float range)
+    {
+        attackRange = range; 
+    }
+
+    protected virtual void OnBeginDoAction()
+    {
+
+    }
 
     protected virtual void OnEndDoAction()
     {

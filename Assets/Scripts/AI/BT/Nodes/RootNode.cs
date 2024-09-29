@@ -50,6 +50,19 @@ namespace AI.BT.Nodes
             }
         }
 
+        /// <summary>
+        /// 노드의 상태를 초기화 하는 함수 
+        /// </summary>
+        public void Reset()
+        {
+            //TODO: 기능 추가
+        }
+
+        public override void StopEvaluate()
+        {
+            childNode.StopEvaluate();
+        }
+
         public override NodeState Evaluate()
         {
             return childNode.Evaluate();

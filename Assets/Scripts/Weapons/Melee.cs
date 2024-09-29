@@ -241,7 +241,7 @@ public class Melee : Weapon
         }
 
         isAnimating = true;
-        Debug.Log($"{this.rootObject.name} Combo : " + index);
+        //Debug.Log($"{this.rootObject.name} Combo : " + index);
         animator.Play(comboObjData.comboDatas[index].ComboName);
         
 

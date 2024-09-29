@@ -350,10 +350,10 @@ MonoBehaviour:
   subActionDatas:
   - bDownable: 0
     bLauncher: 0
-    Power: 0
+    Power: 10
     Distance: 0
     heightValue: 0
-    StopFrame: 0
+    StopFrame: 1
     impulseDirection: {x: 0, y: 0.025, z: 0.025}
     impulseSettings: {fileID: 11400000, guid: a04e4113b6699344c8b49aa4f1499c35, type: 2}
     effectSoundName: 

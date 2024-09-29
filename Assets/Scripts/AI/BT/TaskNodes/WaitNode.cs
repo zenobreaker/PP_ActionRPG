@@ -43,7 +43,7 @@ namespace AI.BT.TaskNodes
             currentWaitTime = Random.Range(waitTime + (-1.0f * waitRandDelay),
                 waitTime + (+1.0f * waitRandDelay));
 
-            return base.OnBegin();
+            return NodeState.Running;
         }
 
 
@@ -53,11 +53,10 @@ namespace AI.BT.TaskNodes
 
             if (currentWaitTime > 0)
             {
-                //Debug.Log($"{nodeName} Update ");
                 return BTNode.NodeState.Running;
             }
 
-            return base.OnUpdate();
+            return NodeState.Success;
         }
 
 
@@ -67,5 +66,6 @@ namespace AI.BT.TaskNodes
              
             return base.OnEnd();
         }
+
     }
 }

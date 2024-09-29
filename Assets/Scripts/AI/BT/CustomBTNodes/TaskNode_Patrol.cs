@@ -100,19 +100,13 @@ namespace AI.BT.CustomBTNodes
         {
             if (agent == null || CheckPath() == false)
             {
-                ChangeActionState(ActionState.End);
-                ResetAgent();
-
                 return NodeState.Failure;
             }
 
             if (CalcArrive() == false)
             {
-                //ChangeActionState(ActionState.Begin);
-                //agent.SetDestination(goalPosition);
                 return NodeState.Running;
             }
-
 
             return base.OnUpdate();
         }

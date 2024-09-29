@@ -39,11 +39,5 @@ namespace AI.BT.CustomBTNodes
             return NodeState.Success;
         }
 
-        protected override NodeState OnAbort()
-        {
-            //Debug.Log("Equip Abort !!");
-
-            return base.OnAbort();
-        }
     }
 }

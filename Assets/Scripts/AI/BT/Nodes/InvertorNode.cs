@@ -23,5 +23,10 @@ namespace AI.BT.Nodes
 
             return NodeState.Success;
         }
+
+        public override void StopEvaluate()
+        {
+            child.StopEvaluate();
+        }
     }
 }

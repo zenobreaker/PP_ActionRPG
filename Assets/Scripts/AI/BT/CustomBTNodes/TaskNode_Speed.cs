@@ -29,7 +29,19 @@ namespace AI.BT.CustomBTNodes
 
             //Debug.Log($"속도 세팅 {speedType}");
 
-            movement.SetSpeed(speedType);
+            switch (speedType)
+            {
+                case SpeedType.Walk:
+                movement.OnWalk();
+                break;
+                case SpeedType.Run:
+                movement.OnRun();
+                break;
+                case SpeedType.Sprint:
+                movement.OnSprint();
+                break;
+            }
+
 
             return NodeState.Success;
         }

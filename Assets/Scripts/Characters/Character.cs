@@ -110,9 +110,12 @@ public abstract class Character
         if (condition == null)
             return;
 
-        if (condition.DownCondition == false)
-            return; 
+        if (condition.DownCondition)
+            return;
 
+        if (downConditionCoroutine != null)
+            StopCoroutine(downConditionCoroutine);
+        downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
         condition.SetDownCondition();
         state.SetIdleMode();
     }

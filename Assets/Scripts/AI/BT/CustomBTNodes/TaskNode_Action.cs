@@ -1,20 +1,23 @@
 using AI.BT.Nodes;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 namespace AI.BT.CustomBTNodes
 {
     public class TaskNode_Action : TaskNode
     {
 
+        BTAIController controller;
         StateComponent state;
-        IActionComponent action; 
+        IActionComponent action;
 
         public TaskNode_Action(GameObject owner, SO_Blackboard blackboard)
-            :base(owner, blackboard)
+            : base(owner, blackboard)
         {
             this.nodeName = "Action";
 
             action = owner.GetComponent<IActionComponent>();
+            controller = owner.GetComponent<BTAIController>();
             state = owner.GetComponent<StateComponent>();
             onBegin = OnBegin;
             onUpdate = OnUpdate;
@@ -25,13 +28,14 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnBegin()
         {
-            if(action == null)
+            if (action == null)
             {
                 return NodeState.Failure;
             }
             Debug.Log($"{nodeName} Action Node Begin ");
+            if (state.IdleMode == false)
+                return NodeState.Failure;
 
-            ChangeActionState(ActionState.Update);
             action.DoAction();
 
             return NodeState.Running;
@@ -40,27 +44,23 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnUpdate()
         {
-            if(state == null)
+            if (state == null || controller == null)
             {
-                ChangeActionState(ActionState.Begin);
                 return NodeState.Failure;
             }
 
-            //if (!owner.TryGetComponent<WeaponComponent>(out WeaponComponent weapon))
-            //{
-            //    ChangeActionState(ActionState.Begin);
-            //    return NodeState.Failure;
-            //}
-            
-            //Debug.Log("Action Node Running");
-
+            Debug.Log($"{nodeName} action update");
             bool bCheck = true;
-            bCheck &= state.IdleMode;
+            bCheck &= (state.ActionMode);
+            bCheck &= controller.ActionMode;
 
-            if (bCheck == false)
+            if (bCheck)
                 return NodeState.Running;
 
-            return base.OnUpdate();
+            Debug.Log($"{nodeName} action end {state.IdleMode} / {controller.ActionMode}");
+            //controller.SetWaitMode(bCheck);
+
+            return NodeState.Success;
         }
 
         protected override NodeState OnEnd()
@@ -71,7 +71,10 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
+            if(currActionState == ActionState.End)
+                return NodeState.Abort;
 
+                Debug.Log($"{nodeName} action abort {state.IdleMode} / {controller.ActionMode}");
 
             return base.OnAbort();
         }

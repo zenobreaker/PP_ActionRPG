@@ -37,8 +37,11 @@ namespace AI.BT.Nodes
            if(children.Count > 1)
                 backgroundNodeState = children[1].Evaluate();
 
-           if(mainNodeState == NodeState.Success || mainNodeState == NodeState.Failure)
+            if (mainNodeState == NodeState.Success || mainNodeState == NodeState.Failure ||
+                mainNodeState == NodeState.Abort)
+            {
                 return mainNodeState;
+            }
 
             // 서브 노드가 완료 되면 패러렐 노드는 계속 실행
             return NodeState.Running;
@@ -48,6 +51,14 @@ namespace AI.BT.Nodes
         {
       
             hasFirstStart = true;
+        }
+
+        public override void StopEvaluate()
+        {
+            foreach (var child in children)
+            {
+                child.StopEvaluate();
+            }
         }
     }
 

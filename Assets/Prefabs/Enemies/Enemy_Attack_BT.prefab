@@ -3867,6 +3867,7 @@ GameObject:
   - component: {fileID: 6625144907415879969}
   - component: {fileID: 6625144907415879999}
   - component: {fileID: 6625144907415879968}
+  - component: {fileID: 3534592823761976131}
   m_Layer: 7
   m_Name: Enemy_Attack_BT
   m_TagString: Enemy
@@ -3991,6 +3992,7 @@ MonoBehaviour:
   surfaceName: Ch25
   weaponType: 2
   grade: 0
+  isLaunchable: 1
 --- !u!114 &7845690608406794620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4148,18 +4150,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 1.5
-  attackDelay: 2
-  attackDelayRandom: 0.5
+  attackDelay: 0.5
+  attackDelayRandom: 0
   damageDelay: 2
   damageDelayRandom: 1
-  waitDelay: 1
+  waitDelay: 2
   waitDelayRandom: 0.5
   moveSpeed: 1
-  radius: 0
+  radius: 2
   patrolPoints: {fileID: 0}
+  bDrawDebug: 1
   uiStateName: EnemyAIState
   bBT_DebugMode: 1
   so_blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
+  tickInterval: 0.1
+  maxWaitCondtionPattern: 4
+--- !u!114 &3534592823761976131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7845690608406794618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc5d8b0e75d9f18439cbe381a01fd4f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7845690608413251617
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,8 @@ public class BTAIController_Melee : BTAIController
     {
         base.Awake();
         health = GetComponent<HealthPointComponent>();
+        if (action != null)
+            action.OnEndDoAction += OnEndDoAction;
     }
 
     protected override void Start()
@@ -92,11 +94,11 @@ public class BTAIController_Melee : BTAIController
         blackboard.SetValue<AIStateType>("AIStateType", AIStateType.Wait);
 
         // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
-        blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
-        blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
-        blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
-        blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
-        blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
+        //blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
+        //blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
+        //blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
+        //blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
+        //blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
     }
 
     protected override RootNode CreateBTTree()
@@ -118,7 +120,7 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> damagedDeco =
             new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", "Damaged");
+            this.gameObject, blackboard, "AIStateType", AIStateType.Damaged);
 
         DamagedSelector.AddChild(damagedDeco);
 
@@ -141,7 +143,7 @@ public class BTAIController_Melee : BTAIController
             {
                 waitBackwardParallel.NodeName = "WaitBackWardParallel";
 
-                WaitNode bwWaitNode = new WaitNode(1.5f, 0.5f);
+                WaitNode bwWaitNode = new WaitNode(waitDelay, waitDelayRandom);
                 TaskNode_Speed bwSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
                 TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
                 bwWaitNode.NodeName = "Backward";
@@ -161,7 +163,7 @@ public class BTAIController_Melee : BTAIController
             {
                 strafeParallel.NodeName = "StarfeParallel";
 
-                WaitNode sfWaitNode = new WaitNode(5.0f, 0.5f);
+                WaitNode sfWaitNode = new WaitNode(waitDelay, waitDelayRandom);
                 sfWaitNode.NodeName = "StrafeWait";
                 TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
 
@@ -194,7 +196,7 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> waitDeco =
             new Decorator_Blackboard<AIStateType>("WaitDeco", waitSelector, this.gameObject,
-            blackboard, "AIStateType", "Wait");
+            blackboard, "AIStateType", AIStateType.Wait);
 
       
 
@@ -211,7 +213,7 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> moveDeco =
             new Decorator_Blackboard<AIStateType>("MoveDeco", approachSequence, this.gameObject,
-            blackboard, "AIStateType", "Approach");
+            blackboard, "AIStateType", AIStateType.Approach);
 
         // 순찰
         SequenceNode patrolSequence = new SequenceNode();
@@ -241,7 +243,7 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> patrolDeco =
          new Decorator_Blackboard<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "AIStateType", "Patrol");
+         blackboard, "AIStateType", AIStateType.Patrol);
 
         // 공격 
         SequenceNode attackSequence = new SequenceNode();
@@ -259,11 +261,12 @@ public class BTAIController_Melee : BTAIController
         attackSequence.AddChild(equipNode);
         attackSequence.AddChild(actionNode);
         attackSequence.AddChild(attackWaitNode);
-        attackSequence.AddChild(actionEnd);
+       // attackSequence.AddChild(actionEnd);
 
         Decorator_Blackboard<AIStateType> attackDeco =
             new Decorator_Blackboard<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, "AIStateType", "Action");
+            attackSequence, this.gameObject, blackboard, "AIStateType",
+            AIStateType.Action);
 
         selector.AddChild(waitDeco);
         selector.AddChild(patrolDeco);

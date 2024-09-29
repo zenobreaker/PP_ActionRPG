@@ -20,6 +20,8 @@ namespace AI.BT.Nodes
         protected abstract void OnStart();
         
         protected abstract void OnEnd();
+
+        // 하위 노드들의 Abort 명령 실행
         public void AbortTask()
         {
             foreach(BTNode node in children)
@@ -32,6 +34,7 @@ namespace AI.BT.Nodes
                     compositeNode.AbortTask();
             }
         }
+
     }
 
 }

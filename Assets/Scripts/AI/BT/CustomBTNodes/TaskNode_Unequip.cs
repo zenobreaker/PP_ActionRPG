@@ -32,7 +32,6 @@ namespace AI.BT.CustomBTNodes
         {
             if (weapon == null)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
             
@@ -50,13 +49,11 @@ namespace AI.BT.CustomBTNodes
         {
             if (weapon == null)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
             if (stateComponent == null)
             {
-                ChangeActionState(ActionState.End);
                 return NodeState.Failure;
             }
 
@@ -64,12 +61,11 @@ namespace AI.BT.CustomBTNodes
             bool bEquippd = weapon.IsEquipped();
             bool bIdle = stateComponent.IdleMode;
             bCheck = bEquippd == false && bIdle;
-
             
 
             if (bCheck)
             {
-                ChangeActionState (ActionState.Begin);
+                //ChangeActionState (ActionState.Begin);
                 return NodeState.Success;
             }
 

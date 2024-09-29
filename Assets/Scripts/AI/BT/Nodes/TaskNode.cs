@@ -4,7 +4,7 @@ using UnityEngine;
 namespace AI.BT.Nodes
 {
     // 최하위 작업 노드 
-    public class TaskNode : BTNode
+    public abstract class TaskNode : BTNode
     {
         protected enum ActionState
         {
@@ -20,6 +20,8 @@ namespace AI.BT.Nodes
         protected Func<BTNode.NodeState> onAbort = null;
 
         protected SO_Blackboard blackboard;
+
+        private NodeState result;
 
         #region Constructor
 
@@ -73,42 +75,74 @@ namespace AI.BT.Nodes
         /// <param name="newState"></param>
         protected void ChangeActionState(ActionState newState) => currActionState = newState;
 
+
         public override NodeState Evaluate()
         {
-            //Debug.Log($"Current Node Evaluate {nodeName} / {currActionState}");
+            // 각 상태를 분리하여 매 프레임마다 평가
+            switch(currActionState)
+            {
+                case ActionState.Begin:
+                {
+                    // Begin 상태일 때 onBegin을 호출 후 Running 반환
+                    result = onBegin?.Invoke() ?? BTNode.NodeState.Failure;
+                    if (result == NodeState.Running)
+                    {
+                        ChangeActionState(ActionState.Update);
+                    }
+                    return result;
+                }
+                case ActionState.Update:
+                {
+                    // Update 상태일 때 onUpdate 호출 후 결과에 따라 End로 넘길 수 있다.
+                    result = onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
+                    if(result != NodeState.Running)
+                    {
+                        ChangeActionState(ActionState.End);
+                    }
+                    return NodeState.Running;
+                }
+                case ActionState.End:
+                {
+                    result = onEnd?.Invoke() ?? BTNode.NodeState.Failure;
+                    ChangeActionState (ActionState.Begin);
+                    return result; 
+                }
+                default:
+                return NodeState.Failure;
+            }
 
-            if (currActionState == ActionState.Begin)
-                return onBegin?.Invoke() ?? BTNode.NodeState.Failure;
-            else if (currActionState == ActionState.Update)
-                return onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
-            else if (currActionState == ActionState.End)
-                return onEnd?.Invoke() ?? BTNode.NodeState.Failure;
-
-            return NodeState.Failure;
         }
+
+        //public override NodeState Evaluate()
+        //{
+
+        //    if (currActionState == ActionState.Begin)
+        //        return onBegin?.Invoke() ?? BTNode.NodeState.Failure;
+        //    else if (currActionState == ActionState.Update)
+        //        return onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
+        //    else if (currActionState == ActionState.End)
+        //        return onEnd?.Invoke() ?? BTNode.NodeState.Failure;
+
+        //    return NodeState.Failure;
+        //}
 
 
         protected virtual BTNode.NodeState OnBegin()
         {
-            bRunning = true;
-            ChangeActionState(ActionState.Update);
-            return BTNode.NodeState.Running;
+            return BTNode.NodeState.Success;
         }
 
 
         protected virtual BTNode.NodeState OnUpdate()
         {
 
-            ChangeActionState(ActionState.End);
-            return BTNode.NodeState.Running;
+            return BTNode.NodeState.Success;
         }
 
 
         protected virtual BTNode.NodeState OnEnd()
         {
-            bRunning = false; 
-            ChangeActionState(ActionState.Begin);
-            return BTNode.NodeState.Success;
+            return result;
         }
 
         protected virtual BTNode.NodeState OnAbort()
@@ -119,12 +153,22 @@ namespace AI.BT.Nodes
         public void AbortTask()
         {
             //Debug.Log($"NodeName {nodeName} Abort");
-            onAbort?.Invoke();  
+            if (currActionState != ActionState.End)
+            {
+                onAbort?.Invoke();
+                ChangeActionState(ActionState.End);
+            }
         }
 
         public override string ToString()
         {
             return onUpdate.Method.Name;
+        }
+
+        public override void StopEvaluate()
+        {
+            AbortTask();
+            ChangeActionState(ActionState.End);
         }
     }
 

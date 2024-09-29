@@ -20,11 +20,11 @@ MonoBehaviour:
   skillRange: 10
   animationName: Fireball_Skill1
   skillMainSound: Mage_Explosion
-  repeatDelayTime: 0
+  DelayTime: 0
   skillActions:
   - bDownable: 1
     bLauncher: 1
-    Power: 10
+    Power: 150
     Distance: 10
     heightValue: 0
     StopFrame: 1
@@ -36,6 +36,7 @@ MonoBehaviour:
     HitParticle: {fileID: 0}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 0, y: 0, z: 0}
+    HitDelayTime: 0
   EffectParticle: {fileID: 0}
   additionalPos: {x: 0, y: 10, z: 4}
   bSameOwner: 0

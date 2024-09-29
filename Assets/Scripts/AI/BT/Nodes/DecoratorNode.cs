@@ -9,7 +9,6 @@ namespace AI.BT.Nodes
 
         protected bool isRunning;
         protected string boardKey;
-        protected string key;
         //protected string keyValue;
 
         protected SO_Blackboard blackboard;
@@ -22,8 +21,7 @@ namespace AI.BT.Nodes
             BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
-            string boardKey = null,
-            string key = null)
+            string boardKey = null)
             //B_KeyQuery keyQuery = BB_KeyQuery.Equals)
         //string key = null, string keyValue = default)
         {
@@ -32,7 +30,6 @@ namespace AI.BT.Nodes
             this.childNode = childNode;
             this.blackboard = blackboard;
             this.boardKey = boardKey;
-            this.key = key;
             //this.keyQuery = keyQuery;
             if (blackboard != null)
                 blackboard.OnValueChanged += OnValueChanged;
@@ -89,11 +86,14 @@ namespace AI.BT.Nodes
             //Debug.Log($"Task Aboarted  {nodeName}");
             if (isRunning == false)
                 return;
-            Debug.Log($"{nodeName} Abort Call : {key}");
             // 자식들을 순회하면서 AbortTask 함수 실행
             if (childNode is CompositeNode composite)
             {
                 composite.AbortTask();
+            }
+            else if(childNode is TaskNode taskNode)
+            {
+                taskNode.AbortTask();
             }
         }
 

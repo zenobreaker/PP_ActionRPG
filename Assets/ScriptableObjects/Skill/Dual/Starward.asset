@@ -24,7 +24,82 @@ MonoBehaviour:
   skillActions:
   - bDownable: 0
     bLauncher: 0
-    Power: 5
+    Power: 10
+    Distance: 1
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.01, z: 0}
+    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
+    effectSoundName: Sword_Continuous_Slash
+    HitImpactIndex: 0
+    hitSoundName: Dual_Slash
+    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0.1
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
+    Distance: 1
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.01, z: 0}
+    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
+    effectSoundName: Sword_Continuous_Slash
+    HitImpactIndex: 0
+    hitSoundName: Dual_Slash
+    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0.1
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
+    Distance: 1
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.01, z: 0}
+    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
+    effectSoundName: Sword_Continuous_Slash
+    HitImpactIndex: 0
+    hitSoundName: Dual_Slash
+    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0.1
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
+    Distance: 1
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.01, z: 0}
+    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
+    effectSoundName: Sword_Continuous_Slash
+    HitImpactIndex: 0
+    hitSoundName: Dual_Slash
+    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0.1
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
+    Distance: 1
+    heightValue: 0
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.01, z: 0}
+    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
+    effectSoundName: Sword_Continuous_Slash
+    HitImpactIndex: 0
+    hitSoundName: Dual_Slash
+    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    HitDelayTime: 0.1
+  - bDownable: 0
+    bLauncher: 0
+    Power: 10
     Distance: 1
     heightValue: 0
     StopFrame: 1
@@ -54,82 +129,7 @@ MonoBehaviour:
     HitDelayTime: 0.1
   - bDownable: 0
     bLauncher: 0
-    Power: 5
-    Distance: 1
-    heightValue: 0
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.01, z: 0}
-    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    effectSoundName: Sword_Continuous_Slash
-    HitImpactIndex: 0
-    hitSoundName: Dual_Slash
-    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.1
-  - bDownable: 0
-    bLauncher: 0
-    Power: 5
-    Distance: 1
-    heightValue: 0
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.01, z: 0}
-    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    effectSoundName: Sword_Continuous_Slash
-    HitImpactIndex: 0
-    hitSoundName: Dual_Slash
-    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.1
-  - bDownable: 0
-    bLauncher: 0
-    Power: 5
-    Distance: 1
-    heightValue: 0
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.01, z: 0}
-    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    effectSoundName: Sword_Continuous_Slash
-    HitImpactIndex: 0
-    hitSoundName: Dual_Slash
-    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.1
-  - bDownable: 0
-    bLauncher: 0
-    Power: 5
-    Distance: 1
-    heightValue: 0
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.01, z: 0}
-    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    effectSoundName: Sword_Continuous_Slash
-    HitImpactIndex: 0
-    hitSoundName: Dual_Slash
-    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.1
-  - bDownable: 0
-    bLauncher: 0
-    Power: 5
-    Distance: 1
-    heightValue: 0
-    StopFrame: 1
-    impulseDirection: {x: 0, y: 0.01, z: 0}
-    impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    effectSoundName: Sword_Continuous_Slash
-    HitImpactIndex: 0
-    hitSoundName: Dual_Slash
-    HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
-    HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
-    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.1
-  - bDownable: 0
-    bLauncher: 0
-    Power: 5
+    Power: 10
     Distance: 1
     heightValue: 0
     StopFrame: 1
@@ -144,7 +144,7 @@ MonoBehaviour:
     HitDelayTime: 1.2
   - bDownable: 1
     bLauncher: 0
-    Power: 10
+    Power: 17
     Distance: 3
     heightValue: 0.2
     StopFrame: 4

@@ -82,7 +82,7 @@ namespace AI.BT.CustomBTNodes
             if (player == null)
                 return NodeState.Failure;
 
-        
+
             navMeshPath = null;
 
             if (hasFirst == true)
@@ -91,11 +91,7 @@ namespace AI.BT.CustomBTNodes
                 DecideDirection();
             }
 
-            bSuceess = true;
-
-            strafCoroutine ??= CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
-            
-            if (bSuceess == false)
+            if (SuccessedGoalPosition() == false)
                 return NodeState.Failure;
 
             agent.updateRotation = false;
@@ -103,9 +99,7 @@ namespace AI.BT.CustomBTNodes
             // 경로에 따른 처리 
             if (navMeshPath != null)
             {
-                bRunning = true;
                 OnDestination?.Invoke(goalPosition);
-                ChangeActionState(ActionState.Update);
                 agent.SetPath(navMeshPath);
 
                 return NodeState.Running;
@@ -133,7 +127,7 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Failure;
             }
 
-
+            // 대상자 바라보기 
             targetPos = player.transform.position - owner.transform.position;
             targetPos.y = 0;
             owner.transform.localRotation = Quaternion.LookRotation(targetPos.normalized, Vector3.up);
@@ -141,26 +135,29 @@ namespace AI.BT.CustomBTNodes
             // 도착하면 값 다시 세팅하도록 
             if (CalcArrive() == true)
             {
-                strafCoroutine = null;
-                ChangeActionState(ActionState.Begin);
+                if (SuccessedGoalPosition() == false)
+                    return NodeState.Failure;
+                else if (navMeshPath != null)
+                {
+                    OnDestination?.Invoke(goalPosition);
+                    agent.SetPath(navMeshPath);
+                }
             }
+
             // 정해진 각도가 될 때까지 움직이기 
             if (Mathf.Abs(currentAngle) < maxAngle)
             {
                 return NodeState.Running;
             }
 
-            ChangeActionState(ActionState.Begin);
-            hasFirst = true;
-            currentAngle = 0;
-            strafCoroutine = null;
             return NodeState.Success;
         }
 
         protected override NodeState OnEnd()
         {
             ResetAgent();
-            
+
+            strafCoroutine = null;
             hasFirst = true;
             currentAngle = 0;
             return base.OnEnd();
@@ -187,6 +184,15 @@ namespace AI.BT.CustomBTNodes
 
         }
 
+        private bool SuccessedGoalPosition()
+        {
+            bSuceess = true;
+            strafCoroutine = null;
+            strafCoroutine ??= CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
+            //Debug.Log($"Strafe Search Result : {bSuceess}");
+            return bSuceess;
+        }
+
         private IEnumerator CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
@@ -202,7 +208,7 @@ namespace AI.BT.CustomBTNodes
             {
                 if (loopCount >= loopBreakMaxCount)
                 {
-                    Debug.Log("Not find Goal Poistion");
+                    //Debug.Log("Not find Goal Poistion");
                     bSuceess = false;
                     yield break;
                 }
@@ -215,7 +221,7 @@ namespace AI.BT.CustomBTNodes
                     smalLoop++;
                     if (smalLoop >= loopBreakMaxCount)
                     {
-                        Debug.Log("Not find Goal small scope ");
+                        //Debug.Log("Not find Goal small scope ");
                         bSuceess = false;
                         break;
                     }
@@ -257,13 +263,13 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
-            Debug.Log($"Starfe Abort / {currActionState}");
+            //Debug.Log($"Starfe Abort / {currActionState}");
+            CoroutineHelper.Instance.StopHelperCoroutine(strafCoroutine);
             ChangeActionState(ActionState.Begin);
             ResetAgent();
 
             hasFirst = true;
             currentAngle = 0;
-            CoroutineHelper.Instance.StopHelperCoroutine(strafCoroutine);
             return base.OnAbort();
         }
 
@@ -271,6 +277,7 @@ namespace AI.BT.CustomBTNodes
         {
             if (AgentCheck() == false)
                 return;
+
             strafCoroutine = null;
             agent.ResetPath();
             agent.velocity = Vector3.zero;
@@ -290,7 +297,7 @@ namespace AI.BT.CustomBTNodes
 #endif
             bool bCheck = perception.CheckPositionOther(owner, pos, debug);
 
-            Debug.Log($"{owner.name} Strafe avoid ? : {bCheck == false}");
+            //Debug.Log($"{owner.name} Strafe avoid ? : {bCheck == false}");
 
             return bCheck == false;
         }

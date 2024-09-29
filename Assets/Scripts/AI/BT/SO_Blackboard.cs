@@ -44,7 +44,7 @@ public class Vector3ComparisonStrategy : IComparisonStrategy
 
     public IComparisonStrategy DeepCopy()
     {
-        return new Vector3ComparisonStrategy(); 
+        return new Vector3ComparisonStrategy();
     }
 }
 public class GameObjectComparisonStrategy : IComparisonStrategy
@@ -234,7 +234,7 @@ public class EnumComparisonStrategy<T> : IComparisonStrategy where T : struct, E
         }
     }
 
- 
+
 }
 
 // 블랙보드에서 사용할 데이터의 기본 인터페이스 정의 
@@ -264,9 +264,9 @@ public class BlackboardKey<T>
 
     public object GetValue() => value;
     // 제네릭 메서드 구현 
-    public T GetValue<T>()
+    public U GetValue<U>()
     {
-        return (T)(object)value; // T로 캐스팅
+        return (U)(object)value; // T로 캐스팅
     }
 
     public void SetValue(object newValue)
@@ -277,7 +277,7 @@ public class BlackboardKey<T>
 
             return;
         }
-     
+
         value = default(T);
     }
 
@@ -404,6 +404,26 @@ public class SO_Blackboard : ScriptableObject
         return default(T);
     }
 
+    public bool CompareValue<T>(string keyName1, string keyName2)
+    {
+
+        if (keys.TryGetValue(keyName1, out IBlackboardKey key))
+        {
+            if (key.GetValueType() == typeof(T))
+            {
+                IComparisonStrategy strategy = GetComparisonStrategy(typeof(T));
+                if (strategy != null)
+                {
+                    object storedValue = key.GetValue();
+                    return strategy.IsEqual(storedValue, keyName2);
+                }
+
+            }
+        }
+
+        return false;
+    }
+
     public bool CompareValue<T>(string keyName, T value)
     {
         if (keys.TryGetValue(keyName, out IBlackboardKey key))
@@ -421,7 +441,25 @@ public class SO_Blackboard : ScriptableObject
         return false;
     }
 
-    public bool GreaterThanValue<T> (string keyName, T value)
+    public bool GreaterThanValue<T>(string keyName1, string keyName2)
+    {
+        if (keys.TryGetValue(keyName1, out IBlackboardKey key))
+        {
+            if (key.GetValueType() == typeof(T))
+            {
+                IComparisonStrategy strategy = GetComparisonStrategy(typeof(T));
+                if (strategy != null)
+                {
+                    object storedValue = key.GetValue();
+                    return strategy.IsGreaterthan(storedValue, keyName2);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool GreaterThanValue<T>(string keyName, T value)
     {
         if (keys.TryGetValue(keyName, out IBlackboardKey key))
         {
@@ -438,7 +476,25 @@ public class SO_Blackboard : ScriptableObject
         return false;
     }
 
-    public bool LessThanValue<T> (string keyName, T value)
+    public bool LessThanValue<T>(string keyName1, string keyName2)
+    {
+        if (keys.TryGetValue(keyName1, out IBlackboardKey key))
+        {
+            if (key.GetValueType() == typeof(T))
+            {
+                IComparisonStrategy strategy = GetComparisonStrategy(typeof(T));
+                if (strategy != null)
+                {
+                    object storedValue = key.GetValue();
+                    return strategy.IsLessthan(storedValue, keyName2);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public bool LessThanValue<T>(string keyName, T value)
     {
         if (keys.TryGetValue(keyName, out IBlackboardKey key))
         {

@@ -17,7 +17,9 @@ namespace AI.BT.TaskNodes
         private Vector3 target;
         public Vector3 Target { set => target = value; }
 
-        public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard)
+        private bool observeValue = false; 
+
+        public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard, bool observeValue = false)
             : base(ownerObject, blackboard)
         {
             nodeName = "MoveTo";
@@ -30,6 +32,7 @@ namespace AI.BT.TaskNodes
             onUpdate = OnUpdate;
             onEnd = OnEnd;
             onAbort = OnAbort;
+            this.observeValue = observeValue;
         }
 
         // 도착 지점을 언제 어디서 어떻게 세팅할 것인지가 문제다. 
@@ -51,22 +54,11 @@ namespace AI.BT.TaskNodes
             
             if (blackboard != null)
             {
-                //Debug.Log($"Move Begin / {currActionState}");
-                GameObject targetObject = blackboard.GetValue<GameObject>("Target");
-                if (targetObject == null)
-                {
-                   // ChangeActionState(ActionState.End);
-                    ResetAgent();
-                    //Debug.Log("Target Loss!");
-                    return NodeState.Failure;
-                }
-
-                target = targetObject.transform.position;   
+                ResearchTarget();
+                return NodeState.Running;
             }
 
-            agent.SetDestination(target);
-            //Debug.Log("Move Begin");
-            return base.OnBegin();
+            return NodeState.Failure;
         }
 
         protected override NodeState OnUpdate()
@@ -77,14 +69,13 @@ namespace AI.BT.TaskNodes
             //Debug.Log($"Move Update / {currActionState}");
             if (CalcArrive() == false)
             {
-                // 다시 대상 위치를 탐색하기 위해 Begin으로 
-                ChangeActionState(ActionState.Begin);
+                if (observeValue)
+                    ResearchTarget();
+                
                 return NodeState.Running;
             }
 
-            //ResetAgent();
-            //Debug.Log("Move Update");
-            return base.OnUpdate();
+            return NodeState.Success;
         }
 
         protected override NodeState OnEnd()
@@ -93,6 +84,19 @@ namespace AI.BT.TaskNodes
 
             return base.OnEnd();
         }
+
+        private void ResearchTarget()
+        {
+            GameObject targetObject = blackboard.GetValue<GameObject>("Target");
+            if (targetObject != null)
+            {
+                target = targetObject.transform.position;
+                agent.SetDestination(target);
+            }
+            else
+                ResetAgent();
+        }
+
 
         private void ResetAgent()
         {
@@ -108,7 +112,6 @@ namespace AI.BT.TaskNodes
         protected override NodeState OnAbort()
         {
             // Debug.Log($"Move Abort / {currActionState}");
-            ChangeActionState(ActionState.Begin);
             ResetAgent();
 
             return base.OnAbort();

@@ -38,7 +38,7 @@ public class Enemy :
     public WeaponType weaponType;
     [SerializeField] private CharacterGrade grade = CharacterGrade.Common;
     public CharacterGrade Grade { get => grade; }
-
+    public bool isLaunchable = true;
     private ICollisionHandler collisionHandler;
 
     protected override void Awake()
@@ -143,16 +143,17 @@ public class Enemy :
         {
             aiController?.SetDamagedMode();
             bTAIController?.SetDamagedMode();
-            state.SetDamagedMode();
+            if(grade != CharacterGrade.Boss)
+                state.SetDamagedMode();
             
-            launch?.DoHit(attacker, causer, data, true, grade);
+            if(isLaunchable)
+                launch?.DoHit(attacker, causer, data, true, grade);
 
             // 다운 시키는 공격인가
             if (data.bDownable == false || grade == CharacterGrade.Boss)
             {
                 bool bCheck = true;
                 bCheck &= grade == CharacterGrade.Boss;
-                bCheck &= (aiController != null && aiController.ActionMode);
 
                 if (bCheck == false)
                 {
@@ -178,7 +179,7 @@ public class Enemy :
 
         MovableStopper.Instance.Delete(this);
         MovableSlower.Instance.Delete(this);
-        BossStageManager.Instance.SetEnemyCount(1);
+        //BossStageManager.Instance.SetEnemyCount(1);
         Destroy(gameObject, 5);
     }
 

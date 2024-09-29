@@ -1538,6 +1538,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.5481727
+        functionName: Begin_Particle
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -2622,6 +2629,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.023179064
+        functionName: Begin_DoAction
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.5794702
         functionName: Begin_Collision
         data: 
@@ -2629,15 +2643,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9304633
-        functionName: End_DoAction
+      - time: 0.83767796
+        functionName: End_Collision
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.023179064
-        functionName: Begin_DoAction
+      - time: 0.9012662
+        functionName: End_DoAction
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
@@ -3201,6 +3215,13 @@ ModelImporter:
         messageOptions: 0
       - time: 0.02317892
         functionName: Begin_DoAction
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.70431876
+        functionName: End_Collision
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
@@ -6222,6 +6243,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.634551
+        functionName: End_Collision
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1
@@ -7052,40 +7080,47 @@ ModelImporter:
       - time: 0.20253156
         functionName: PlaySound
         data: Wing Flap
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.32849073
         functionName: PlaySound
         data: Wing Flap
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.47679326
         functionName: PlaySound
         data: Wing Flap
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.60759485
         functionName: PlaySound
         data: Wing Flap
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.76793253
         functionName: PlaySound
         data: Wing Flap
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.94726855
         functionName: End_DoAction
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.38666663
+        functionName: Begin_Particle
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: b20cd09db7cefe24daa99dd850e38cf9, type: 3}
         floatParameter: 0

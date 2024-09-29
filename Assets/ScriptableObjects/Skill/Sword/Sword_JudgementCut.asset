@@ -24,7 +24,7 @@ MonoBehaviour:
   skillActions:
   - bDownable: 1
     bLauncher: 0
-    Power: 1
+    Power: 20
     Distance: 1
     heightValue: 0.2
     StopFrame: 1
@@ -39,7 +39,7 @@ MonoBehaviour:
     HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
-    Power: 1
+    Power: 15
     Distance: 1
     heightValue: 0.2
     StopFrame: 1
@@ -54,7 +54,7 @@ MonoBehaviour:
     HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
-    Power: 1
+    Power: 15
     Distance: 1
     heightValue: 0.2
     StopFrame: 1
@@ -69,7 +69,7 @@ MonoBehaviour:
     HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
-    Power: 1
+    Power: 15
     Distance: 1
     heightValue: 0.2
     StopFrame: 1
@@ -84,7 +84,7 @@ MonoBehaviour:
     HitDelayTime: 0.1
   - bDownable: 1
     bLauncher: 0
-    Power: 1
+    Power: 15
     Distance: 1
     heightValue: 0.2
     StopFrame: 1

@@ -8,12 +8,15 @@ public class DebugUIController : MonoBehaviour
     private Player player;
     private HealthPointComponent health;
     private StateComponent state;
+    private ConditionComponent condition;
 
     [Header("UI Base")]
     [SerializeField] private GameObject uiBaseObject; 
 
     [Header("Player State")]
     [SerializeField] private TextMeshProUGUI stateText;
+    [Header("Player Condition")]
+    [SerializeField] private TextMeshProUGUI conditionText;
     [Header("Player HP")]
     [SerializeField] private TextMeshProUGUI hpText;
     [Header("Player Damage Condition")]
@@ -29,6 +32,7 @@ public class DebugUIController : MonoBehaviour
         {
             health = player.GetComponent<HealthPointComponent>();
             state = player.GetComponent<StateComponent>();
+            condition = player.GetComponent<ConditionComponent>();
             player.OnEvadeState += OnEvadeState;
             player.OnDamaged += OnDamaged;
             state.OnStateTypeChanged += OnStateTypeChanged;
@@ -50,6 +54,7 @@ public class DebugUIController : MonoBehaviour
             uiBaseObject.SetActive(toggle);
 
         LateUpdate_StateText();
+        LateUpdate_ConditionText();
         LateUpdate_PlayerHP();
         LateUpdate_Damage();
     }
@@ -60,6 +65,14 @@ public class DebugUIController : MonoBehaviour
             return;
 
         stateText.text = "Player State \n " + state.Type.ToString();
+    }
+
+    private void LateUpdate_ConditionText()
+    {
+        if (condition == null)
+            return;
+
+        conditionText.text = "Player Condition \n " + condition.MyCondition.ToString();
     }
 
 

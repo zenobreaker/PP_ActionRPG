@@ -19,6 +19,7 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnBegin()
         {
+            Debug.Log("action end");
             controller.SetWaitMode();
             
             return NodeState.Failure;

@@ -14,5 +14,10 @@ namespace Assets.Scripts.AI.BT
         {
             throw new System.NotImplementedException();
         }
+
+        public override void StopEvaluate()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

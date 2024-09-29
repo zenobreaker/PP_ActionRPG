@@ -37,14 +37,15 @@ public class PlayerMovingComponent : MonoBehaviour
     private CameraArm cameraArm;
     private WeaponComponent weapon;
     private StateComponent state;
+    private ConditionComponent condition;
   
     private Vector3 inputMove;
     public Vector2 InputMove { get => inputMove; }
 
-    private Vector2 currentInputMove; // ÇöÀç ÀÔ·ÂÇÑ ÀÌµ¿°ª 
+    private Vector2 currentInputMove; // í˜„ì¬ ì…ë ¥í•œ ì´ë™ê°’ 
     private bool bRun;
 
-    private Vector2 inputLook; // ¸¶¿ì½ºÀÇ µ¨Å¸°ª 
+    private Vector2 inputLook; // ë§ˆìš°ìŠ¤ì˜ ë¸íƒ€ê°’ 
     public void Move()
     {
         bCanMove = true;
@@ -62,16 +63,16 @@ public class PlayerMovingComponent : MonoBehaviour
         animator = GetComponent<Animator>();
         weapon = GetComponent<WeaponComponent>();
         state = GetComponent<StateComponent>();
-
+        condition = GetComponent<ConditionComponent>();
         //state.OnStateTypeChanged += OnStateTypeChangaed;
 
         cameraArm = FindObjectOfType<CameraArm>();
         Debug.Assert(cameraArm != null);
 
-        // ¸¶¿ì½º Ä¿¼­¸¦ ¼û±é´Ï´Ù.
+        // ë§ˆìš°ìŠ¤ ì»¤ì„œë¥¼ ìˆ¨ê¹ë‹ˆë‹¤.
         Cursor.visible = false;
 
-        // ¸¶¿ì½º¸¦ È­¸é Áß¾Ó¿¡ °íÁ¤ÇÏ°í Àá±Ş´Ï´Ù.
+        // ë§ˆìš°ìŠ¤ë¥¼ í™”ë©´ ì¤‘ì•™ì— ê³ ì •í•˜ê³  ì ê¸‰ë‹ˆë‹¤.
         Cursor.lockState = CursorLockMode.Locked;
 
         Awake_BindPlayerInput();
@@ -80,11 +81,11 @@ public class PlayerMovingComponent : MonoBehaviour
     private void Awake_BindPlayerInput()
     {
         PlayerInput input = GetComponent<PlayerInput>();
-        // Q. ¾îµğ¼­ Ã£°Ô?~ A. ÀÎÇ²½Ã½ºÅÛ ¾×¼Ç ¾È¿¡ ÇÃ·¹ÀÌ¾î ¾×¼ÇÁî ½ÃÅ°¾ß 
+        // Q. ì–´ë””ì„œ ì°¾ê²Œ?~ A. ì¸í’‹ì‹œìŠ¤í…œ ì•¡ì…˜ ì•ˆì— í”Œë ˆì´ì–´ ì•¡ì…˜ì¦ˆ ì‹œí‚¤ì•¼ 
         InputActionMap actionMap = input.actions.FindActionMap("Player");
-        // ÀÎÇ² ½Ã½ºÅÛ¿¡ ¼³Á¤ÇÑ ÀÌ¸§À¸·Î ¾×¼ÇÀ» °¡Á®¿Â´Ù
+        // ì¸í’‹ ì‹œìŠ¤í…œì— ì„¤ì •í•œ ì´ë¦„ìœ¼ë¡œ ì•¡ì…˜ì„ ê°€ì ¸ì˜¨ë‹¤
         InputAction moveAction = actionMap.FindAction("Move");
-        moveAction.performed += Input_Move_Performed;   // ÀÌº¥Æ® ¿¬°á
+        moveAction.performed += Input_Move_Performed;   // ì´ë²¤íŠ¸ ì—°ê²°
         moveAction.canceled += Input_Move_Canceled;
 
         InputAction lookAction = actionMap.FindAction("Look");
@@ -156,6 +157,9 @@ public class PlayerMovingComponent : MonoBehaviour
     private void Update()
     {
         currentInputMove = Vector2.SmoothDamp(currentInputMove, inputMove, ref velocity, 1.0f / sensitivity);
+        
+        if (condition.NoneCondition == false)
+            return; 
 
         if (bCanMove == false)
             return;
@@ -169,7 +173,7 @@ public class PlayerMovingComponent : MonoBehaviour
 
             //direction = (Vector3.right * currentInputMove.x) + (Vector3.forward * currentInputMove.y);
             //direction = (transform.right * currentInputMove.x) + (transform.forward * currentInputMove.y);
-            //TODO: Ä«¸Ş¶ó ¹Ù²î¸é ¿©±â ¼öÁ¤ 
+            //TODO: ì¹´ë©”ë¼ ë°”ë€Œë©´ ì—¬ê¸° ìˆ˜ì • 
             direction = (cameraArm.transform.right * currentInputMove.x) + (cameraArm.transform.forward * currentInputMove.y);
             
             direction.y = 0;
@@ -194,17 +198,17 @@ public class PlayerMovingComponent : MonoBehaviour
 
     private void Update_PlayerRotate(float forwardValue)
     {
-        // Ä«¸Ş¶ó È¸Àü
+        // ì¹´ë©”ë¼ íšŒì „
 
         rotation *= Quaternion.AngleAxis(inputLook.x * mouseSensitivity.x, Vector3.up);
         rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y, Vector3.right);
         followTargetTransform.rotation = rotation;
 
-        // È¸Àü Ãà Á¦ÇÑ 
+        // íšŒì „ ì¶• ì œí•œ 
         Vector3 angles = followTargetTransform.localEulerAngles;
         angles.z = 0.0f;
         
-        // È¸Àü°¢ Á¦ÇÑ
+        // íšŒì „ê° ì œí•œ
         float xAngle = followTargetTransform.localEulerAngles.x;
 
         if (xAngle < 180.0f && xAngle > limitPitchAngle.x)
@@ -216,9 +220,9 @@ public class PlayerMovingComponent : MonoBehaviour
 
         rotation = Quaternion.Lerp(followTargetTransform.rotation, rotation, mouseRotationLerp * Time.deltaTime);
 
-        // ¸ÕÀú ÇÃ·¹ÀÌ¾î¸¦ È¸Àü 
+        // ë¨¼ì € í”Œë ˆì´ì–´ë¥¼ íšŒì „ 
         transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
-        // ÀÚ½Ä ³ğ È¸ÀüÇÏ´Âµ¥ ÀÌ¹Ì À§¿¡¼­ y ÇŞÀ¸´Ï±î .. ? -> Áü¹ú¶ô ¹æÁö ÀÌ¹Ì µ¹¾ÒÀ¸´Ï
+        // ìì‹ ë†ˆ íšŒì „í•˜ëŠ”ë° ì´ë¯¸ ìœ„ì—ì„œ y í–‡ìœ¼ë‹ˆê¹Œ .. ? -> ì§ë²Œë½ ë°©ì§€ ì´ë¯¸ ëŒì•˜ìœ¼ë‹ˆ
         followTargetTransform.localEulerAngles = new Vector3(angles.x, 0, 0);
 
     }

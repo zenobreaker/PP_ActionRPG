@@ -280,7 +280,7 @@ MonoBehaviour:
   subActionDatas:
   - bDownable: 1
     bLauncher: 1
-    Power: 0
+    Power: 75
     Distance: 5
     heightValue: 0.01
     StopFrame: 5

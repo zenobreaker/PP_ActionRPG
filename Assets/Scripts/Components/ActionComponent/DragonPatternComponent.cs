@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 /// <summary>
@@ -13,12 +14,32 @@ public class DragonPatternComponent
     , ICollisionHandler
     , IPatternHandler
 {
-    private PerceptionComponent perception;
+    public DoActionData[] fireballActionDatas;
 
+    private PerceptionComponent perception;
+    private StateComponent state;
     private Animator animator;
 
     [SerializeField] private int currentPattern;
+    [SerializeField] private string fireballPoint = "Fire Point FireBall";
+    [SerializeField] private string breathPoint = "Fire Point Breath";
+    //[SerializeField] private string triggerBite = "Attack Trigger Bite";
+    //[SerializeField] private string triggerWingLeft = "TriggerWing_Left";
+//    [SerializeField] private string triggerWingRight = "TriggerWing_Right";
 
+    [SerializeField] private GameObject fireballObject;
+    [SerializeField] private GameObject fireball2Object;
+    [SerializeField] private GameObject fireball2_Second_Object;
+    [SerializeField] private GameObject firebreathObject;
+    private Transform fireballTransform; 
+    private Transform breathTransform;
+    private GameObject curFirebreahObject; 
+
+    public GameObject biteTrigger;
+    public GameObject wingTriggerL;
+    public GameObject wingTriggerR;
+
+    public event Action OnBeginDoAction;
     public event Action OnEndDoAction;
 
     private bool isAction;
@@ -30,7 +51,18 @@ public class DragonPatternComponent
     private void Awake()
     {
         perception = GetComponent<PerceptionComponent>();
+        state = GetComponent<StateComponent>();
         animator = GetComponent<Animator>();
+
+        //Transform  trans = this.gameObject.transform.FindChildByName(triggerBite);
+        //biteTrigger = trans?.gameObject;
+        //trans = this.gameObject.transform.FindChildByName(triggerWingLeft);
+        //wingTriggerL = trans?.gameObject;
+        //trans = this.gameObject.transform.FindChildByName(triggerWingRight);
+        //wingTriggerR = trans?.gameObject;
+
+        fireballTransform = this.gameObject.transform.FindChildByName(fireballPoint);
+        breathTransform = this.gameObject.transform.FindChildByName(breathPoint);
     }
 
     public void SetPattern(int pattern)
@@ -48,6 +80,7 @@ public class DragonPatternComponent
         if (isAction)
             return;
 
+        state.SetActionMode();
         isAction = true;
         Debug.Log($"Dragon Action ! {currentPattern}");
         
@@ -90,7 +123,6 @@ public class DragonPatternComponent
     }
 
     // 날개 치기 
-
     private void DoAction_WingAttack()
     {
         if (animator == null)
@@ -134,7 +166,7 @@ public class DragonPatternComponent
 
         animator.SetInteger(Mode, 2002);
 
-        StartCoroutine(FireBreathCoroutine(2));
+        StartCoroutine(FireBreathCoroutine(4));
     }
 
     // 날아오르고 화염 
@@ -152,6 +184,8 @@ public class DragonPatternComponent
         {
             animator.SetInteger(Mode, 0);
         }
+
+        OnBeginDoAction?.Invoke();
     }
 
     public void End_DoAction()
@@ -163,31 +197,139 @@ public class DragonPatternComponent
         }
 
         isAction = false;
+        state.SetIdleMode();
 
         OnEndDoAction?.Invoke();
     }
 
     public void Begin_Collision(AnimationEvent e)
     {
-        throw new System.NotImplementedException();
+
+        if(e.intParameter == 0)
+        {
+            biteTrigger.SetActive(true);
+        }
+        else if(e.intParameter  == 1)
+        {
+            wingTriggerL.SetActive(true);
+        }
+        else if(e.intParameter == 2)
+        {
+            wingTriggerR.SetActive(true);
+        }
     }
 
     public void End_Collision()
     {
-        throw new System.NotImplementedException();
+        biteTrigger.SetActive(false);
+        wingTriggerL.SetActive(false);
+        wingTriggerR.SetActive(false);
     }
+
+
+    private IEnumerator FirebreathCollisionEnableCoroutine()
+    {
+        if (firebreathObject == null)
+            yield break; 
+
+
+        curFirebreahObject = Instantiate<GameObject>(firebreathObject, breathTransform.position , gameObject.transform.rotation);
+        DragonBreath dragonBreath = curFirebreahObject.GetComponent<DragonBreath>();  
+        if (dragonBreath == null)
+            yield break;
+        SoundManager.Instance.PlaySFX("DragonBreath");
+        dragonBreath.owner = this.gameObject;
+
+        yield return null;
+
+        yield return new WaitForSeconds(4);
+        Destroy(curFirebreahObject);
+    }
+
 
 
     private IEnumerator FireBreathCoroutine(float delay)
     {
+        StartCoroutine(FirebreathCollisionEnableCoroutine());
+
         yield return new WaitForSeconds(delay);
+
         Debug.Log("Firebreath End");
         End_DoAction();
     }
 
+
     public void PlaySound(string soundName)
     {
-        //
+        SoundManager.Instance.PlaySFX(soundName);
+    }
+
+    public void Begin_Particle()
+    {
+        if(currentPattern == 3)
+        {
+            SoundManager.Instance.PlaySFX(fireballActionDatas[0].effectSoundName);
+            Instantiate<GameObject>(fireballActionDatas[0].Particle, fireballTransform.position, gameObject.transform.rotation);
+            GameObject obj = Instantiate<GameObject>(fireballObject, fireballTransform.position, gameObject.transform.rotation);
+            if(obj.TryGetComponent<Projectile>(out Projectile projectile))
+            {
+                projectile.OnProjectileHit += OnProjectileHit_Fireball;
+            }
+            obj.SetActive(true);
+        }
+        else if(currentPattern == 5)
+        {
+            SoundManager.Instance.PlaySFX(fireballActionDatas[1].effectSoundName);
+            GameObject obj = Instantiate<GameObject>(fireball2Object, fireballTransform.position,
+                fireballTransform.transform.rotation);
+            if (obj.TryGetComponent<Projectile>(out Projectile projectile))
+            {
+                projectile.OnProjectileHit += OnProjectileHit_Fireball2;
+            }
+            obj.SetActive(true);
+        }
+    }
+
+    private void OnProjectileHit_Fireball(Collider self, Collider other, Vector3 point)
+    {
+        IDamagable damage = other.GetComponent<IDamagable>();
+
+        if (damage != null)
+        {
+            Vector3 hitPoint = self.ClosestPoint(other.transform.position);
+            hitPoint = other.transform.InverseTransformPoint(hitPoint);
+            damage?.OnDamage(this.gameObject, null, hitPoint, fireballActionDatas[0]);
+
+            return;
+        }
+
+        Instantiate<GameObject>(fireballActionDatas[0].HitParticle, point, gameObject.transform.rotation);
+        // hit Sound Play
+        SoundManager.Instance.PlaySFX(fireballActionDatas[0].hitSoundName);
+    }
+
+    private void OnProjectileHit_Fireball2(Collider self, Collider other, Vector3 point)
+    {
+        IDamagable damage = other.GetComponent<IDamagable>();
+        
+        SoundManager.Instance.PlaySFX(fireballActionDatas[1].hitSoundName);
+        GameObject obj = Instantiate<GameObject>(fireball2_Second_Object, point, gameObject.transform.rotation);
+        if(obj.TryGetComponent<DragonMeleeWeapon>(out DragonMeleeWeapon weapon))
+        {
+            weapon.owner = this.gameObject;
+        }
+
+        if (damage != null)
+        {
+            Vector3 hitPoint = self.ClosestPoint(other.transform.position);
+            hitPoint = other.transform.InverseTransformPoint(hitPoint);
+            damage?.OnDamage(this.gameObject, null, hitPoint, fireballActionDatas[1]);
+
+            return;
+        }
+
+        //Instantiate<GameObject>(fireballActionDatas[1].HitParticle, point, gameObject.transform.rotation);
+        // hit Sound Play
     }
 
 }

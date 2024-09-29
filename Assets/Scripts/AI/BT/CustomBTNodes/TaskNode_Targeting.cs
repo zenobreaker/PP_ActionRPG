@@ -12,7 +12,7 @@ namespace AI.BT.CustomBTNodes
     public class TaskNode_Targeting : TaskNode
     {
 
-        private bool bRotate = false; 
+        private bool bRotate = false;
         public TaskNode_Targeting(GameObject ownerObject, SO_Blackboard blackboard)
             : base(ownerObject, blackboard)
         {
@@ -28,29 +28,26 @@ namespace AI.BT.CustomBTNodes
         protected override NodeState OnBegin()
         {
             GameObject target = blackboard.GetValue<GameObject>("Target");
-            if(target == null)
+            if (target == null)
             {
                 return NodeState.Failure;
             }
 
             // 적을 향해 회전 
-            bRotate = false; 
+            bRotate = false;
             CoroutineHelper.Instance.StartHelperCoroutine(LootAtTarget(target));
 
-            ChangeActionState(ActionState.Update);
             return NodeState.Running;
         }
 
         protected override NodeState OnUpdate()
         {
-            if (bRotate)
+            if (bRotate == false)
             {
-                ChangeActionState(ActionState.Begin);
-                return NodeState.Success;
+                return NodeState.Running;
             }
 
-          
-            return NodeState.Running;
+            return NodeState.Success;
         }
 
 
@@ -67,21 +64,21 @@ namespace AI.BT.CustomBTNodes
             direction.Normalize();
 
             Vector3 forward = owner.transform.forward;
-            
+
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             float rotateSpeed = 8.0f;
             float angle = Quaternion.Angle(owner.transform.rotation, targetRotation);
 
             while (angle < 0.2f)
             {
-                owner.transform.rotation = Quaternion.Lerp(owner.transform.rotation, 
+                owner.transform.rotation = Quaternion.Lerp(owner.transform.rotation,
                     targetRotation, Time.deltaTime * rotateSpeed);
 
                 yield return null;
             }
 
             owner.transform.rotation = targetRotation;
-            bRotate = true; 
+            bRotate = true;
 
             yield return null;
         }

@@ -752,6 +752,18 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: ea498c36ce14ef743bc8ed4569cdeafb, type: 3}
   - soundName: Dash_Sound
     clip: {fileID: 8300000, guid: 30f07714343eb6c46ac55eeda11040d3, type: 3}
+  - soundName: DragonBreath
+    clip: {fileID: 8300000, guid: 1b4fc7bb47f664247ac2a31e127af45d, type: 3}
+  - soundName: WingImpact
+    clip: {fileID: 8300000, guid: 0f4de4f463f404b4b90f49c78127b350, type: 3}
+  - soundName: DragonBite
+    clip: {fileID: 8300000, guid: 00fcf4a280592df4c9fdb85de3e10690, type: 3}
+  - soundName: DragonFireball
+    clip: {fileID: 8300000, guid: 82dbd2a7bbe478a468d824462d932dcc, type: 3}
+  - soundName: Wing Flap
+    clip: {fileID: 8300000, guid: 30f07714343eb6c46ac55eeda11040d3, type: 3}
+  - soundName: SecondImapct
+    clip: {fileID: 8300000, guid: 837f9c008643f2549bb684040ceb5658, type: 3}
   bgmPlayer: {fileID: 2748871628797277041}
   sfxPlayers:
   - {fileID: 2748871628335271032}

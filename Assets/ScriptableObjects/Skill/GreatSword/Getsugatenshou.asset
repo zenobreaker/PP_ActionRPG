@@ -24,7 +24,7 @@ MonoBehaviour:
   skillActions:
   - bDownable: 0
     bLauncher: 0
-    Power: 10
+    Power: 20
     Distance: 12
     heightValue: 0
     StopFrame: 1

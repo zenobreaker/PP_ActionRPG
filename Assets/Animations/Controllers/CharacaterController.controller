@@ -3785,7 +3785,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Air_Down_Imapct
+  m_Name: Down_Imapct
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -9100,7 +9100,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Air_Down_Begin
+  m_Name: Down_Begin
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:

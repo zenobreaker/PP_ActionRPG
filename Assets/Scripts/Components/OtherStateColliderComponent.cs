@@ -9,7 +9,7 @@ public class OtherStateColliderComponent : MonoBehaviour
     protected float originalHeight;
 
     [SerializeField] private float airStateRatio = 1.5f;
-    private float donwCenterY = 1.5f;
+    //private float downCenterY = 1.5f;
 
     protected CapsuleCollider capsuleCollider;
     protected new Rigidbody rigidbody;

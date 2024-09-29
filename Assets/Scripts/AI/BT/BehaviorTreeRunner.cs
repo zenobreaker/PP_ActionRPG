@@ -1,5 +1,6 @@
 using AI.BT.Nodes;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace AI.BT
@@ -40,6 +41,20 @@ namespace AI.BT
                 Debug.Log("Run Behaivor !!");
                 btRunCoroutine = ownerMBH.StartCoroutine(StartBTRunCoroutine(debugMode, interval));
             }
+        }
+
+        public void StopBehaviorTree()
+        {
+            if (ownerMBH == null)
+                return;
+
+            ownerMBH.StopCoroutine(btRunCoroutine);
+            StopEvaluate();
+        }
+
+        public void StopEvaluate()
+        {
+            rootNode.StopEvaluate();
         }
 
         public void OperateNode()

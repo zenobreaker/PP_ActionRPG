@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,7 +56,7 @@ public class Gauge : MonoBehaviour
         this.maxValue = maxValue;
         goalAmount = currentValue / maxValue;
 
-        Debug.Log($"{currentValue} / {maxValue} / {goalAmount}");
+        //Debug.Log($"{currentValue} / {maxValue} / {goalAmount}");
         //hpbarImage.fillAmount = Mathf.Lerp(hpbarImage.fillAmount, goalAmount, Time.deltaTime * lerpSpeed);
         if (currentValue <= 0)
             hpbarImage.fillAmount = 0.0f;
