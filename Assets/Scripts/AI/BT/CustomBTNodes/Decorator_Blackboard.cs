@@ -1,4 +1,6 @@
 using AI.BT.Nodes;
+using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace AI.BT.CustomBTNodes
@@ -9,29 +11,55 @@ namespace AI.BT.CustomBTNodes
     /// </summary>
     public class Decorator_Blackboard<T> : DecoratorNode
     {
+        public enum NotifyObserver
+        {
+            OnResultChange = 0 , OnValueChange
+        }
+
+        public enum ObserveAborts
+        {
+            None, Selft, Lower_Priority, Both
+        }
+
         public enum BB_KeyQuery
         {
             Equals = 0, NotEquals, LessThan, LessThanOrEqual, GreaterThan, GreaterThanOrEqual,
         }
+
+        protected NotifyObserver notifyObserver;
+        protected ObserveAborts aborts;
         protected BB_KeyQuery keyQuery;
 
         private T key;
         public Decorator_Blackboard(string nodeName, BTNode childNode,
             GameObject owner = null,
             SO_Blackboard blackboard = null,
+            NotifyObserver notifyObserver = NotifyObserver.OnResultChange,
+            ObserveAborts observeAborts = ObserveAborts.Selft, //TODO: 임시로 세팅 
             string boardKey = null,
             T key = default(T),
             BB_KeyQuery keyQuery = BB_KeyQuery.Equals
            ) :
             base(nodeName, childNode, owner, blackboard, boardKey /*key, keyQuery*/)
         {
+            this.notifyObserver = notifyObserver;
+            this.aborts = observeAborts;
             this.keyQuery = keyQuery;
             this.key = key;
+
+            if (blackboard != null)
+            {
+                blackboard.OnResultChange += OnResultChange;
+                blackboard.OnValueChanged += OnValueChanged;
+            }
+
         }
 
         protected override void OnEnd()
         {
-           base.OnEnd();
+            base.OnEnd();
+            // 모든 판단을 끝냈으면 다시 원래대로 돌아간다.
+            prevResult = false;
         }
 
 
@@ -74,22 +102,56 @@ namespace AI.BT.CustomBTNodes
             return false;
         }
 
-        //TODO: 아래 이벤트용 함수는 정리가 필요하다.
-        protected override void OnValueChanged(string changedKey)
+
+        //해당 키값의 결과가 다르면 처리한다.
+        protected bool prevResult = false;
+        protected void OnResultChange(string changedKey)
         {
             if (isRunning == false)
-                return; 
+                return;
+
+            if (notifyObserver != NotifyObserver.OnResultChange)
+                return;
+
+            if (changedKey != boardKey)
+                return;
+
+            bool newResult = CompareValueToQuery<T>(changedKey) == false;
+            
+            if (changedKey == "DragonPattern")
+            {
+                var value = blackboard.GetValue<T>(changedKey);
+                Debug.Log($"{nodeName} +  Examine {value} / {key}");
+            }
+            if (prevResult != newResult)
+            {
+                prevResult = newResult;
+                AbortTask();
+            }
+        }
+
+        //해당 키값에 변화가 호출되면 이 함수는 계속 호출된다. 
+        protected void OnValueChanged(string changedKey)
+        {
+            if (isRunning == false)
+                return;
+
+            if (notifyObserver != NotifyObserver.OnValueChange)
+                return;
 
             // 여기에 등록된 키값이랑 값이 변경되는 키값이랑 같은 경우 
-            if (changedKey == boardKey)
+            if (changedKey != boardKey)
+                return;
+         
+            if (changedKey == "DragonPattern")
             {
-                //Debug.Log($"{nodeName} +  + Examine {changedKey}");
-                // 비교 했을 때 다르다면?
-                if(CompareValueToQuery<T>(changedKey) == false)
-                {
-                    AbortTask();
-                }
-                
+                var value = blackboard.GetValue<T>(changedKey);
+                Debug.Log($"{nodeName} +  Examine {value} / {key}");
+            }
+            // 비교 했을 때 다르다면?
+            if (CompareValueToQuery<T>(changedKey) == false)
+            {
+                AbortTask();
             }
         }
 
@@ -106,6 +168,13 @@ namespace AI.BT.CustomBTNodes
         {
             isRunning = false;
             childNode.StopEvaluate();
+        }
+
+        // 삭제시 구독 해제 
+        ~Decorator_Blackboard()
+        {
+            blackboard.OnResultChange -= OnResultChange;
+            blackboard.OnValueChanged -= OnValueChanged;
         }
     }
 }

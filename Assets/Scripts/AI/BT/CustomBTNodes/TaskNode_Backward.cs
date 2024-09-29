@@ -189,8 +189,10 @@ namespace AI.BT.CustomBTNodes
         {
             if (AgentCheck() == false)
                 return;
+            
+            if (agent != null && agent.isOnNavMesh && agent.isActiveAndEnabled)
+                agent.ResetPath();
 
-            agent.ResetPath();
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
             //agent.isStopped = true;

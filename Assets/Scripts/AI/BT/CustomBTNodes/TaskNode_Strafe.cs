@@ -263,13 +263,19 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnAbort()
         {
-            //Debug.Log($"Starfe Abort / {currActionState}");
-            CoroutineHelper.Instance.StopHelperCoroutine(strafCoroutine);
-            ChangeActionState(ActionState.Begin);
-            ResetAgent();
+            if (currActionState == ActionState.Begin || currActionState == ActionState.Update)
+            {
+                //Debug.Log($"Backward Abort / {currActionState}");
+                CoroutineHelper.Instance.StopHelperCoroutine(strafCoroutine);
 
-            hasFirst = true;
-            currentAngle = 0;
+                //TODO: Abort 중단되었을 때 상태를 돌리는게 좋은걸까?
+                //ChangeActionState(ActionState.Begin);
+                ResetAgent();
+
+                hasFirst = true;
+                currentAngle = 0;
+            }
+
             return base.OnAbort();
         }
 
@@ -279,7 +285,8 @@ namespace AI.BT.CustomBTNodes
                 return;
 
             strafCoroutine = null;
-            agent.ResetPath();
+            if(agent != null && agent.isOnNavMesh && agent.isActiveAndEnabled)
+                agent.ResetPath();
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
             //agent.isStopped = true;

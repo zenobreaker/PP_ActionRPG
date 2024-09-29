@@ -120,7 +120,9 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> damagedDeco =
             new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", AIStateType.Damaged);
+            this.gameObject, blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Damaged);
 
         DamagedSelector.AddChild(damagedDeco);
 
@@ -196,7 +198,9 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> waitDeco =
             new Decorator_Blackboard<AIStateType>("WaitDeco", waitSelector, this.gameObject,
-            blackboard, "AIStateType", AIStateType.Wait);
+            blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Wait);
 
       
 
@@ -206,14 +210,16 @@ public class BTAIController_Melee : BTAIController
         TaskNode_Speed approachSpeed = new TaskNode_Speed(this.gameObject, blackboard,
             SpeedType.Run);
 
-        MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard);
+        MoveToNode moveToNode = new MoveToNode(this.gameObject, blackboard, true);
 
         approachSequence.AddChild(approachSpeed);
         approachSequence.AddChild(moveToNode);
 
         Decorator_Blackboard<AIStateType> moveDeco =
             new Decorator_Blackboard<AIStateType>("MoveDeco", approachSequence, this.gameObject,
-            blackboard, "AIStateType", AIStateType.Approach);
+            blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Approach);
 
         // 순찰
         SequenceNode patrolSequence = new SequenceNode();
@@ -243,7 +249,9 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> patrolDeco =
          new Decorator_Blackboard<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "AIStateType", AIStateType.Patrol);
+         blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft, 
+            "AIStateType", AIStateType.Patrol);
 
         // 공격 
         SequenceNode attackSequence = new SequenceNode();
@@ -265,7 +273,9 @@ public class BTAIController_Melee : BTAIController
 
         Decorator_Blackboard<AIStateType> attackDeco =
             new Decorator_Blackboard<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, "AIStateType",
+            attackSequence, this.gameObject, blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType",
             AIStateType.Action);
 
         selector.AddChild(waitDeco);

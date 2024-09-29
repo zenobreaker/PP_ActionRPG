@@ -15,14 +15,10 @@ namespace AI.BT.Nodes
 
         private int currentRunningNodeIndex = -1;  // 현재 실행 중인 자식 추적하기 위한 변수
 
-        protected override void OnStart()
-        {
-
-        }
-
         public override NodeState Evaluate()
         {
-            
+            OnStart();
+
             if (currentRunningNodeIndex != -1)
             {
                 // 이전에 실행 중이던 노드 평가하기
@@ -38,13 +34,16 @@ namespace AI.BT.Nodes
                  //   Debug.Log($"Selector = Previous Node Evaluate Sucess {currentRunningNodeIndex} /" +
                     //$"{children[currentRunningNodeIndex].NodeName}");
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Success;
                 }
                 else if (result == NodeState.Abort)
                 {
                     //Debug.Log($"Selector = Previous Node Evaluate Sucess {currentRunningNodeIndex} /" +
                     //$"{children[currentRunningNodeIndex].NodeName}");
+                    //TODO: 중단시 처음부터 자식 노드들을 검사시킬지 의문이다.
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Abort;
                 }
             }
@@ -60,23 +59,31 @@ namespace AI.BT.Nodes
                 {
                     case NodeState.Running:
                     return NodeState.Running;
+                    
                     case NodeState.Success:
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Success;
+
                     case NodeState.Abort:
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Abort;
                 }
             }
 
             currentRunningNodeIndex = -1;
+            OnEnd();
             return NodeState.Failure;
         }
-        
 
-        protected override void OnEnd()
+        public override void AbortTask()
         {
-            
+            if (bRunning == false)
+                return;
+
+            currentRunningNodeIndex = -1;
+            base.AbortTask();
         }
 
         public override void StopEvaluate()

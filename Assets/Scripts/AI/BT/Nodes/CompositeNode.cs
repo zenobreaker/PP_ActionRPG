@@ -10,6 +10,7 @@ namespace AI.BT.Nodes
 
         public List<BTNode> Children => children;
 
+        protected bool bRunning = false; 
         protected bool hasFirstStart = true; 
 
         public void AddChild(BTNode node)
@@ -17,13 +18,23 @@ namespace AI.BT.Nodes
             children.Add(node);
         }
 
-        protected abstract void OnStart();
+        protected virtual void OnStart()
+        {
+            if(bRunning == false)
+                bRunning = true;
+        }
         
-        protected abstract void OnEnd();
+        protected virtual void OnEnd()
+        {
+            bRunning = false;
+        }
 
         // 하위 노드들의 Abort 명령 실행
-        public void AbortTask()
+        public virtual void AbortTask()
         {
+            if (bRunning == false)
+                return;
+
             foreach(BTNode node in children)
             {
                 if (node is TaskNode taskNode)

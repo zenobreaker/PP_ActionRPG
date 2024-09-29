@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AI.BT.Nodes
 {
+    //TODO: 로직 수정해야한다.
     public class ParallelNode : CompositeNode
     {
         public enum FinishCondition
@@ -21,11 +22,6 @@ namespace AI.BT.Nodes
             : base()
         {
             this.finishCondition = finishCondition;
-        }
-
-        protected override void OnStart()
-        {
-      
         }
 
         public override NodeState Evaluate()
@@ -49,7 +45,7 @@ namespace AI.BT.Nodes
 
         protected override void OnEnd()
         {
-      
+            base.OnEnd();
             hasFirstStart = true;
         }
 

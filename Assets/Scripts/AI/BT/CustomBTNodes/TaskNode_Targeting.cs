@@ -33,10 +33,14 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Failure;
             }
 
-            // 적을 향해 회전 
-            bRotate = false;
-            CoroutineHelper.Instance.StartHelperCoroutine(LootAtTarget(target));
-
+            if (bRunning == false)
+            {
+                Debug.Log($"{NodeName} already running {bRunning}");
+                bRunning = true;
+                // 적을 향해 회전 
+                bRotate = false;
+                CoroutineHelper.Instance.StartHelperCoroutine(LootAtTarget(target));
+            }
             return NodeState.Running;
         }
 
@@ -50,6 +54,15 @@ namespace AI.BT.CustomBTNodes
             return NodeState.Success;
         }
 
+        protected override NodeState OnEnd()
+        {
+            if (bRunning == true && bRotate == true)
+            {
+                bRunning = false; 
+            }
+
+            return base.OnEnd();
+        }
 
         private IEnumerator LootAtTarget(GameObject target)
         {

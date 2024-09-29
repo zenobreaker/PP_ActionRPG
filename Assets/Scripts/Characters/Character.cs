@@ -99,6 +99,8 @@ public abstract class Character
             if (downConditionCoroutine != null)
                 StopCoroutine(downConditionCoroutine);
 
+            downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
+
             return;
         }
 
@@ -113,9 +115,8 @@ public abstract class Character
         if (condition.DownCondition)
             return;
 
-        if (downConditionCoroutine != null)
-            StopCoroutine(downConditionCoroutine);
         downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
+        
         condition.SetDownCondition();
         state.SetIdleMode();
     }

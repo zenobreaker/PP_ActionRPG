@@ -32,11 +32,15 @@ namespace AI.BT.CustomBTNodes
             {
                 return NodeState.Failure;
             }
-            Debug.Log($"{nodeName} Action Node Begin ");
             if (state.IdleMode == false)
                 return NodeState.Failure;
 
-            action.DoAction();
+            if (bRunning == false)
+            {
+                Debug.Log($"{nodeName} Action Node Begin ");
+                bRunning = true;
+                action.DoAction();
+            }
 
             return NodeState.Running;
         }
@@ -49,15 +53,20 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Failure;
             }
 
-            Debug.Log($"{nodeName} action update");
+
+            //Debug.Log($"{nodeName} action update");
             bool bCheck = true;
             bCheck &= (state.ActionMode);
-            bCheck &= controller.ActionMode;
+            //bCheck &= controller.ActionMode;
 
             if (bCheck)
+            {
+                ChangeActionState(ActionState.End);
                 return NodeState.Running;
+            }
 
-            Debug.Log($"{nodeName} action end {state.IdleMode} / {controller.ActionMode}");
+            bRunning = false;
+            Debug.Log($"{nodeName} action end {state.IdleMode}");
             //controller.SetWaitMode(bCheck);
 
             return NodeState.Success;
@@ -65,6 +74,14 @@ namespace AI.BT.CustomBTNodes
 
         protected override NodeState OnEnd()
         {
+            // 노드 확인했는데 진행중이였다면?
+            // 한싸이클을 돌리게 한다. 
+            if(bRunning == true)
+            {
+                bRunning = false; 
+                return NodeState.Running;
+            }
+
             return base.OnEnd();
         }
 
@@ -74,7 +91,10 @@ namespace AI.BT.CustomBTNodes
             if(currActionState == ActionState.End)
                 return NodeState.Abort;
 
-                Debug.Log($"{nodeName} action abort {state.IdleMode} / {controller.ActionMode}");
+            ChangeActionState(ActionState.End);
+            bRunning = false; 
+            action.End_DoAction();
+            Debug.Log($"{nodeName} action abort {state.IdleMode}");
 
             return base.OnAbort();
         }

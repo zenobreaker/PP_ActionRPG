@@ -17,8 +17,8 @@ namespace AI.BT.TaskNodes
         private Vector3 target;
         public Vector3 Target { set => target = value; }
 
-        private bool observeValue = false; 
-
+        private bool observeValue = false;
+        public Action<Vector3> OnDestination;
         public MoveToNode(GameObject ownerObject, SO_Blackboard blackboard, bool observeValue = false)
             : base(ownerObject, blackboard)
         {
@@ -55,6 +55,7 @@ namespace AI.BT.TaskNodes
             if (blackboard != null)
             {
                 ResearchTarget();
+                
                 return NodeState.Running;
             }
 
@@ -75,6 +76,7 @@ namespace AI.BT.TaskNodes
                 return NodeState.Running;
             }
 
+            ResetAgent();
             return NodeState.Success;
         }
 
@@ -92,6 +94,7 @@ namespace AI.BT.TaskNodes
             {
                 target = targetObject.transform.position;
                 agent.SetDestination(target);
+                OnDestination?.Invoke(target);
             }
             else
                 ResetAgent();
@@ -103,8 +106,8 @@ namespace AI.BT.TaskNodes
             if (AgentCheck() == false)
                 return;
 
-
-            agent.ResetPath();
+            if (agent != null && agent.isOnNavMesh && agent.isActiveAndEnabled)
+                agent.ResetPath();
             agent.velocity = Vector3.zero;
             //agent.isStopped = true;
         }

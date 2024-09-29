@@ -87,7 +87,9 @@ public class BTAIController_Range : BTAIController
 
         Decorator_Blackboard<AIStateType> damagedDeco =
             new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
-            this.gameObject, blackboard, "AIStateType", AIStateType.Damaged);
+            this.gameObject, blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange, 
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Damaged);
 
         DamagedSelector.AddChild(damagedDeco);
 
@@ -99,7 +101,9 @@ public class BTAIController_Range : BTAIController
 
         Decorator_Blackboard<AIStateType> waitDeco =
             new Decorator_Blackboard<AIStateType>("WaitDeco", waitNode, this.gameObject,
-            blackboard, "AIStateType", AIStateType.Wait);
+            blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Wait);
 
 
         // 순찰
@@ -127,7 +131,9 @@ public class BTAIController_Range : BTAIController
 
         Decorator_Blackboard<AIStateType> patrolDeco =
          new Decorator_Blackboard<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
-         blackboard, "AIStateType", AIStateType.Patrol);
+         blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+         "AIStateType", AIStateType.Patrol);
 
         // 공격 
         SequenceNode attackSequence = new SequenceNode();
@@ -149,7 +155,10 @@ public class BTAIController_Range : BTAIController
 
         Decorator_Blackboard<AIStateType> attackDeco =
             new Decorator_Blackboard<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, "AIStateType", AIStateType.Action);
+            attackSequence, this.gameObject, blackboard,
+            Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            "AIStateType", AIStateType.Action);
 
         selector.AddChild(waitDeco);
         selector.AddChild(patrolDeco);

@@ -298,6 +298,8 @@ public class SO_Blackboard : ScriptableObject
     private Dictionary<string, IBlackboardKey> keys = new Dictionary<string, IBlackboardKey>();
     private Dictionary<Type, IComparisonStrategy> comparisonStrategies = new Dictionary<Type, IComparisonStrategy>();
 
+    // 블랙보드의 특정 키의 결과가 다를 때 발생
+    public event Action<string> OnResultChange;
     // 블랙보드의 특정 키가 변경될 때 발생
     public event Action<string> OnValueChanged;
 
@@ -329,57 +331,85 @@ public class SO_Blackboard : ScriptableObject
     {
         Type valueType = value.GetType();
 
-        if (keys.ContainsKey(keyName) && keys[keyName].GetValueType() == valueType)
+        if (keys.ContainsKey(keyName))
         {
-            // 이미 존재하는 키는 캐스팅 후 값 설정
-            IBlackboardKey typedKey = keys[keyName];
-            typedKey.SetValue(value);
-        }
-        else
-        {
-            // 존재하지 않은 경우 새롭게 생성
-            Type keyType = typeof(BlackboardKey<>).MakeGenericType(valueType);
-            IBlackboardKey newKey = (IBlackboardKey)Activator.CreateInstance(keyType, keyName);
+            IBlackboardKey existingKey = keys[keyName];
 
-            // 값 설정
-            if (value is IConvertible convertible)
+            // 기존 키가 동일한 타입인지 확인
+            if (existingKey.GetValueType() == valueType)
             {
-                // IConvertible 인터페이스를 구현하는 경우
-                newKey.SetValue(convertible); // 여기서도 동적 설정
+                object oldValue = existingKey.GetValue();
+                if (!EqualityComparer<object>.Default.Equals(oldValue, value))
+                {
+                    // 값 설정 및 이벤트 트리거
+                    existingKey.SetValue(value);
+                    OnResultChange?.Invoke(keyName);
+                    OnValueChanged?.Invoke(keyName);
+                }
             }
             else
             {
-                // 직접 캐스팅하여 값을 설정
-                newKey.SetValue(value);
+                Debug.LogError($"Key {keyName} exists but with a different type.");
             }
+        }
+        else
+        {
+            // 새로운 키 생성
+            IBlackboardKey newKey = CreateBlackboardKey(valueType, keyName, value);
 
+            // 값 설정
             keys[keyName] = newKey;
+            OnResultChange?.Invoke(keyName);
+            OnValueChanged?.Invoke(keyName);  // 새로 추가된 키에도 이벤트 트리거
         }
     }
 
+    // 제네릭 버전의 데이터 설정 메서드
     public void SetValue<T>(string keyName, T value)
     {
         if (keys.TryGetValue(keyName, out IBlackboardKey key))
         {
             if (key is BlackboardKey<T> typedKey)
             {
-                typedKey.SetValue(value);
-                OnValueChanged?.Invoke(keyName); // 값 변경 시 트리거되게
+                T oldValue = typedKey.GetValue<T>();
+                if (!EqualityComparer<T>.Default.Equals(oldValue, value))
+                {
+
+                    typedKey.SetValue(value);
+                    OnResultChange?.Invoke(keyName);
+                    OnValueChanged?.Invoke(keyName); // 값 변경 시 트리거
+                }
             }
             else
             {
-                Debug.Log($"Key {keyName} is not of Type {typeof(T)}");
+                Debug.LogError($"Key {keyName} is not of Type {typeof(T)}");
             }
         }
         else
         {
-            //Debug.Log($"Key {keyName} not found in Blackobard");
+            // 새로운 키 추가
             BlackboardKey<T> newKey = new BlackboardKey<T>(keyName);
             newKey.SetValue(value);
             keys.Add(keyName, newKey);
 
-            //OnValueChanged?.Invoke(keyName); // 새로 추가된 것도 트리거 
+            OnResultChange?.Invoke(keyName);
+            OnValueChanged?.Invoke(keyName); // 새로 추가된 키도 트리거
         }
+    }
+
+    // 동적으로 키를 생성하는 헬퍼 메서드
+    private IBlackboardKey CreateBlackboardKey(Type valueType, string keyName, object value)
+    {
+        Type keyType = typeof(BlackboardKey<>).MakeGenericType(valueType);
+        IBlackboardKey newKey = (IBlackboardKey)Activator.CreateInstance(keyType, keyName);
+
+        // 값 설정
+        if (newKey != null)
+        {
+            newKey.SetValue(value);
+        }
+
+        return newKey;
     }
 
     // 키의 값 가져오기 

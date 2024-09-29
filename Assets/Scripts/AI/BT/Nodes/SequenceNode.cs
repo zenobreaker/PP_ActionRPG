@@ -14,16 +14,11 @@ namespace AI.BT.Nodes
 
         private int currentRunningNodeIndex = -1; // 현재 실행 중인 자식 추적하기 위한 변수 
 
-        //TODO: 지금은 로직을 분리하기 어려움으로 추후에 처리 
-        protected override void OnStart()
-        {
-
-        }
-
-
 
         public override NodeState Evaluate()
         {
+            OnStart();
+
             if (currentRunningNodeIndex != -1)
             {
                 NodeState result = children[currentRunningNodeIndex].Evaluate();
@@ -36,13 +31,16 @@ namespace AI.BT.Nodes
                    // Debug.Log($"Sequence = Previous Node Evaluate Fail {currentRunningNodeIndex} /" +
                    //$"{children[currentRunningNodeIndex].NodeName}");
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Failure;
                 }
                 else if (result == NodeState.Abort)
                 {
                     // Debug.Log($"Sequence = Previous Node Evaluate Fail {currentRunningNodeIndex} /" +
                     //$"{children[currentRunningNodeIndex].NodeName}");
+                    //TODO: 중단시 처음부터 자식 노드들을 검사시킬지 의문이다.
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Abort;
                 }
 
@@ -57,22 +55,22 @@ namespace AI.BT.Nodes
                 {
                     case NodeState.Running:
                     return NodeState.Running;
+                    
                     case NodeState.Failure:
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Failure;
+
                     case NodeState.Abort:
                     currentRunningNodeIndex = -1;
+                    OnEnd();
                     return NodeState.Abort;
                 }
             }
 
             currentRunningNodeIndex = -1;
+            OnEnd();
             return NodeState.Success;
-
-        }
-
-        protected override void OnEnd()
-        {
 
         }
 

@@ -24617,9 +24617,21 @@ PrefabInstance:
       propertyPath: distance
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 3988132422297725816, guid: 4c702cda26d20b24a9e8fe0d4c5e747f, type: 3}
+      propertyPath: speeds.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3988132422297725816, guid: 4c702cda26d20b24a9e8fe0d4c5e747f, type: 3}
+      propertyPath: speeds.Array.data[1]
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3988132422297725816, guid: 4c702cda26d20b24a9e8fe0d4c5e747f, type: 3}
+      propertyPath: speeds.Array.data[2]
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3988132422297725818, guid: 4c702cda26d20b24a9e8fe0d4c5e747f, type: 3}
       propertyPath: m_Acceleration
-      value: 10
+      value: 7.48
       objectReference: {fileID: 0}
     - target: {fileID: 3988132422297725822, guid: 4c702cda26d20b24a9e8fe0d4c5e747f, type: 3}
       propertyPath: fireball2Object

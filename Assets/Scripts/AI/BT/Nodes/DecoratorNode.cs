@@ -22,21 +22,12 @@ namespace AI.BT.Nodes
             GameObject owner = null,
             SO_Blackboard blackboard = null,
             string boardKey = null)
-            //B_KeyQuery keyQuery = BB_KeyQuery.Equals)
-        //string key = null, string keyValue = default)
         {
             this.nodeName = nodeName;
             this.owner = owner;
             this.childNode = childNode;
             this.blackboard = blackboard;
             this.boardKey = boardKey;
-            //this.keyQuery = keyQuery;
-            if (blackboard != null)
-                blackboard.OnValueChanged += OnValueChanged;
-
-
-            //this.keyQuery = keyQuery;
-            //this.keyValue = keyValue;
         }
 
         public void SetOwnerObject(GameObject owner)
@@ -72,15 +63,6 @@ namespace AI.BT.Nodes
         }
 
        
-
-        //TODO: Task들이 변화할 때 호출될 이벤트
-        //protected virtual void OnResultChanged()
-
-        protected virtual void OnValueChanged(string changedKey)
-        {
-
-        }
-
         public void AbortTask()
         {
             //Debug.Log($"Task Aboarted  {nodeName}");
@@ -95,12 +77,15 @@ namespace AI.BT.Nodes
             {
                 taskNode.AbortTask();
             }
+
+            // 중단 처리하면 여기도 끝낸다.
+            OnEnd();
         }
 
         // 삭제시 구독 해제 
         ~DecoratorNode()
         {
-            blackboard.OnValueChanged -= OnValueChanged;
+            
         }
     }
 }

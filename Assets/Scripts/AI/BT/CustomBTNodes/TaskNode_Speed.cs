@@ -1,5 +1,6 @@
 using AI.BT.Nodes;
 using UnityEngine;
+using static AI.BT.BTNode;
 
 
 namespace AI.BT.CustomBTNodes
@@ -45,6 +46,12 @@ namespace AI.BT.CustomBTNodes
 
             return NodeState.Success;
         }
-    }
 
+        protected override NodeState OnAbort()
+        {
+            Debug.Log("Speed Abort!! ");
+
+            return BTNode.NodeState.Abort;
+        }
+    }
 }
