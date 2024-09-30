@@ -43,13 +43,13 @@ namespace AI.BT.CustomBTNodes
                 break;
             }
 
-
+            ChangeActionState(ActionState.End);
             return NodeState.Success;
         }
 
         protected override NodeState OnAbort()
         {
-            Debug.Log("Speed Abort!! ");
+            //Debug.Log("Speed Abort!! ");
 
             return BTNode.NodeState.Abort;
         }

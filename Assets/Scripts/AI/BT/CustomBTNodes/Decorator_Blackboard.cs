@@ -118,7 +118,7 @@ namespace AI.BT.CustomBTNodes
 
             bool newResult = CompareValueToQuery<T>(changedKey) == false;
             
-            if (changedKey == "DragonPattern")
+            if (changedKey == "AIState")
             {
                 var value = blackboard.GetValue<T>(changedKey);
                 Debug.Log($"{nodeName} +  Examine {value} / {key}");

@@ -161,12 +161,18 @@ public class LaunchComponent : MonoBehaviour
             StartCoroutine(Do_Knockback(forceDir.normalized, distanace, knockbackTime));
             return; 
         }
-            
-        if (condition.MyCondition == ConditionType.Airborne)
+
+        bool bCheck = true;
+        bCheck &= airborne != null;
+        bCheck &= bCheck || airborne.AirCondition;
+        bCheck &= bCheck || data.heightValue > 0;
+        bCheck &= bCheck || condition.AirborneCondition;
+
+        if (bCheck)
         {
             rigidbody.mass = originMass /** 0.05f*/;
             fm = ForceMode.Impulse;
-            launch = rigidbody.mass * distanace * 2.5f;
+            launch = rigidbody.mass * distanace * 1.25f;
             bResult &= true;
         }
         
@@ -176,7 +182,8 @@ public class LaunchComponent : MonoBehaviour
             rigidbody.AddForce(forceDir * launch, fm);
         }
 
-        if(airborne != null && data.heightValue > 0.0f || condition.MyCondition == ConditionType.Airborne)
+       
+        if (bCheck)
             airborne.DoAir(attacker, causer, data);
         else 
             StartCoroutine(Change_IsKinematics(data, 5));

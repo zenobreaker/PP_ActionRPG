@@ -77,6 +77,10 @@ namespace AI.BT.Nodes
             {
                 taskNode.AbortTask();
             }
+            else if( childNode is DecoratorNode decorator)
+            {
+                decorator.AbortTask();
+            }
 
             // 중단 처리하면 여기도 끝낸다.
             OnEnd();

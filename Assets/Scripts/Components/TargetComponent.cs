@@ -10,7 +10,7 @@ public class TargetComponent : MonoBehaviour
 {
     [SerializeField] private float radius = 1f;
     [SerializeField] private LayerMask layerMask;
-    //[SerializeField] private float rotateSpeed = 1.0f; // Å¸°ÔÆÃ ´ë»ó±îÁö È¸ÀüÇÒ ¼Óµµ 
+    //[SerializeField] private float rotateSpeed = 1.0f; // íƒ€ê²ŒíŒ… ëŒ€ìƒê¹Œì§€ íšŒì „í•  ì†ë„ 
 
     private GameObject targetObject;
     //private float deltaRotation = 0.0f;
@@ -32,12 +32,12 @@ public class TargetComponent : MonoBehaviour
 
         GameObject[] candinates = colliders.Select(colliders => colliders.gameObject).ToArray();
 
-        // °¡Àå °¡±î¿î ´ë»ó 
+        // ê°€ì¥ ê°€ê¹Œìš´ ëŒ€ìƒ 
         GameObject nearlyObject = GetNearlyFrontAngle(candinates);
 
         ChangeTarget(nearlyObject);
 
-        // ´ë»óÀ» ÇâÇØ È¸Àü
+        // ëŒ€ìƒì„ í–¥í•´ íšŒì „
         if (bRotation == false)
             return;
 
@@ -98,6 +98,7 @@ public class TargetComponent : MonoBehaviour
         Vector3 position = transform.position;
         Vector3 targetPosition = targetObject.transform.position;
         Vector3 direction = targetPosition - position;
+        direction.y = 0.0f;
 
         Quaternion from = transform.localRotation;
         Quaternion to = Quaternion.LookRotation(direction.normalized, Vector3.up);
@@ -121,7 +122,7 @@ public class TargetComponent : MonoBehaviour
             return;
 
 
-        // ¿òÁ÷ÀÌ´Â ÁßÀÏ ¶© ÀÔ·Â ¹ŞÁö ¾Êµµ·Ï 
+        // ì›€ì§ì´ëŠ” ì¤‘ì¼ ë• ì…ë ¥ ë°›ì§€ ì•Šë„ë¡ 
         if (bMovingFocus == true)
             return;
 
@@ -130,7 +131,7 @@ public class TargetComponent : MonoBehaviour
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask.value);
 
-        // ¿ÜÀû , °×¿ÀºêÁ§
+        // ì™¸ì  , ê²œì˜¤ë¸Œì 
         Dictionary<float, GameObject> candinateTable = new Dictionary<float, GameObject>();
         foreach (Collider collider in colliders)
         {
@@ -141,9 +142,9 @@ public class TargetComponent : MonoBehaviour
             Vector3 vec2 = transform.position;
             Vector3 direction = vec1 - vec2;
 
-            // ÆòÇà°£ °Å¸® µîÀå 
+            // í‰í–‰ê°„ ê±°ë¦¬ ë“±ì¥ 
             Vector3 cross = Vector3.Cross(transform.forward, direction);
-            float distance = Vector3.Dot(cross, Vector3.up); // <- y°ª ÃßÃâÇÏ±â ¿ÜÀû¿¡ ³»ÀûÀ» ÃßÃâÇÏ¸é ÆòÇà°£¿¡ °Å¸®°¡ ³ª¿Â´Ù
+            float distance = Vector3.Dot(cross, Vector3.up); // <- yê°’ ì¶”ì¶œí•˜ê¸° ì™¸ì ì— ë‚´ì ì„ ì¶”ì¶œí•˜ë©´ í‰í–‰ê°„ì— ê±°ë¦¬ê°€ ë‚˜ì˜¨ë‹¤
 
             candinateTable.Add(distance, collider.gameObject);
         }
@@ -190,7 +191,7 @@ public class TargetComponent : MonoBehaviour
         //deltaRotation = 0.0f;
         targetObject = null;
 
-        // ÈÄº¸ÀÚ°¡ ¾øÀ¸¸é ±×³É ´Ù Ç®¾î.. 
+        // í›„ë³´ìê°€ ì—†ìœ¼ë©´ ê·¸ëƒ¥ ë‹¤ í’€ì–´.. 
         //if (bLookForward == true)
         //    transform.localRotation = Quaternion.identity;
     }

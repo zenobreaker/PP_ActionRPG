@@ -180,7 +180,7 @@ public class SideStepComponent : MonoBehaviour
         }
 
 
-        Debug.Log($"추적 경로  {toIndex}");
+        //Debug.Log($"추적 경로  {toIndex}");
         goalPosition = sidePositionList[toIndex];
 
         return goalPosition;

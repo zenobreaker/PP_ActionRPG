@@ -123,8 +123,15 @@ public class ComboComponent : MonoBehaviour
         bNextable = false;
         if (inputElement.bNext)
             bNextable = true;
+        
+        if (currComboObj == null)
+            return;
 
-        currLimitTime = 0.5f; 
+        ComboData data = currComboObj.GetComboDataByRewind(inputQueue.Count);
+
+        //currLimitTime = 0.5f; 
+        currLimitTime = data.comboInputLimitTime;
+        inputLimitTime = data.comboNextInputLimitTime;
         bExist = false;
         weapon.DoAction(bNextable);
     }
@@ -137,7 +144,11 @@ public class ComboComponent : MonoBehaviour
         var inputData = inputQueue.Dequeue();
         ExecuteAttack(ref inputData);
     }
+    
+    private void SetInputTime()
+    {
 
+    }
 
     public void InputCombo_Test(KeyCode keycode)
     {

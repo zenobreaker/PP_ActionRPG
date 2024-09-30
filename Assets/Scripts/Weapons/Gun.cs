@@ -376,7 +376,7 @@ public class Gun : Melee
         direction.Normalize();
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         float rotationSpeed = 5.0f;
-
+        targetRotation.y = 0;
         while (Quaternion.Angle(rootObject.transform.rotation, targetRotation) > 0.1f)
         {
             rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);

@@ -31,7 +31,6 @@ namespace AI.BT.CustomBTNodes
         {
             if (controller == null)
                 return false;
-
             return blackboard.CompareValue(boardKey, key);
         }
 

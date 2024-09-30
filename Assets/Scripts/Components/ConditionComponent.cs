@@ -5,7 +5,10 @@ public class ConditionComponent : MonoBehaviour
 {
     public enum ConditionType
     {
-        None, Down, Airborne, Max,
+        None, 
+        Down, 
+        Airborne, 
+        Max,
     }
 
     private ConditionType myCondition;

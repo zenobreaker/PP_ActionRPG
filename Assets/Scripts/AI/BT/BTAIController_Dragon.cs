@@ -148,7 +148,7 @@ public class BTAIController_Dragon : BTAIController
 
         float distanceSquared = Vector3.Distance(player.transform.position, this.transform.position);
         distanceSquared = Mathf.Floor(distanceSquared * 10) / 10;
-        if (distanceSquared <= attackRange)
+        if (distanceSquared <= attackRange && currentAttackPattern != 0)
         {
             // 공격
             SetActionMode();
@@ -476,7 +476,7 @@ public class BTAIController_Dragon : BTAIController
     protected override bool CheckMode()
     {
         bool bCheck = base.CheckMode();
-        bCheck &= state.IdleMode == false;
+        bCheck |= state.IdleMode == false;
 
         if (health != null)
             bCheck |= health.Dead;
@@ -536,6 +536,9 @@ public class BTAIController_Dragon : BTAIController
 
     private void DeicideWaitCondition()
     {
+        if (NoneCondition == false)
+            return;
+
         int maxConditionValue = maxWaitCondtionPattern;
         GameObject player = perception.GetPercievedPlayer();
         if (player == null)
@@ -638,6 +641,8 @@ public class BTAIController_Dragon : BTAIController
                 currentAttackPattern = 0;
                 //Debug.Log($"Dragon is No {currentAttackPattern} Decided pattern");
                 blackboard.SetValue("DragonPattern", currentAttackPattern);
+                patternDecideCoroutine = null;
+                SetWaitMode(false);
                 yield break;
             }
 

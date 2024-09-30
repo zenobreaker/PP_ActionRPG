@@ -35,7 +35,7 @@ namespace AI.BT.CustomBTNodes
 
             Debug.Log($"Pattern Set  {pattern} ");
             patternHandler.SetPattern(pattern);
-
+            
             return NodeState.Success;
         }
 

@@ -16,13 +16,14 @@ public class GroundedComponent : MonoBehaviour
     private new Rigidbody rigidbody;
 
     [SerializeField] private bool bGround = true;
+    private bool privoudGround; // 이전 상태 저장값
     public bool IsGround { get => bGround; }
 
     private bool bCheck = true;
     private bool bDistanceCheck = false;
     private Vector3 checkOnPosition = Vector3.zero;
 
-    [SerializeField] private float distance = 0.1f;
+    [SerializeField] private float checkDistance = 0.5f;
 
     private float originMass;
     private float originDrag;
@@ -55,36 +56,74 @@ public class GroundedComponent : MonoBehaviour
         originDrag = rigidbody.drag;
         originConstraints = rigidbody.constraints;
 
+        privoudGround = bGround;
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
     }
 
     private void FixedUpdate()
     {
         //FixedUpdate_CheckOverDistance();
-        //FixedUpdate_CheckGrounded();
+        FixedUpdate_CheckGrounded();
     }
 
     private void FixedUpdate_CheckGrounded()
     {
-        if (bCheck == false)
-            return;
-        Vector3 boxSize = new Vector3(transform.lossyScale.x, distance, transform.lossyScale.z);
-        Collider[] colliders = Physics.OverlapBox(transform.position, boxSize, Quaternion.identity, groundLayer);
+        //if (bCheck == false)
+        //    return;
+   
+        Vector3 boxSize = new Vector3(transform.lossyScale.x, checkDistance, transform.lossyScale.z);
+        Vector3 center = transform.position;
+        center.y = -checkDistance * 0.5f;
+        Collider[] colliders = Physics.OverlapBox(center, boxSize, Quaternion.identity, groundLayer);
 
-        foreach (Collider candidate in colliders)
+        // 자신의 아래로 레이를 쏴서 다른 오브젝트가 있다면 
+        GameObject candidate = null; 
+        foreach (Collider collider in colliders)
         {
-            int layer = candidate.gameObject.layer;
+            // 땅레이어 인지 검사 혹은 다른 것도 사관 없음 
+            int layer = collider.gameObject.layer;
             if ((groundLayer & (1 << layer)) == 0)
                 continue;
 
-            bGround = true;
-            bDistanceCheck = false;
-            Change_RigidBodyToGround();
-            return;
+            candidate = collider.gameObject;
+            break; 
         }
 
-        StopAllCoroutines();
-        bGround = false;
+        if (candidate == null)
+            return;
+        // 대상과의 거리 측정 
+        float distance = Mathf.Abs(candidate.transform.position.y - transform.position.y);
+
+        if (distance >= 0.004f)
+            bGround = false;
+        else
+            bGround = true;
+
+        ChangeGroundState(bGround);
+
+        //bGround = true;
+        //bDistanceCheck = false;
+        //Change_RigidBodyToGround();
+
+        //StopAllCoroutines();
+        //bGround = false;
+    }
+
+
+    private void ChangeGroundState(bool newGroundState)
+    {
+        if (privoudGround == newGroundState)
+            return;
+
+        privoudGround = newGroundState;
+
+        // 상태가 달라졌으니 관련 이벤트 콜
+        // 이전 상태가 땅에 있지 않았고 다음에 오는 상태가 땅에 오는 거면 처리하기 
+        if (privoudGround == false && newGroundState == true)
+        {
+            OnChangedGorund?.Invoke();
+            OnCharacterGround?.Invoke();
+        }
     }
 
     private void OnAirborneChange()
@@ -103,7 +142,7 @@ public class GroundedComponent : MonoBehaviour
 
         float y = transform.position.y - checkOnPosition.y;
 
-        if (y >= distance)
+        if (y >= checkDistance)
         {
             bCheck = true;
             bGround = false; 
@@ -145,8 +184,14 @@ public class GroundedComponent : MonoBehaviour
             return;
 
         Gizmos.color = Color.green;
-        Vector3 boxSize = new Vector3(transform.lossyScale.x, distance, transform.lossyScale.z);
-        Gizmos.DrawWireCube(transform.position , boxSize);
+        Vector3 boxSize = new Vector3(transform.lossyScale.x, -checkDistance, transform.lossyScale.z);
+        Vector3 center = transform.position;
+        center.y = -checkDistance * 0.5f;
+        Gizmos.DrawWireCube(center, boxSize);
+
+        Vector3 from = transform.position;
+        Vector3 to = center;
+        Gizmos.DrawLine(from, to);
     }
 
 #endif

@@ -11,7 +11,8 @@ namespace AI.BT.Nodes
             Begin, Update, End
         }
 
-        protected bool bRunning = false;
+        private bool bRunning = false;
+        protected NodeState previousResult;
         protected ActionState currActionState;
 
         protected Func<BTNode.NodeState> onBegin = null;
@@ -20,8 +21,6 @@ namespace AI.BT.Nodes
         protected Func<BTNode.NodeState> onAbort = null;
 
         protected SO_Blackboard blackboard;
-
-        private NodeState result;
 
         #region Constructor
 
@@ -78,33 +77,49 @@ namespace AI.BT.Nodes
 
         public override NodeState Evaluate()
         {
+            //if (currActionState == ActionState.End && bRunning == false)
+            //{
+            //    // 시퀀스가 끝났을 경우 상태를 다시 Begin으로 초기화
+            //    ChangeActionState(ActionState.Begin);
+            //    bRunning = true; 
+            //}
+
             // 각 상태를 분리하여 매 프레임마다 평가
-            switch(currActionState)
+            switch (currActionState)
             {
                 case ActionState.Begin:
                 {
                     // Begin 상태일 때 onBegin을 호출 후 Running 반환
-                    result = onBegin?.Invoke() ?? BTNode.NodeState.Failure;
+                    NodeState result = onBegin?.Invoke() ?? BTNode.NodeState.Failure;
+                    
                     if (result == NodeState.Running)
-                    {
                         ChangeActionState(ActionState.Update);
-                    }
+                    
+                    Debug.Log($"{nodeName} Action Node Begin {currActionState} {result}");
+                    previousResult = result;
+                    
                     return result;
                 }
                 case ActionState.Update:
                 {
                     // Update 상태일 때 onUpdate 호출 후 결과에 따라 End로 넘길 수 있다.
-                    result = onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
-                    if(result != NodeState.Running)
-                    {
+                    NodeState result = onUpdate?.Invoke() ?? BTNode.NodeState.Failure;
+                    
+                    if(result == NodeState.Success || result == NodeState.Failure)
                         ChangeActionState(ActionState.End);
-                    }
-                    return NodeState.Running;
+                    
+                    previousResult = result;
+                    return result;
                 }
                 case ActionState.End:
                 {
-                    result = onEnd?.Invoke() ?? BTNode.NodeState.Failure;
-                    ChangeActionState (ActionState.Begin);
+                    Debug.Log($"{nodeName} Action Node End ");
+                    bRunning = false;
+                    NodeState result = onEnd?.Invoke() ?? BTNode.NodeState.Failure;
+                    if (result == NodeState.Success || result == NodeState.Failure)
+                        ChangeActionState(ActionState.Begin);
+                    
+                    previousResult = result;
                     return result; 
                 }
                 default:
@@ -142,7 +157,7 @@ namespace AI.BT.Nodes
 
         protected virtual BTNode.NodeState OnEnd()
         {
-            return result;
+            return BTNode.NodeState.Success;
         }
 
         protected virtual BTNode.NodeState OnAbort()
@@ -153,7 +168,7 @@ namespace AI.BT.Nodes
         public void AbortTask()
         {
             //Debug.Log($"NodeName {nodeName} Abort");
-            if (currActionState != ActionState.End)
+            if (previousResult == NodeState.Running) 
             {
                 onAbort?.Invoke();
                 ChangeActionState(ActionState.End);

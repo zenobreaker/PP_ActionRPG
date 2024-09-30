@@ -82,8 +82,9 @@ namespace AI.BT.Nodes
             if (bRunning == false)
                 return;
 
-            currentRunningNodeIndex = -1;
             base.AbortTask();
+
+            currentRunningNodeIndex = -1;
         }
 
         public override void StopEvaluate()

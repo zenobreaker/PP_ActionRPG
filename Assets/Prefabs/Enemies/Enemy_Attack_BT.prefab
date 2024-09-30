@@ -3874,7 +3874,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7845690608406794497
 Transform:
   m_ObjectHideFlags: 0
@@ -3931,7 +3931,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7845690608406794618}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 1.8
@@ -4052,11 +4052,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knockbackCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.0013428
+      value: 0.99056625
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  knockbackTime: 1
+  knockbackTime: 0.5
 --- !u!114 &7845690608406794616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4114,13 +4132,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae3ccbae71e2e849b72c33b3d11bede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMode: 0
-  acceleration: 1
-  additionalAccel: 0
-  airMaintainTime: 0
+  forceMode: 2
+  acceleration: 17.5
+  additionalAccel: 1
+  airMaintainTime: 0.5
   minLaunchHeight: 0.1
   heightReductionFactor: 0.5
-  bDebuMode: 0
+  bDebuMode: 1
 --- !u!114 &6625144907415879999
 MonoBehaviour:
   m_ObjectHideFlags: 0

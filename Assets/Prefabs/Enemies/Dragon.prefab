@@ -2341,7 +2341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3892245026062805780
 Transform:
   m_ObjectHideFlags: 0
@@ -2426,7 +2426,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 7.48
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 10
@@ -2558,8 +2558,8 @@ MonoBehaviour:
   fireballPoint: Fire Point FireBall
   breathPoint: Fire Point Breath
   fireballObject: {fileID: 1707102027251842, guid: 07037e8f25c75194e9e7e6be2e82e066, type: 3}
-  fireball2Object: {fileID: 0}
-  fireball2_Second_Object: {fileID: 0}
+  fireball2Object: {fileID: 1961964258596952, guid: eca1ff6741def5a468081e17839fc91e, type: 3}
+  fireball2_Second_Object: {fileID: 5972622458362187699, guid: 19c74740d71334d4b991aefb2cd49d47, type: 3}
   firebreathObject: {fileID: 1634767862067424, guid: 007c57e2df8e9b144b99f471b84f3d56, type: 3}
   biteTrigger: {fileID: 3893847944751757744}
   wingTriggerL: {fileID: 6907678011682158222}
@@ -2595,9 +2595,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speeds:
-  - 2
-  - 4
+  - 3
   - 6
+  - 8
 --- !u!114 &3988132422297725575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2610,7 +2610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53ae699252000c468663b062b072afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 10
+  distance: 50
   angle: 50
   lostTime: 5
   layerMask:
@@ -2629,8 +2629,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 4.7
-  attackDelay: 2
-  attackDelayRandom: 0.5
+  attackDelay: 1
+  attackDelayRandom: 0.25
   damageDelay: 2
   damageDelayRandom: 1
   waitDelay: 1

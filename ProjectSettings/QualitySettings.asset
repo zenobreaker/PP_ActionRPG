@@ -231,8 +231,7 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 11400000, guid: d942025184995a342ad77e6c2d5f8e11, type: 2}
-    excludedTargetPlatforms:
-    - Server
+    excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
     Android: 2
     GameCoreScarlett: 5

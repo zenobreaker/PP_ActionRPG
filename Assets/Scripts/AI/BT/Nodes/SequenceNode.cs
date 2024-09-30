@@ -74,6 +74,17 @@ namespace AI.BT.Nodes
 
         }
 
+        public override void AbortTask()
+        {
+            if (bRunning == false)
+                return; 
+
+            base.AbortTask();
+
+            currentRunningNodeIndex = -1; 
+        }
+
+
         public override void StopEvaluate()
         {
             foreach(var child in children)

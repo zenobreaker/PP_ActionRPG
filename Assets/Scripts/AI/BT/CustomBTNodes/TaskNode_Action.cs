@@ -1,4 +1,5 @@
 using AI.BT.Nodes;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -29,18 +30,14 @@ namespace AI.BT.CustomBTNodes
         protected override NodeState OnBegin()
         {
             if (action == null)
-            {
                 return NodeState.Failure;
-            }
             if (state.IdleMode == false)
                 return NodeState.Failure;
 
-            if (bRunning == false)
-            {
-                Debug.Log($"{nodeName} Action Node Begin ");
-                bRunning = true;
-                action.DoAction();
-            }
+            if(currActionState != ActionState.Begin)
+                return NodeState.Failure;
+
+            action.DoAction();
 
             return NodeState.Running;
         }
@@ -53,36 +50,19 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Failure;
             }
 
-
             //Debug.Log($"{nodeName} action update");
             bool bCheck = true;
-            bCheck &= (state.ActionMode);
-            //bCheck &= controller.ActionMode;
+            bCheck &= (state.IdleMode);
+            bCheck &= controller.ActionMode == false;
 
             if (bCheck)
             {
-                ChangeActionState(ActionState.End);
-                return NodeState.Running;
+                return NodeState.Success;
             }
 
-            bRunning = false;
-            Debug.Log($"{nodeName} action end {state.IdleMode}");
+            //Debug.Log($"{nodeName} action end {state.IdleMode}");
             //controller.SetWaitMode(bCheck);
-
-            return NodeState.Success;
-        }
-
-        protected override NodeState OnEnd()
-        {
-            // 노드 확인했는데 진행중이였다면?
-            // 한싸이클을 돌리게 한다. 
-            if(bRunning == true)
-            {
-                bRunning = false; 
-                return NodeState.Running;
-            }
-
-            return base.OnEnd();
+            return NodeState.Running;
         }
 
 
@@ -91,12 +71,10 @@ namespace AI.BT.CustomBTNodes
             if(currActionState == ActionState.End)
                 return NodeState.Abort;
 
-            ChangeActionState(ActionState.End);
-            bRunning = false; 
-            action.End_DoAction();
+            action.End_DoAction();    
             Debug.Log($"{nodeName} action abort {state.IdleMode}");
 
-            return base.OnAbort();
+            return NodeState.Success;
         }
     }
 }

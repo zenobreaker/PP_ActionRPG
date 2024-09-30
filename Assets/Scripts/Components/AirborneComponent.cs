@@ -31,6 +31,8 @@ public class AirborneComponent : MonoBehaviour
     private OtherStateColliderComponent otherCollider;
 
     private bool bSuperArmor = false;
+    private bool bAir = false; 
+    public bool AirCondition { get => bAir; }
     private ConditionType conditionType;
 
     private Coroutine airCoroutine;
@@ -45,8 +47,8 @@ public class AirborneComponent : MonoBehaviour
 
         animator = GetComponent<Animator>();
         condition = GetComponent<ConditionComponent>();
-        if (condition != null)
-             condition.OnConditionChanged += OnConditionChanged;
+        //if (condition != null)
+        //     condition.OnConditionChanged += OnConditionChanged;
        state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
 
@@ -111,7 +113,8 @@ public class AirborneComponent : MonoBehaviour
 
         if (agent != null)
             agent.enabled = true;
-        
+
+        bAir = false;
         state.SetIdleMode();
     }
 
@@ -194,9 +197,13 @@ public class AirborneComponent : MonoBehaviour
 
         float value = data.heightValue;
         //Debug.Log($"Air comobo first step {value}");
-        if (data.heightValue == 0)
+        if (data.heightValue == 0 && bAir)
             value = additionalAccel;
-        if(condition.MyCondition == ConditionType.Airborne)
+
+        Debug.Log($"Air comobo step {conditionType}");
+
+        if (conditionType == ConditionType.Airborne ||
+            conditionType == ConditionType.Down)
         {
             float reducedHeight = value * Mathf.Pow(heightReductionFactor, transform.position.y);
             value = Mathf.Max(reducedHeight, minLaunchHeight);
@@ -228,11 +235,10 @@ public class AirborneComponent : MonoBehaviour
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 
-        
+        bAir = true; 
         condition?.SetAirborneCondition();
 
         otherCollider?.SetAirStateCollider(true);
-        OnAirborneChange?.Invoke();
 
         
         while (targetDistance >= 0)
@@ -241,6 +247,8 @@ public class AirborneComponent : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+
+        OnAirborneChange?.Invoke();
 
         rigidbody.velocity = Vector3.zero;
         rigidbody.useGravity = true;

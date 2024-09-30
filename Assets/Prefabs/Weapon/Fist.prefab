@@ -102,7 +102,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &734067441663455068
 MonoBehaviour:
@@ -160,7 +160,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &37280454189739711
 MonoBehaviour:
@@ -287,7 +287,7 @@ MonoBehaviour:
     bLauncher: 0
     Power: 5
     Distance: 3
-    heightValue: 5
+    heightValue: 0
     StopFrame: 3
     impulseDirection: {x: 0.1, y: 0.1, z: 0.25}
     impulseSettings: {fileID: 11400000, guid: 6531d9f11125af345b83c1e661d08c93, type: 2}
