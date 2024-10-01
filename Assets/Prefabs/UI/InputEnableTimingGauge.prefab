@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2044815037071238152
+--- !u!1 &2110389074073083726
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6459679229943458228}
-  - component: {fileID: 9143954444384895918}
-  - component: {fileID: 2422154843460585329}
+  - component: {fileID: 5349241262669761303}
+  - component: {fileID: 7966432042040612491}
+  - component: {fileID: 5845254348202453339}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -18,14 +18,14 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &6459679229943458228
+--- !u!224 &5349241262669761303
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2044815037071238152}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 2110389074073083726}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38,21 +38,21 @@ RectTransform:
   m_AnchoredPosition: {x: 18.9, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 1}
---- !u!222 &9143954444384895918
+--- !u!222 &7966432042040612491
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2044815037071238152}
+  m_GameObject: {fileID: 2110389074073083726}
   m_CullTransparentMesh: 1
---- !u!114 &2422154843460585329
+--- !u!114 &5845254348202453339
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2044815037071238152}
+  m_GameObject: {fileID: 2110389074073083726}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -148,9 +148,9 @@ GameObject:
   - component: {fileID: 6877620966317659777}
   - component: {fileID: 6877620966317659778}
   - component: {fileID: 6877620966317659779}
-  - component: {fileID: 6550682321101632358}
+  - component: {fileID: 2213282546410391837}
   m_Layer: 5
-  m_Name: InputTimingGauge
+  m_Name: InputEnableTimingGauge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,7 +168,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6459679229943458228}
+  - {fileID: 5349241262669761303}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4230627, g: 1, b: 0.13679248, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6550682321101632358
+--- !u!114 &2213282546410391837
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,4 +228,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Gauge: {fileID: 6877620966317659779}
-  GaugeText: {fileID: 2422154843460585329}
+  GaugeText: {fileID: 5845254348202453339}

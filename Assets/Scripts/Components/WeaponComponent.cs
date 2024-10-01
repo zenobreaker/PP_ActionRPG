@@ -269,6 +269,20 @@ public class WeaponComponent
         weaponTable[type].DoAction(bNext);
     }
 
+    public void DoAction(int index)
+    {
+        if (weaponTable[type] == null)
+            return;
+
+        if (type == WeaponType.FireBall)
+        {
+            target.Begin_Targeting(true);
+            animator.SetBool("IsAction", true);
+        }
+
+        weaponTable[type].DoAction(index);
+    }
+
     public void DoSubAction()
     {
         if (weaponTable[type] == null)

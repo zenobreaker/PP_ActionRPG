@@ -105,6 +105,7 @@ public abstract class Character
         }
 
         animator.SetTrigger(DownTirgger);
+        animator.SetBool(IsDownCondition, true);
     }
 
     protected virtual void Begin_DownCondition()
@@ -115,7 +116,7 @@ public abstract class Character
         if (condition.DownCondition)
             return;
 
-        downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
+        //downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
         
         condition.SetDownCondition();
         state.SetIdleMode();

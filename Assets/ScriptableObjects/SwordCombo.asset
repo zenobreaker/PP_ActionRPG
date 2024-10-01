@@ -13,15 +13,108 @@ MonoBehaviour:
   m_Name: SwordCombo
   m_EditorClassIdentifier: 
   comboDatas:
-  - ComboName: Sword_Combo1
-    comboInputLimitTime: 1.25
-    comboQueueLimitTime: 2
-  - ComboName: Sword_Combo2
-    comboInputLimitTime: 1.5
-    comboQueueLimitTime: 2.25
-  - ComboName: Sword_Combo3
-    comboInputLimitTime: 2
-    comboQueueLimitTime: 2.5
-  - ComboName: Sword_Combo4
-    comboInputLimitTime: 1
-    comboQueueLimitTime: 1.25
+  - comboIndex: 0
+    ComboName: Sword_Combo1
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 0.2
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 1
+    ComboName: Sword_Combo2
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 1
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 2
+    ComboName: Sword_Combo3
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 1
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 3
+    ComboName: Sword_Combo4
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 1
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  subActionData:
+    bDownable: 0
+    bLauncher: 0
+    Power: 0
+    Distance: 0
+    heightValue: 0
+    StopFrame: 0
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
+    HitImpactIndex: 0
+    hitSoundName: 
+    HitParticle: {fileID: 0}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    bCanMove: 0
+    Particle: {fileID: 0}

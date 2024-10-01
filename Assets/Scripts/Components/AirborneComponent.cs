@@ -33,6 +33,9 @@ public class AirborneComponent : MonoBehaviour
     private bool bSuperArmor = false;
     private bool bAir = false; 
     public bool AirCondition { get => bAir; }
+    public void SetAirCondition() => bAir = true;
+    public void SetGroundCondition() =>bAir = false;
+
     private ConditionType conditionType;
 
     private Coroutine airCoroutine;
@@ -54,7 +57,7 @@ public class AirborneComponent : MonoBehaviour
 
         ground = GetComponent<GroundedComponent>();
         Debug.Assert(ground != null);
-        ground.OnChangedGorund += OnGround;
+        ground.OnChangedGorund += OnChangeGround;
 
         otherCollider = GetComponent<OtherStateColliderComponent>();
         agent = GetComponent<NavMeshAgent>();
@@ -91,30 +94,32 @@ public class AirborneComponent : MonoBehaviour
 
         bool bEnable = false; 
         conditionType = newType;
-        if (newType == ConditionType.Airborne &&
-            condition.DownCondition == false)
-        {
-            bEnable = false;
-            animator.SetBool("Airial", true);
-        }
-        else
-        {
-            bEnable = true; 
-            animator.SetBool("Airial", false);
-        }
+        //TODO: 공중 상태 애니메이션 관련 정리가 필요하다.
+        //if (newType == ConditionType.Airborne &&
+        //    condition.DownCondition == false)
+        //{
+        //    bEnable = false;
+        //    animator.SetBool("Airial", true);
+        //}
+        //else
+        //{
+        //    bEnable = true; 
+        //    animator.SetBool("Airial", false);
+        //}
         
         if(agent != null)
             agent.enabled = bEnable;
     }
 
-    private void OnGround()
+    private void OnChangeGround()
     {
         otherCollider?.SetAirStateCollider(false);
 
         if (agent != null)
             agent.enabled = true;
 
-        bAir = false;
+        //bAir = false;
+        SetGroundCondition();
         state.SetIdleMode();
     }
 
@@ -235,7 +240,8 @@ public class AirborneComponent : MonoBehaviour
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 
-        bAir = true; 
+        //bAir = true; 
+        SetAirCondition();
         condition?.SetAirborneCondition();
 
         otherCollider?.SetAirStateCollider(true);

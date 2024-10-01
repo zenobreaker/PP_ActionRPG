@@ -16,12 +16,9 @@ public class GroundedComponent : MonoBehaviour
     private new Rigidbody rigidbody;
 
     [SerializeField] private bool bGround = true;
-    private bool privoudGround; // 이전 상태 저장값
+    private bool previousGround; // 이전 상태 저장값
     public bool IsGround { get => bGround; }
 
-    private bool bCheck = true;
-    private bool bDistanceCheck = false;
-    private Vector3 checkOnPosition = Vector3.zero;
 
     [SerializeField] private float checkDistance = 0.5f;
 
@@ -56,7 +53,7 @@ public class GroundedComponent : MonoBehaviour
         originDrag = rigidbody.drag;
         originConstraints = rigidbody.constraints;
 
-        privoudGround = bGround;
+        previousGround = bGround;
         groundLayer = 1 << LayerMask.NameToLayer("Ground");
     }
 
@@ -112,18 +109,18 @@ public class GroundedComponent : MonoBehaviour
 
     private void ChangeGroundState(bool newGroundState)
     {
-        if (privoudGround == newGroundState)
+        if (previousGround == newGroundState)
             return;
-
-        privoudGround = newGroundState;
 
         // 상태가 달라졌으니 관련 이벤트 콜
         // 이전 상태가 땅에 있지 않았고 다음에 오는 상태가 땅에 오는 거면 처리하기 
-        if (privoudGround == false && newGroundState == true)
+        if (previousGround == false && newGroundState == true)
         {
             OnChangedGorund?.Invoke();
             OnCharacterGround?.Invoke();
         }
+
+        previousGround = newGroundState;
     }
 
     private void OnAirborneChange()
@@ -131,29 +128,15 @@ public class GroundedComponent : MonoBehaviour
         if (condition != null && condition.AirborneCondition == false)
             return;
 
-        bDistanceCheck = true;
-        checkOnPosition = transform.position;
+        //bDistanceCheck = true;
+        //checkOnPosition = transform.position;
     }
 
-    private void FixedUpdate_CheckOverDistance()
-    {
-        if (bDistanceCheck == false)
-            return;
-
-        float y = transform.position.y - checkOnPosition.y;
-
-        if (y >= checkDistance)
-        {
-            bCheck = true;
-            bGround = false; 
-        }
-    }
 
  
     private void Change_RigidBodyToGround()
     {
         //rigidbody.isKinematic = true;
-        bCheck = false;
 
         rigidbody.useGravity = false;
         rigidbody.isKinematic = true;
@@ -173,8 +156,8 @@ public class GroundedComponent : MonoBehaviour
     {
         rigidbody.useGravity = true;
         rigidbody.isKinematic = false;
-        bDistanceCheck = true;
-        checkOnPosition = transform.position;
+        //bDistanceCheck = true;
+        //checkOnPosition = transform.position;
     }
 
 #if UNITY_EDITOR

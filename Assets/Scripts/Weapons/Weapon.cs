@@ -163,6 +163,13 @@ public abstract class Weapon : MonoBehaviour
         CheckStop(0);
     }
 
+    public virtual void DoAction(int index = 0)
+    {
+        state.SetActionMode();
+
+        CheckStop(0);
+    }
+
     public virtual void DoSubAction()
     {
         if (subActionDatas.Length <= 0)

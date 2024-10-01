@@ -80,101 +80,83 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 5
   doActionDatas:
-  - dataID: 0
-    bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+  - bDownable: 0
     bLauncher: 0
     Power: 4
     Distance: 10
     heightValue: 0
     StopFrame: 2
-    airConditionTime: 0
     impulseDirection: {x: 0.1, y: 0.25, z: 0.1}
     impulseSettings: {fileID: 11400000, guid: a7d2e3eec62e7774fae0a1d0dd6fe7a8, type: 2}
-    Particle: {fileID: 0}
     effectSoundName: Dual_Slash
     HitImpactIndex: 1
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 0.8, y: 0.8, z: 0.8}
-  - dataID: 1
     bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+    Particle: {fileID: 0}
+  - bDownable: 0
     bLauncher: 0
     Power: 2
     Distance: 5
     heightValue: 0
     StopFrame: 3
-    airConditionTime: 0
     impulseDirection: {x: 0, y: 0, z: 0}
     impulseSettings: {fileID: 0}
-    Particle: {fileID: 0}
     effectSoundName: Dual_Slash
     HitImpactIndex: 0
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-  - dataID: 2
     bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+    Particle: {fileID: 0}
+  - bDownable: 0
     bLauncher: 0
     Power: 3
     Distance: 4
     heightValue: 0
     StopFrame: 2
-    airConditionTime: 0
     impulseDirection: {x: 0, y: 0, z: 0}
     impulseSettings: {fileID: 0}
-    Particle: {fileID: 0}
     effectSoundName: Dual_Slash
     HitImpactIndex: 2
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 0.8, y: 0.8, z: 0.8}
-  - dataID: 3
     bCanMove: 0
-    bUpper: 0
-    bDownable: 1
+    Particle: {fileID: 0}
+  - bDownable: 1
     bLauncher: 1
     Power: 0
     Distance: 10
     heightValue: 0
     StopFrame: 5
-    airConditionTime: 0
     impulseDirection: {x: 0.85, y: 0.26, z: 0.08}
     impulseSettings: {fileID: 11400000, guid: 605f675a43ab8264ca81fa7227124860, type: 2}
-    Particle: {fileID: 0}
     effectSoundName: Dual_Slash
     HitImpactIndex: 0
     hitSoundName: Sword_Imapct
     HitParticle: {fileID: 4813022829799691649, guid: 07cec9df4beba9544ac77464c7c6016a, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 2, y: 2, z: 2}
+    bCanMove: 0
+    Particle: {fileID: 0}
+  subActionDatas: []
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 5d797de694c6f9743bd1af24762b80e3, type: 2}
-  bDebugMode: 0
   index: 0
   slashTransformName: Slash_Transform
   startPosObj: {fileID: 0}
   endPosObj: {fileID: 0}
   particlePrefabs:
-  - {fileID: 7816542325302826246, guid: db839e7f083d0a64ebee93d4e59c7f1e, type: 3}
-  - {fileID: 7816542325302826246, guid: db839e7f083d0a64ebee93d4e59c7f1e, type: 3}
+  - {fileID: 2691404001811330614, guid: 8290ea4b138e225429d6587b36369da1, type: 3}
+  - {fileID: 2691404001811330614, guid: 8290ea4b138e225429d6587b36369da1, type: 3}
   particleTransformNames:
   - StartPos_Left
   - StartPos_Right
-  myCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &-7104753213228156090
 MonoBehaviour:
   m_ObjectHideFlags: 0

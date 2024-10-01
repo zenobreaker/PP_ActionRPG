@@ -96,82 +96,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   doActionDatas:
-  - dataID: 0
-    bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+  - bDownable: 0
     bLauncher: 0
     Power: 10
     Distance: 4
     heightValue: 0
     StopFrame: 2
-    airConditionTime: 0
     impulseDirection: {x: -0.5, y: 0, z: 0}
     impulseSettings: {fileID: 11400000, guid: b81f350374d324348a6badde18e65dcf, type: 2}
-    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
     effectSoundName: GreatSword_Slash
     HitImpactIndex: 0
     hitSoundName: Sword_Impact
     HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-  - dataID: 1
     bCanMove: 0
-    bUpper: 0
-    bDownable: 0
+    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
+  - bDownable: 0
     bLauncher: 0
     Power: 10
     Distance: 6
     heightValue: 0
     StopFrame: 2
-    airConditionTime: 0
     impulseDirection: {x: 0.41, y: 0, z: 0}
     impulseSettings: {fileID: 11400000, guid: 25ac68489a6130b459abbfdf09b86ff2, type: 2}
-    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
     effectSoundName: GreatSword_Slash
     HitImpactIndex: 1
     hitSoundName: Sword_Impact
     HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 1.3, y: 1.3, z: 1.3}
-  - dataID: 2
     bCanMove: 0
-    bUpper: 0
-    bDownable: 1
+    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
+  - bDownable: 1
     bLauncher: 0
     Power: 12
     Distance: 3
     heightValue: 3
     StopFrame: 3
-    airConditionTime: 0
     impulseDirection: {x: 0, y: 0.5, z: 0}
     impulseSettings: {fileID: 11400000, guid: 5cce4d174639e424f89bf3251c664f73, type: 2}
-    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
     effectSoundName: GreatSword_Slash
     HitImpactIndex: 2
     hitSoundName: Sword_Impact
     HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 2, y: 2, z: 2}
-  - dataID: 3
     bCanMove: 0
-    bUpper: 0
-    bDownable: 1
+    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
+  - bDownable: 1
     bLauncher: 1
     Power: 20
     Distance: 10
     heightValue: 0
     StopFrame: 5
-    airConditionTime: 2
     impulseDirection: {x: 0, y: 0.66, z: 0}
     impulseSettings: {fileID: 11400000, guid: e5f3d25e4e44ab64caa36826acfea978, type: 2}
-    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
     effectSoundName: GreatSword_Slash
     HitImpactIndex: 0
     hitSoundName: Sword_Impact
     HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0, z: 0}
     HitParticleSacleOffset: {x: 3, y: 3, z: 3}
+    bCanMove: 0
+    Particle: {fileID: 5268970840608750439, guid: e9f514011f87e3f499bd2ac01bae17f4, type: 3}
+  subActionDatas: []
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 6914b112c1edd524286736885d955764, type: 2}
   index: 0
@@ -179,15 +168,9 @@ MonoBehaviour:
   startPosObj: {fileID: 3500354102378999462}
   endPosObj: {fileID: 9207627373608812441}
   particlePrefabs:
-  - {fileID: 193182698143637342, guid: d6b09848c751cb944a9f94497ddb9e87, type: 3}
+  - {fileID: 6275266010445765594, guid: 0be8d7759937af04e88d7921bdfc9ab1, type: 3}
   particleTransformNames:
   - StartPos
-  myCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   handName: Hand_Hammer
 --- !u!114 &6466081912068433141
 MonoBehaviour:

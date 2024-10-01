@@ -3,24 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 다음 큐로 확정 짓는 시간이 입력 제한 크다면 입력 제한 시간 안에 아무리 입력해도
-/// 다음 콤보로 이어지지 않는 효과가 있다. 
-/// 입력 제한 시간이 남아 있는 상태에서 입력하면 큐에 등록하는 시간이다.
-/// 다음 큐로 확정 짓는 시간이 남아 있는 상태에서 입력 받으면 다음 콤보로 이어질 플래그가 켜진다.
+/// 각 무기별 구간 별 콤보 입력 시간 및 공격 등의 대한 정보를 저장한다. 
 /// </summary>
 [System.Serializable]
 public class ComboData 
 {
+    [SerializeField]
+    private int comboIndex; 
+    public int ComboIndex { get => comboIndex; }
+
     public string ComboName;
-    public float comboInputLimitTime;       // 입력 제한 시간 
-    public float comboNextInputLimitTime;    // 다음 콤보큐로 확정 짓는 제한 시간 
+    /// <summary>
+    ///  콤보 종료 시간 
+    /// - 처음 콤보 종료 시간은 짧아야 한다.
+    /// </summary>
+    public float lastComboCheckTime = 0.1f;
+    /// <summary>
+    /// 다음 콤보를 입력을 바라는 제한 시간
+    /// </summary>
+    public float lastInputCheckTime = 0.5f;
+    /// <summary>
+    /// 콤보 유지 시간 
+    /// - 해당 시간은 콤보 큐 등의 대한 정보를 유지하는 시간이다 종료 시 콤보 초기화
+    /// </summary>
+    public float comboMaintainTime = 0.2f;     
+    
+
+    public DoActionData doActionData;
+
+    public string GetComboName { get => ComboName; }
+
+    
 }
 
 [CreateAssetMenu(fileName = "ComboObject", menuName = "ScriptableObjects/Combo", order = 1)]
 public class SO_Combo : ScriptableObject
 {
     public List<ComboData> comboDatas = new List<ComboData>();
-
+    private int comboCount;
+    public DoActionData subActionData;
     public event Action OnFinishCombo;
 
     public void SetOnFinishCombo(Action onFinishCombo)
@@ -49,9 +70,19 @@ public class SO_Combo : ScriptableObject
         return GetComboData(index);
     }
 
+    public ComboData GetNextComboData()
+    {
+        return GetComboDataByRewind(comboCount++);
+    }
+    
+    public void ResetComboIndex()
+    {
+        comboCount = 0;
+    }
+
     public void OnChangeCombo (int combo)
     {
-        if (combo == (comboDatas.Count))
+        if (combo >= (comboDatas.Count))
         {
             OnFinishCombo?.Invoke();
         }

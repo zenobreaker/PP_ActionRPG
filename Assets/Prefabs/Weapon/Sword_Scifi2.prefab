@@ -215,7 +215,7 @@ MonoBehaviour:
   startPosObj: {fileID: 5206477538750415318}
   endPosObj: {fileID: 4535424573569921740}
   particlePrefabs:
-  - {fileID: 653663795736761072, guid: 6836dcd13b4c27b45b51e86ce0475495, type: 3}
+  - {fileID: 5434334610164639469, guid: c169ae8fa0c178b40b6d0200f0837d49, type: 3}
   particleTransformNames:
   - StartPos
   holsterName: Holster_Sword

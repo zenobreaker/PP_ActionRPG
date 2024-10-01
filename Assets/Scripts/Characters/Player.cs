@@ -81,7 +81,7 @@ public class Player
         actionMap.FindAction("Action").started += (context) =>
         {
             //weapon.DoAction();
-            combo.InputCombo_Test(KeyCode.Mouse0);
+            combo.InputCombo(KeyCode.Mouse0);
         };
 
         actionMap.FindAction("Action2").started += (context) =>

@@ -13,15 +13,108 @@ MonoBehaviour:
   m_Name: FistCombo
   m_EditorClassIdentifier: 
   comboDatas:
-  - ComboName: Fist_Combo1
-    comboInputLimitTime: 0.5
-    comboQueueLimitTime: 0.1
-  - ComboName: Fist_Combo2
-    comboInputLimitTime: 0.5
-    comboQueueLimitTime: 0.1
-  - ComboName: Fist_Combo3
-    comboInputLimitTime: 0.5
-    comboQueueLimitTime: 0.5
-  - ComboName: Fist_Combo4
-    comboInputLimitTime: 0.1
-    comboQueueLimitTime: 0.1
+  - comboIndex: 0
+    ComboName: Fist_Combo1
+    lastComboCheckTime: 0.01
+    lastInputCheckTime: 0.3
+    comboMaintainTime: 0.15
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 1
+    ComboName: Fist_Combo2
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.3
+    comboMaintainTime: 0.2
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 2
+    ComboName: Fist_Combo3
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 0.01
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  - comboIndex: 3
+    ComboName: Fist_Combo4
+    lastComboCheckTime: 0.1
+    lastInputCheckTime: 0.3
+    comboMaintainTime: 1
+    doActionData:
+      bDownable: 0
+      bLauncher: 0
+      Power: 0
+      Distance: 0
+      heightValue: 0
+      StopFrame: 0
+      impulseDirection: {x: 0, y: 0, z: 0}
+      impulseSettings: {fileID: 0}
+      effectSoundName: 
+      HitImpactIndex: 0
+      hitSoundName: 
+      HitParticle: {fileID: 0}
+      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      bCanMove: 0
+      Particle: {fileID: 0}
+  subActionData:
+    bDownable: 0
+    bLauncher: 0
+    Power: 0
+    Distance: 0
+    heightValue: 0
+    StopFrame: 0
+    impulseDirection: {x: 0, y: 0, z: 0}
+    impulseSettings: {fileID: 0}
+    effectSoundName: 
+    HitImpactIndex: 0
+    hitSoundName: 
+    HitParticle: {fileID: 0}
+    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+    bCanMove: 0
+    Particle: {fileID: 0}

@@ -186,10 +186,21 @@ public class Melee : Weapon
         if (trailParticles == null)
             return;
 
-        for (int i = 0; i < trailParticles.Length; i++)
+        for (int i = 0; i < particleTransforms.Length; i++)
         {
-            Destroy(trailParticles[i]);
+            if (particleTransforms[i] != null)
+            {
+                for (int j = 0; j < particleTransforms[i].childCount; j++)
+                {
+                    Destroy(particleTransforms[i].GetChild(j).gameObject);
+                }
+            }
         }
+
+        //for (int i = 0; i < trailParticles.Length; i++)
+        //{
+        //    Destroy(trailParticles[i]);
+        //}
     }
 
     // �޺� �� ���� �Է� Ȯ�� 
@@ -251,6 +262,32 @@ public class Melee : Weapon
         base.DoAction(bNext);
     }
 
+
+    public override void DoAction(int index = 0)
+    {
+        if (listener != null)
+        {
+            listener.m_ReactionSettings.m_SecondaryNoise = null;
+        }
+
+        ComboData comboData = comboObjData.GetComboDataByRewind(index);
+        if (comboData == null)
+            return; 
+
+        //if (isAnimating)
+        //    return;
+
+        //isAnimating = true;
+
+        this.index = index %= (doActionDatas.Length);
+
+        animator.Play(comboData.GetComboName);
+
+        if (state.IdleMode == false)
+            return;
+
+        base.DoAction(index);
+    }
 
 
     public override void DoSubAction()

@@ -371,9 +371,9 @@ MonoBehaviour:
   startPosObj: {fileID: 0}
   endPosObj: {fileID: 0}
   particlePrefabs:
-  - {fileID: 2428011279897120539, guid: 401c9b3dd2a92e34aa6c9f0e5580c666, type: 3}
-  - {fileID: 2428011279897120539, guid: 401c9b3dd2a92e34aa6c9f0e5580c666, type: 3}
-  - {fileID: 2428011279897120539, guid: 401c9b3dd2a92e34aa6c9f0e5580c666, type: 3}
+  - {fileID: 5271631783490035935, guid: 924492f25c4cdcc43ac2dd20a42581fe, type: 3}
+  - {fileID: 5271631783490035935, guid: 924492f25c4cdcc43ac2dd20a42581fe, type: 3}
+  - {fileID: 5271631783490035935, guid: 924492f25c4cdcc43ac2dd20a42581fe, type: 3}
   - {fileID: 2428011279897120539, guid: 1b9978843aba9d04a8f63f7dc4cd1206, type: 3}
   particleTransformNames:
   - LeftHand

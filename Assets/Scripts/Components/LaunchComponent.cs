@@ -30,7 +30,7 @@ public class LaunchComponent : MonoBehaviour
         Debug.Assert(state != null);
 
         otherCollider = GetComponent<OtherStateColliderComponent>();
-        airborne = GetComponent<AirborneComponent>();    
+        airborne = GetComponent<AirborneComponent>();
 
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
@@ -40,7 +40,7 @@ public class LaunchComponent : MonoBehaviour
 
     }
 
-     private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
+    private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
     {
         bool bCheck = true;
         bCheck &= (attacker != null);
@@ -148,7 +148,7 @@ public class LaunchComponent : MonoBehaviour
     {
         bool bResult = true;
         bResult &= CheckDoLauch(attacker, causer, data);
-        bResult &= data.bLauncher == false; 
+        bResult &= data.bLauncher == false;
 
         float distanace = data.Distance;
         float launch = rigidbody.drag * distanace * 10.0f;
@@ -159,14 +159,14 @@ public class LaunchComponent : MonoBehaviour
         if (data.bLauncher)
         {
             StartCoroutine(Do_Knockback(forceDir.normalized, distanace, knockbackTime));
-            return; 
+            return;
         }
 
-        bool bCheck = true;
-        bCheck &= airborne != null;
-        bCheck &= bCheck || airborne.AirCondition;
-        bCheck &= bCheck || data.heightValue > 0;
-        bCheck &= bCheck || condition.AirborneCondition;
+        bool bCheck = false;
+        bCheck |= (airborne && airborne.AirCondition);
+        bCheck |= data.heightValue > 0;
+        bCheck |= condition.AirborneCondition;
+        Debug.Log($"{airborne.AirCondition} / {data.heightValue > 0} / {condition.AirborneCondition}");
 
         if (bCheck)
         {
@@ -175,17 +175,17 @@ public class LaunchComponent : MonoBehaviour
             launch = rigidbody.mass * distanace * 1.25f;
             bResult &= true;
         }
-        
+
         if (bResult)
         {
             rigidbody.isKinematic = false;
             rigidbody.AddForce(forceDir * launch, fm);
         }
 
-       
+
         if (bCheck)
             airborne.DoAir(attacker, causer, data);
-        else 
+        else
             StartCoroutine(Change_IsKinematics(data, 5));
     }
 
@@ -195,7 +195,7 @@ public class LaunchComponent : MonoBehaviour
         float elapsedTime = 0;
         Vector3 startPositin = transform.position;
 
-        while(elapsedTime < knockbackTime)
+        while (elapsedTime < knockbackTime)
         {
             float curveValue = knockbackCurve.Evaluate(elapsedTime / 2);
             Vector3 resultPos = startPositin + direciton * curveValue * distance;
@@ -206,7 +206,7 @@ public class LaunchComponent : MonoBehaviour
         }
 
         GroundedComponent ground = GetComponent<GroundedComponent>();
-        if(ground != null)
+        if (ground != null)
         {
             ground.OnAirial();
         }

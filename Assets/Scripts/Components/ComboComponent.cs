@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class ComboComponent : MonoBehaviour
 {
     #region UI
     [SerializeField] GameObject comboInputUIPrefab;
     [SerializeField] GameObject comboInputBase;
-    [SerializeField] Image comboInputTimingGauge;
+    [SerializeField] InputGaugeUI comboMaintainTimeGauge;
     [SerializeField] bool bDebugDraw = false;
 
     private string comboInputUIName = "Input_Action";
-    private string comboTimingGaugeName = "InputTimingGauge";
+    private string comboMaintainGaugeName = "InputTimingGauge";
     private string inputBaseName = "InputComboBase";
     private string canvasName = "UserUI";
     private Canvas uiCanvas;
@@ -24,22 +25,25 @@ public class ComboComponent : MonoBehaviour
     class InputElement
     {
         public string InputType; // 입력 타입
-        public float TimeStamp;  // 입력이 발새한 시간
-        public bool bNext;
+        public float TimeStamp;  // 입력이 발생한 시간
+        public int comboCount;
     }
 
-    private Queue<KeyCode> uiQueue;
+    [SerializeField] private float comboCheckTime = 0.5f;         // 공격 후 다음 공격이 있는지 확인할 시간
+    [SerializeField] private float lastInputCheckTime = 0.25f;    // 다음 콤보를 입력을 바라는 제한 시간
+    [SerializeField] private float comboMaintainTime = 1.0f;        // 콤보(입력 큐) 유지 시간 
+    private float curr_MaintainTime;
+
+    private float lastInputTime = 0.0f;             // 마지막에 입력한 콤보 입력 시간  
+    private float lastComboEnd = 0.0f;              // 마지막 동작 종료 시간
+    private int comboCount = 0;
+
     private Queue<InputElement> inputQueue;
-    [SerializeField] private float inputLimitTime = 1.0f; // 입력 제한 시간 
-    private float currLimitTime;
-    private bool bEnable = true;  // 입력 가능 여부 
-    private bool bExist = false;  // 입력한 다음 내용이 존재하는가에 대한 여부
-    private bool bNextable = false; // 다음 콤보 여부 
 
+    [SerializeField] private SO_Combo currComboObj;
     private WeaponComponent weapon;
-    private SO_Combo currComboObj;
 
-    private Coroutine comboableCoroutine;
+    private Coroutine comboMaintainCoroutine;
 
     private void Awake()
     {
@@ -49,15 +53,21 @@ public class ComboComponent : MonoBehaviour
         weapon.OnBeginDoAction += OnBeginDoAction;
         weapon.OnEndDoAction += OnEndDoAction;
 
-
-        uiQueue = new Queue<KeyCode>();
         inputQueue = new Queue<InputElement>();
 
         uiCanvas = GameObject.Find(canvasName).GetComponent<Canvas>();
         Debug.Assert(uiCanvas != null);
         comboInputUIPrefab = Resources.Load<GameObject>(comboInputUIName);
         comboInputBase = uiCanvas.transform.FindChildByName(inputBaseName).gameObject;
-        comboInputTimingGauge = uiCanvas.transform.FindChildByName(comboTimingGaugeName).GetComponent<Image>();
+        comboMaintainTimeGauge = uiCanvas.transform.FindChildByName(comboMaintainGaugeName).GetComponent<InputGaugeUI>();
+
+    }
+
+    private void ResetTimerValue(ComboData data)
+    {
+        comboCheckTime = data.lastComboCheckTime;
+        lastInputCheckTime = data.lastInputCheckTime;
+        comboMaintainTime = data.comboMaintainTime;
     }
 
     private void OnWeaponTypeChanged_Combo(SO_Combo comboData)
@@ -66,8 +76,11 @@ public class ComboComponent : MonoBehaviour
             return;
 
         currComboObj = comboData;
-        
         ResetCombo();
+
+
+        comboMaintainTimeGauge.InitializeGauge(comboMaintainTime);
+
     }
 
 
@@ -80,6 +93,8 @@ public class ComboComponent : MonoBehaviour
         // UI Input
         Instantiate(comboInputUIPrefab, comboInputBase.transform);
     }
+
+
     private void DestroyComboUIObjs()
     {
         if (comboInputBase == null)
@@ -94,145 +109,152 @@ public class ComboComponent : MonoBehaviour
         if (bDebugDraw == false)
             return;
 
-
-        comboInputTimingGauge.fillAmount = currLimitTime / inputLimitTime;
+        comboMaintainTimeGauge.SetValue(curr_MaintainTime);
     }
 
     #endregion
 
-
-    private void Update()
+    private void LateUpdate()
     {
-        if (currLimitTime > 0)
-            currLimitTime -= Time.deltaTime;
-    }
+        if (bDebugDraw == false)
+            return;
 
-    private void Test_PrintQueue()
-    {
-        string str = "Queue List : ";
-        foreach (KeyCode keyCode in uiQueue)
-        {
-            str += keyCode.ToString() + " ";
-        }
-
-        Debug.Log($"{str}");
+        DrawInputGauge();
     }
 
     private void ExecuteAttack(ref InputElement inputElement)
     {
-        bNextable = false;
-        if (inputElement.bNext)
-            bNextable = true;
-        
         if (currComboObj == null)
             return;
 
-        ComboData data = currComboObj.GetComboDataByRewind(inputQueue.Count);
+        // Debug
+        Create_ComboUI();
+        ComboData data = currComboObj.GetComboDataByRewind(comboCount);
+        //Debug.Log($"over does breakre  {data.ComboName} ");
 
-        //currLimitTime = 0.5f; 
-        currLimitTime = data.comboInputLimitTime;
-        inputLimitTime = data.comboNextInputLimitTime;
-        bExist = false;
-        weapon.DoAction(bNextable);
-    }
-
-    private void ExecuteNextAttackFromQueue()
-    {
-        if(inputQueue.Count < 1) 
-            return;
-
-        var inputData = inputQueue.Dequeue();
-        ExecuteAttack(ref inputData);
-    }
-    
-    private void SetInputTime()
-    {
-
-    }
-
-    public void InputCombo_Test(KeyCode keycode)
-    {
-        //TODO: 입력 큐 조건 변경 공격중일 때 큐에 넣고 입력받으면 실행하고..
-
-        // 입력 제한 시간 관리 
-        if (comboableCoroutine != null)
-            comboableCoroutine = StartCoroutine(ComboableCoroutine());
-
-        // 큐에 있는 다음 공격 실행 
-        if (bEnable)
-            bExist = true;
-
-        if (currLimitTime <= 0) // 현재 입력 쿨타임이 끝난 경우 
+        // 시간 초기화 
         {
-            if(inputQueue.Count == 0) // 큐가 비어있으면
+            ResetTimerValue(data);
+        }
+
+        // Action 실행
+        {
+            //Debug.Log($"Execute Combodata {data.ComboName} / Time stamp {inputElement.TimeStamp}");
+            weapon.DoAction(data.ComboIndex);
+        }
+
+        //UI 처리 
+        {
+            comboMaintainTimeGauge?.SetMaxValue(data.comboMaintainTime);
+        }
+    }
+
+    public void Test_InputComobo()
+    {
+        ////Debug.Log($"Time Check zero input : {Time.time} / {lastComboEnd} / ");
+
+        //// 마지막 콤보가 끝난 후 해당 시간이 경과했는지 확인
+        //if (Time.time - lastComboEnd >= comboCheckTime)
+        //{
+        //    //Debug.Log($"Time Check first input : {Time.time - lastComboEnd} / " +
+        //    //    $"{comboMaintainTime}");
+
+        //    // 콤보 타이머 체크를 중단
+        //    if (comboMaintainCoroutine != null)
+        //        StopCoroutine(comboMaintainCoroutine);
+
+        //    // 마지막 입력 후 해당 시간 만큼 지났는지 
+        //    if (Time.time - lastInputTime >= lastInputCheckTime)
+        //    {
+        //        //   Debug.Log($"Time Check second input : {Time.time - lastInputTime} / " +
+        //        //$"{lastInputCheckTime}");
+
+        //        // 다음 콤보 실행 
+        //        // 공격 실행 
+        //        float currentTime = Time.time;
+        //        var inputElement = new InputElement
+        //        {
+        //            InputType = keycode.ToString(),
+        //            TimeStamp = currentTime,
+        //            comboCount = this.comboCount
+        //        };
+        //        ExecuteAttack(ref inputElement);
+        //        comboCount++;
+
+        //        lastInputTime = Time.time; // 값 최신화 
+        //    }
+        //}
+    }
+
+
+    public void InputCombo(KeyCode keycode)
+    {
+        // 마지막 콤보가 끝난 후 해당 시간이 경과했는지 확인
+        if (Time.time - lastComboEnd >= comboCheckTime)
+        {
+            // 콤보 타이머 체크를 중단
+            if(comboMaintainCoroutine != null)
+                StopCoroutine(comboMaintainCoroutine);
+
+            // 마지막 입력 후 해당 시간 만큼 지났는지 
+            if (Time.time - lastInputTime >= lastInputCheckTime)
             {
-                // 공격 실행 
+                // 다음 콤보 실행 
                 float currentTime = Time.time;
                 var inputElement = new InputElement
                 {
                     InputType = keycode.ToString(),
                     TimeStamp = currentTime,
-                    bNext = bExist, // 필요에 의하여 입력 유지시간을 계산 후 추가 
+                    comboCount = this.comboCount
                 };
+
                 ExecuteAttack(ref inputElement);
-            }
-            else
-            {
-                ExecuteNextAttackFromQueue();
-            }
+                comboCount++;
 
+                lastInputTime = Time.time; // 값 최신화 
+            }
         }
-        else 
-        {
-            // 공격이 진행 중이라면 입력을 큐에 추가한다.
-            // 큐 입력 
-            float currentTime = Time.time;
-            inputQueue.Enqueue(new InputElement
-            {
-                InputType = keycode.ToString(),
-                TimeStamp = currentTime,
-                bNext = bExist, // 필요에 의하여 입력 유지시간을 계산 후 추가 
-            });
-        }
-
-        // 입력 큐를 정리하여 오래된 입력을 제거
-        //while (inputQueue.Count > 0 && (currentTime - inputQueue.Peek().TimeStamp) > maxQueueTime)
-        //{
-        //    inputQueue.Dequeue();
-        //}
     }
 
-  
-    private IEnumerator ComboableCoroutine()
+
+    // 입력 제한 시간 안에 입력 받았는지 검사한다. 
+    private IEnumerator ComboMaintainCoroutine()
     {
-        bEnable = true;
+        curr_MaintainTime = comboMaintainTime;
+        while (curr_MaintainTime > 0)
+        {
+            curr_MaintainTime -= Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(inputLimitTime);
-
-        bEnable = false;
-       
+        ResetCombo();
     }
 
     public void OnBeginDoAction()
     {
-        if(inputQueue.Count > 0 )
-        {
-            ExecuteNextAttackFromQueue();
-        }
+
     }
 
     public void OnEndDoAction()
     {
-        ResetCombo();
+        // 진행했던 애니메이션이 끝나고 이곳을 호출하게 되면 종료자를 호출한다. 
+        comboMaintainCoroutine = StartCoroutine(ComboMaintainCoroutine());
     }
 
     private void ResetCombo()
     {
-        bEnable = false; 
-        comboableCoroutine = null; 
+        comboCount = 0;
+        var data = currComboObj?.GetComboDataByRewind(0);
+        ResetTimerValue(data);
 
-        currLimitTime = 0;
-        inputQueue.Clear(); 
+
+        lastComboEnd = Time.time;
+        comboMaintainCoroutine = null;
+
+        inputQueue.Clear();
+        currComboObj?.ResetComboIndex();
+
+        DestroyComboUIObjs();
     }
 
 
