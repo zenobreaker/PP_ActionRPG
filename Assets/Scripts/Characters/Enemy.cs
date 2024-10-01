@@ -28,9 +28,7 @@ public class Enemy :
     private Color originColor;
     private Material skinMaterial;
 
-    private GroundedComponent ground;
     private LaunchComponent launch;
-    private AirborneComponent airborne;
     
     private AIController aiController;
     private BTAIController bTAIController;
@@ -49,15 +47,8 @@ public class Enemy :
         skinMaterial = surface.GetComponent<SkinnedMeshRenderer>().material;
         originColor = skinMaterial.color;
 
-        ground = GetComponent<GroundedComponent>();
-        Debug.Assert(ground != null);
-        ground.OnCharacterGround += Begin_DownCondition;
-
         launch = GetComponent<LaunchComponent>();
         Debug.Assert(launch != null);
-
-        airborne = GetComponent<AirborneComponent>();
-        Debug.Assert(airborne);
 
         aiController = GetComponent<AIController>();
         bTAIController = GetComponent<BTAIController>();
@@ -157,6 +148,8 @@ public class Enemy :
 
                 if (bCheck == false)
                 {
+                    DownDamaged();
+
                     // 아니라면 해당 피격 이벤트로 애니메이션 실행
                     animator.SetInteger(HitIndex, data.HitImpactIndex);
                     animator.SetTrigger(HitImapact);

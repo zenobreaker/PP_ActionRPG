@@ -12,11 +12,13 @@ public abstract class Character
     IStoppable,
     ISlowable
 {
-   
+
     protected Animator animator;
     protected new Rigidbody rigidbody;
 
     protected ConditionComponent condition;
+    protected AirborneComponent airborne;
+    protected GroundedComponent ground;
     protected StateComponent state;
     protected HealthPointComponent healthPoint;
     protected IActionComponent action;
@@ -37,8 +39,14 @@ public abstract class Character
         Debug.Assert(animator != null);
         originAnimSpeed = animator.speed;
 
+        airborne = GetComponent<AirborneComponent>();
+        Debug.Assert(airborne != null);
+        ground = GetComponent<GroundedComponent>();
+        Debug.Assert(ground != null);
+        ground.OnChangedGorund += OnChangedGround;
+
         rigidbody = GetComponent<Rigidbody>();
-        condition = GetComponent<ConditionComponent>(); 
+        condition = GetComponent<ConditionComponent>();
         state = GetComponent<StateComponent>();
         healthPoint = GetComponent<HealthPointComponent>();
         action = GetComponent<IActionComponent>();
@@ -52,7 +60,7 @@ public abstract class Character
 
     protected virtual void Update()
     {
-     
+
     }
 
     protected virtual void FixedUpdate()
@@ -86,23 +94,29 @@ public abstract class Character
         animator.speed = 1.0f;
     }
 
+    protected virtual void OnChangedGround()
+    {
+        End_DownCondition();
+    }
+
+    protected virtual void DownDamaged()
+    {
+        if (condition.DownCondition == false)
+            return;
+
+        animator.SetTrigger(HitImapact);
+
+        End_DownCondition();
+    }
     
+
     protected virtual void Begin_DownImpact()
     {
         if (condition == null)
             return;
 
-        if (condition.DownCondition)
-        {
-            animator.SetTrigger(HitImapact);
 
-            if (downConditionCoroutine != null)
-                StopCoroutine(downConditionCoroutine);
-
-            downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
-
-            return;
-        }
+        Begin_DownCondition();
 
         animator.SetTrigger(DownTirgger);
         animator.SetBool(IsDownCondition, true);
@@ -116,14 +130,19 @@ public abstract class Character
         if (condition.DownCondition)
             return;
 
-        //downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
-        
+        if (downConditionCoroutine != null)
+            StopCoroutine(downConditionCoroutine);
+
         condition.SetDownCondition();
         state.SetIdleMode();
     }
 
     protected virtual void End_DownCondition()
     {
+        // 공중 상태이면 일어나지 않는다.
+        if (airborne != null && airborne.AirCondition)
+            return;
+
         if (downConditionCoroutine != null)
             StopCoroutine(downConditionCoroutine);
         downConditionCoroutine = StartCoroutine(Change_GetUpCondition());
@@ -137,9 +156,8 @@ public abstract class Character
 
     protected IEnumerator Change_GetUpCondition()
     {
-        //yield return new WaitForSecondsRealtime(3.0f);
-        
         yield return new WaitForSeconds(1.5f);
+
         Begin_GetUp();
     }
 
@@ -149,6 +167,7 @@ public abstract class Character
             return;
         if (condition == null)
             return;
+
 
         condition.SetNoneConditon();
         animator.SetBool(IsDownCondition, false);

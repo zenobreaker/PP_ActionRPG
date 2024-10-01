@@ -15,7 +15,6 @@ public class Player
 
     private PlayerMovingComponent moving;
     private DashComponent dash;
-    private GroundedComponent ground;
     private LaunchComponent launch;
     private ComboComponent combo;
     private WeaponComponent weapon;
@@ -171,6 +170,8 @@ public class Player
 
             if (data.bDownable == false)
             {
+                DownDamaged();
+
                 animator.SetInteger(HitIndex, data.HitImpactIndex);
                 animator.SetTrigger(HitImapact);
             }
