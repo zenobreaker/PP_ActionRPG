@@ -91,7 +91,7 @@ public abstract class BTAIController : MonoBehaviour
 
     public NavMeshAgent NavMeshAgent { get { return navMeshAgent; } }
 
-    [SerializeField] bool bBT_DebugMode = false;
+    //[SerializeField] bool bBT_DebugMode = false;
     [SerializeField] protected SO_Blackboard so_blackboard;
     protected SO_Blackboard blackboard;
 

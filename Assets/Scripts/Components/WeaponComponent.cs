@@ -260,7 +260,11 @@ public class WeaponComponent
         if (weaponTable[type] == null)
             return;
 
-        if (type == WeaponType.FireBall)
+        bool bCheck = false;
+        bCheck |= type == WeaponType.FireBall;
+        bCheck |= type == WeaponType.Gun;
+
+        if (bCheck)
         {
             target.Begin_Targeting(true);
             animator.SetBool("IsAction", true);
@@ -274,7 +278,11 @@ public class WeaponComponent
         if (weaponTable[type] == null)
             return;
 
-        if (type == WeaponType.FireBall)
+        bool bCheck = false;
+        bCheck |= type == WeaponType.FireBall;
+        bCheck |= type == WeaponType.Gun;
+        
+        if (bCheck)
         {
             target.Begin_Targeting(true);
             animator.SetBool("IsAction", true);

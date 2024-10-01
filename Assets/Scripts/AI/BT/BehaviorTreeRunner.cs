@@ -12,7 +12,7 @@ namespace AI.BT
         private RootNode rootNode;
         private SO_Blackboard blackboard;
         private Coroutine btRunCoroutine;
-        private bool isRunning = false; 
+        //private bool isRunning = false; 
         public BehaviorTreeRunner(GameObject owner, SO_Blackboard blackboard, RootNode rootNode)
         {
             this.owner = owner;
@@ -35,7 +35,7 @@ namespace AI.BT
                 blackboard.Initialize();
             }
 
-            isRunning = true;
+            //isRunning = true;
             if (btRunCoroutine == null)
             {
                 Debug.Log("Run Behaivor !!");

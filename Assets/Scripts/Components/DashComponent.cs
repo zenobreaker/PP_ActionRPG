@@ -8,8 +8,8 @@ using static StateComponent;
 using static UnityEngine.EventSystems.StandaloneInputModule;
 
 /// <summary>
-/// ½ºÇÁ¸°Æ® ±â´É ÄÄÆ÷³ÍÆ®
-/// ÀÏÁ¤ °Å¸®¿¡ ´Ù´ŞÀ» ¶§ ±îÁö Æ¯Á¤ ¾Ö´Ï¸ŞÀÌ¼Ç ±¸°£À» ¼Óµµ¸¦ ÁÙ¿©³ö¼­ º¸°£ÇÑ´Ù. 
+/// ìŠ¤í”„ë¦°íŠ¸ ê¸°ëŠ¥ ì»´í¬ë„ŒíŠ¸
+/// ì¼ì • ê±°ë¦¬ì— ë‹¤ë‹¬ì„ ë•Œ ê¹Œì§€ íŠ¹ì • ì• ë‹ˆë©”ì´ì…˜ êµ¬ê°„ì„ ì†ë„ë¥¼ ì¤„ì—¬ë†”ì„œ ë³´ê°„í•œë‹¤. 
 /// </summary>
 
 [RequireComponent(typeof(Animator))]
@@ -20,9 +20,9 @@ public class DashComponent : MonoBehaviour
 
     [SerializeField] private float dashSpeed = 5.0f;
     //[SerializeField] private float originalAnimationSpeed = 1f;
-    //[SerializeField] private float sprintMultiplier = 2f; // ÀÌ ¿¹Á¦¿¡¼­´Â 2ÃÊ·Î ´Ã¾î³µÀ» ¶§¸¦ °¡Á¤
+    //[SerializeField] private float sprintMultiplier = 2f; // ì´ ì˜ˆì œì—ì„œëŠ” 2ì´ˆë¡œ ëŠ˜ì–´ë‚¬ì„ ë•Œë¥¼ ê°€ì •
     [SerializeField] private float dashDistance = 3.0f;
-    //[SerializeField] private string sprintAnimName = ""; // ½ºÇÁ¸°Æ® ¾Ö´Ï¸ŞÀÌ¼Ç 
+    //[SerializeField] private string sprintAnimName = ""; // ìŠ¤í”„ë¦°íŠ¸ ì• ë‹ˆë©”ì´ì…˜ 
 
     private PlayerMovingComponent moving;
     private StateComponent state;
@@ -61,11 +61,11 @@ public class DashComponent : MonoBehaviour
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        //TODO: ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾î»öÇÏ¸é ±¸°£ ½Ã°£À» Á¶±İ¾¿ ´À¸®°Ô Èê·¯°¡°Ô ÇØº¼±î
+        //TODO: ì• ë‹ˆë©”ì´ì…˜ì´ ì–´ìƒ‰í•˜ë©´ êµ¬ê°„ ì‹œê°„ì„ ì¡°ê¸ˆì”© ëŠë¦¬ê²Œ í˜ëŸ¬ê°€ê²Œ í•´ë³¼ê¹Œ
         if (bBegin)
         { 
      
-            Debug.Log($"ÇöÀç ÀÌ¸§ :  {stateInfo.shortNameHash}");
+            Debug.Log($"í˜„ì¬ ì´ë¦„ :  {stateInfo.shortNameHash}");
             if (stateInfo.normalizedTime >= 0.5f && stateInfo.normalizedTime <= 0.6f)
             {
                 animator.speed = 0.0f;
@@ -86,7 +86,7 @@ public class DashComponent : MonoBehaviour
         distance = Vector3.Distance(targetPos, transform.position);
 
         float resultTime = distance / dashSpeed;
-        Debug.Log($"ÃÖÁ¾ °É¸®´Â ½Ã°£ {resultTime}");
+        Debug.Log($"ìµœì¢… ê±¸ë¦¬ëŠ” ì‹œê°„ {resultTime}");
 
         moving.Stop();
         //AdjustingAnimation(true);
@@ -100,12 +100,12 @@ public class DashComponent : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
             float time = Time.time;
-            //Debug.Log($"ÃøÁ¤ ½Ã°£{time}");
+            //Debug.Log($"ì¸¡ì • ì‹œê°„{time}");
             if (time - startTime >= resultTime)
                 break;
         }
         
-        Debug.Log("´ë½¬ Á¾·á");
+        Debug.Log("ëŒ€ì‰¬ ì¢…ë£Œ");
         
         //AdjustingAnimation(false);
         moving.Move();
@@ -141,11 +141,11 @@ public class DashComponent : MonoBehaviour
                     {
                         direction = EvadeDirection.Forward;
 
-                        // ´ë°¢¼± Ã³¸® 
+                        // ëŒ€ê°ì„  ì²˜ë¦¬ 
                         if (value.x < 0.0f)
                         {
                             //evadeRotation = transform.rotation;
-                            transform.Rotate(Vector3.up, -45.0f); // ¾î»öÇÏ¸é º¸°£ÇØÁÖÀÚ 
+                            transform.Rotate(Vector3.up, -45.0f); // ì–´ìƒ‰í•˜ë©´ ë³´ê°„í•´ì£¼ì 
                         }
                         else if (value.x > 0.0f)
                         {
@@ -162,7 +162,7 @@ public class DashComponent : MonoBehaviour
                 if(value.magnitude == 0.0f)
                     direction = EvadeDirection.Backward;
 
-                //// È¸ÇÇ µ¿ÀÛ ½ÇÇà
+                //// íšŒí”¼ ë™ì‘ ì‹¤í–‰
                 animator.SetInteger("Direction", (int)direction);
                 animator.SetTrigger("Evade");
 
@@ -192,7 +192,7 @@ public class DashComponent : MonoBehaviour
             return;
 
         Gizmos.color = Color.red;
-        GUILayout.Label(distance.ToString("f6"));
+        //GUILayout.Label(distance.ToString("f6"));
     }
 
 

@@ -68,9 +68,9 @@ public class GroundedComponent : MonoBehaviour
         //if (bCheck == false)
         //    return;
    
-        Vector3 boxSize = new Vector3(transform.lossyScale.x, checkDistance, transform.lossyScale.z);
-        Vector3 center = transform.position;
-        center.y = -checkDistance * 0.5f;
+        Vector3 boxSize = new Vector3(transform.lossyScale.x, checkDistance * 0.5f, transform.lossyScale.z);
+        Vector3 center = transform.position - new Vector3(0, checkDistance * 0.5f, 0); // 박스가 캐릭터 아래에 위치
+
         Collider[] colliders = Physics.OverlapBox(center, boxSize, Quaternion.identity, groundLayer);
 
         // 자신의 아래로 레이를 쏴서 다른 오브젝트가 있다면 
@@ -86,12 +86,13 @@ public class GroundedComponent : MonoBehaviour
             break; 
         }
 
-        if (candidate == null)
-            return;
+            
+        //TODO: 지형이 복잡해짐에 따라서 거리값으로 측정하기엔 무리가 있다. y좌표도 절대적이지 않다.
         // 대상과의 거리 측정 
-        float distance = Mathf.Abs(candidate.transform.position.y - transform.position.y);
+        //float distance = Mathf.Abs(candidate.transform.position.y - transform.position.y);
 
-        if (distance >= 0.004f)
+        //if (distance >= 0.004f)
+        if (candidate == null)
             bGround = false;
         else
             bGround = true;
@@ -168,8 +169,8 @@ public class GroundedComponent : MonoBehaviour
 
         Gizmos.color = Color.green;
         Vector3 boxSize = new Vector3(transform.lossyScale.x, -checkDistance, transform.lossyScale.z);
-        Vector3 center = transform.position;
-        center.y = -checkDistance * 0.5f;
+        Vector3 center = transform.position - new Vector3(0, checkDistance * 0.5f, 0); // 박스가 캐릭터 아래에 위치
+        
         Gizmos.DrawWireCube(center, boxSize);
 
         Vector3 from = transform.position;

@@ -38,7 +38,7 @@ public class BTAIController_Dragon : BTAIController
 
 
     [SerializeField] int maxWaitCondtionPattern = 0;
-    [SerializeField] int maxAttackPattern = 5;
+    //[SerializeField] int maxAttackPattern = 5;
     private Dictionary<int, DragonPattern> dragonPatternTable = new Dictionary<int, DragonPattern>();
     private int currentAttackPattern = 0;
     public int GetCurrPattern { get => currentAttackPattern; }

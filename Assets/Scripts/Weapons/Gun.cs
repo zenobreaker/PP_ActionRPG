@@ -13,7 +13,7 @@ public class Gun : Melee
     [SerializeField] private string rightMuzzleTransformName = "Hand_Gun_Right_Muzzle";
     [SerializeField] private string rifleHolsterTransformName = "Holster_Rifle";
     [SerializeField] private string rifleHandTransformName = "Hand_Gun_Rifle";
-        [SerializeField] private float perceptionRange = 5.0f;
+    [SerializeField] private float perceptionRange = 5.0f;
 
     [Header("Sound")]
     [SerializeField] private string Equip_HandGun_SoundName = "Equip_HandGun";
@@ -137,7 +137,7 @@ public class Gun : Melee
         }
     }
 
-    public override void DoAction()
+    private void GunsAction()
     {
         if (isSubAction)
         {
@@ -146,34 +146,42 @@ public class Gun : Melee
 
             return;
         }
-        
-        //if(index < doActionDatas.Length)
-        //    animStateCombo.Start_State();
-        base.DoAction();
 
-        if (rotateCoroutine != null)
-            StopCoroutine(rotateCoroutine);
-        GameObject target = CheckTarget();
-        rotateCoroutine = StartCoroutine(RotateToTarget(target));
+
+        //if (rotateCoroutine != null)
+        //    StopCoroutine(rotateCoroutine);
+        //GameObject target = CheckTarget();
+        //rotateCoroutine = StartCoroutine(RotateToTarget(target));
+    }
+
+    public override void DoAction()
+    {
+        GunsAction();
+
+        if (isSubAction)
+            return;
+
+        base.DoAction();
     }
 
     public override void DoAction(bool bNext )
     {
+        GunsAction();
+
         if (isSubAction)
-        {
-            // 라이플 상태면 라이플 발사
-            Shoot_Rifle();
-
             return;
-        }
-        //if (index < doActionDatas.Length)
-        //    animStateCombo.Start_State();
-        base.DoAction(bNext);
 
-        if (rotateCoroutine != null)
-            StopCoroutine(rotateCoroutine);
-        GameObject target = CheckTarget();
-        rotateCoroutine = StartCoroutine(RotateToTarget(target));
+        base.DoAction(bNext);
+    }
+
+    public override void DoAction(int index = 0)
+    {
+        GunsAction();
+
+        if (isSubAction)
+            return; 
+
+        base.DoAction(index);
     }
 
     public override void DoSubAction()

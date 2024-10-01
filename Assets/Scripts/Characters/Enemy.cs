@@ -64,13 +64,20 @@ public class Enemy :
             weapon.SetWeaponVisibleByType(weaponType, false);
     }
 
-    protected virtual void OnDestroy()
+    protected virtual void OnDisable()
     {
         if (grade == CharacterGrade.Boss)
         {
-            BossGaugeController.Instance.OnDisappearGauge();
-            BossStageManager.Instance.EndBoss();
+            if(BossGaugeController.Instance != null)
+                BossGaugeController.Instance.OnDisappearGauge();
+            if(BossStageManager.Instance != null)
+                BossStageManager.Instance.EndBoss();
         }
+
+    }
+
+    protected virtual void OnDestroy()
+    {
     }
 
     protected override void Update()

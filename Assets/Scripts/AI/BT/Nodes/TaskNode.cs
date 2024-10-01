@@ -11,7 +11,7 @@ namespace AI.BT.Nodes
             Begin, Update, End
         }
 
-        private bool bRunning = false;
+        //private bool bRunning = false;
         protected NodeState previousResult;
         protected ActionState currActionState;
 
@@ -113,8 +113,8 @@ namespace AI.BT.Nodes
                 }
                 case ActionState.End:
                 {
-                    Debug.Log($"{nodeName} Action Node End ");
-                    bRunning = false;
+                    //Debug.Log($"{nodeName} Action Node End ");
+                    //bRunning = false;
                     NodeState result = onEnd?.Invoke() ?? BTNode.NodeState.Failure;
                     if (result == NodeState.Success || result == NodeState.Failure)
                         ChangeActionState(ActionState.Begin);

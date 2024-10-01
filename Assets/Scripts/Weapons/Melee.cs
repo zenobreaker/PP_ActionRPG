@@ -125,6 +125,9 @@ public class Melee : Weapon
 
         foreach (GameObject hit in hittedList)
         {
+            if (hit == null)
+                continue;
+
             Vector3 direction = hit.transform.position - rootObject.transform.position;
             direction.Normalize();
 

@@ -12,7 +12,7 @@ namespace AI.BT.CustomBTNodes
     public class TaskNode_Targeting : TaskNode
     {
 
-        private bool bRotate = false;
+        private Coroutine lookAtTargetCoroutine;
         public TaskNode_Targeting(GameObject ownerObject, SO_Blackboard blackboard)
             : base(ownerObject, blackboard)
         {
@@ -35,8 +35,7 @@ namespace AI.BT.CustomBTNodes
 
             Debug.Log($"{NodeName} already running ");
             // 적을 향해 회전 
-            bRotate = false;
-            CoroutineHelper.Instance.StartHelperCoroutine(LootAtTarget(target));
+            lookAtTargetCoroutine = CoroutineHelper.Instance.StartHelperCoroutine(LootAtTarget(target));
             return NodeState.Success;
         }
 
@@ -45,7 +44,6 @@ namespace AI.BT.CustomBTNodes
         {
             if (target == null)
             {
-                bRotate = true;
                 yield break;
             }
 
@@ -68,11 +66,17 @@ namespace AI.BT.CustomBTNodes
             }
 
             owner.transform.rotation = targetRotation;
-            bRotate = true;
 
             yield return null;
         }
 
+
+        protected override NodeState OnAbort()
+        {
+            CoroutineHelper.Instance.StopHelperCoroutine(lookAtTargetCoroutine);
+
+            return base.OnAbort();
+        }
 
     }
 }

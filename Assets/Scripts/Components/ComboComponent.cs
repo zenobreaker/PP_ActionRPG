@@ -59,7 +59,12 @@ public class ComboComponent : MonoBehaviour
         Debug.Assert(uiCanvas != null);
         comboInputUIPrefab = Resources.Load<GameObject>(comboInputUIName);
         comboInputBase = uiCanvas.transform.FindChildByName(inputBaseName).gameObject;
-        comboMaintainTimeGauge = uiCanvas.transform.FindChildByName(comboMaintainGaugeName).GetComponent<InputGaugeUI>();
+        var uiGauge = uiCanvas.transform.FindChildByName(comboMaintainGaugeName);
+        Debug.Assert(uiGauge != null);
+        if(uiGauge != null)
+        {
+            comboMaintainTimeGauge = uiGauge.GetComponent<InputGaugeUI>();
+        }
 
     }
 
@@ -107,8 +112,12 @@ public class ComboComponent : MonoBehaviour
     private void DrawInputGauge()
     {
         if (bDebugDraw == false)
+        {
+            comboMaintainTimeGauge.gameObject.SetActive(false);
             return;
+        }
 
+        comboMaintainTimeGauge.gameObject.SetActive(true);
         comboMaintainTimeGauge.SetValue(curr_MaintainTime);
     }
 
@@ -116,9 +125,6 @@ public class ComboComponent : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (bDebugDraw == false)
-            return;
-
         DrawInputGauge();
     }
 

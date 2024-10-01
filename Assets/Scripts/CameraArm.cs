@@ -131,6 +131,8 @@ public class CameraArm : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (target == null)
+            return; 
 
         if (visibleCursor)
         {
