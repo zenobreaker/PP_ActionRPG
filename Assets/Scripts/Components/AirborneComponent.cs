@@ -23,7 +23,6 @@ public class AirborneComponent : MonoBehaviour
 
     private new Rigidbody rigidbody;
     private NavMeshAgent agent;
-    private Animator animator;
 
     private ConditionComponent condition;
     private StateComponent state;
@@ -39,7 +38,6 @@ public class AirborneComponent : MonoBehaviour
     private ConditionType conditionType;
 
     private Coroutine airCoroutine;
-    private Coroutine useGravityCoroutine;
 
     public event Action OnAirborneChange;
 
@@ -48,10 +46,9 @@ public class AirborneComponent : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
         Debug.Assert(rigidbody != null);
 
-        animator = GetComponent<Animator>();
         condition = GetComponent<ConditionComponent>();
-        //if (condition != null)
-        //     condition.OnConditionChanged += OnConditionChanged;
+        if (condition != null)
+             condition.OnConditionChanged += OnConditionChanged;
        state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
 
@@ -106,22 +103,26 @@ public class AirborneComponent : MonoBehaviour
         //    bEnable = true; 
         //    animator.SetBool("Airial", false);
         //}
-        
-        if(agent != null)
+
+        if (newType != ConditionType.None)
+        {
+            bEnable = false;
+        }
+        else
+        {
+            bEnable = true;
+        }
+
+        if (agent != null)
             agent.enabled = bEnable;
     }
 
-    private void OnChangeGround()
+    public void OnChangeGround()
     {
-        otherCollider?.SetAirStateCollider(false);
-
-        if (agent != null)
-            agent.enabled = true;
-
-        //bAir = false;
+        // 이 메소드가 호출되면 땅에 닿은 것
         SetGroundCondition();
-        state.SetIdleMode();
     }
+   
 
     private bool CheckAttackerAboutData(GameObject attacker, Weapon causer, ActionData data)
     {
@@ -152,46 +153,6 @@ public class AirborneComponent : MonoBehaviour
       //  DoAirborneLaunch(attacker, causer, data);
     }
 
-    #region Air_Launch
-    
-    private void DoAirborneLaunch(GameObject attacker, Weapon causer, ActionData data)
-    {
-        bool result = CheckAttackerAboutData(attacker, causer, data);
-        if (result == false)
-            return;
-
-        if (ground.IsGround == true)
-            return;
-
-        if (condition?.AirborneCondition == false)
-            return;
-
-        if (useGravityCoroutine != null)
-            StopCoroutine(useGravityCoroutine);
-
-        useGravityCoroutine = StartCoroutine(On_AirCombo(data));
-
-    }
-
-
-    private IEnumerator On_AirCombo(ActionData data)
-    {
-        rigidbody.useGravity = false;
-        rigidbody.velocity = Vector3.zero;
-
-        //float distance = Mathf.Clamp(data.heightValue * 1.0f , 1.0f, data.heightValue);
-
-        yield return new WaitForSecondsRealtime(airMaintainTime);
-
-        Debug.Log($"Change_UseGravity time is over- {true}");
-
-        if (condition?.AirborneCondition ?? true)
-            rigidbody.useGravity = true;
-
-    }
-
-    #endregion
-
 
     #region Airbone
 
@@ -205,12 +166,14 @@ public class AirborneComponent : MonoBehaviour
         if (data.heightValue == 0 && bAir)
             value = additionalAccel;
 
+        float positionY = Mathf.Abs(transform.position.y);
+
         Debug.Log($"Air comobo step {conditionType}");
 
         if (conditionType == ConditionType.Airborne ||
             conditionType == ConditionType.Down)
         {
-            float reducedHeight = value * Mathf.Pow(heightReductionFactor, transform.position.y);
+            float reducedHeight = value * Mathf.Pow(heightReductionFactor, positionY);
             value = Mathf.Max(reducedHeight, minLaunchHeight);
             Debug.Log($"Air comobo second step{value}");
         }
@@ -230,8 +193,8 @@ public class AirborneComponent : MonoBehaviour
             yield break;
 
         float startY = transform.localPosition.y;
-        float endY = (transform.localPosition + (Vector3.up * distance)).y;
-        float targetDistance = endY - startY;
+        float endY = startY + distance; // 현재 y 위치에서 distance 만큼 더함
+        float targetDistance = distance; // 바로 공중으로 올릴 거리 설정
 
         rigidbody.constraints &= ~RigidbodyConstraints.FreezePositionY;
         rigidbody.drag = 0;
@@ -240,14 +203,12 @@ public class AirborneComponent : MonoBehaviour
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(Vector3.up * acceleration, forceMode);
 
-        //bAir = true; 
         SetAirCondition();
         condition?.SetAirborneCondition();
-
         otherCollider?.SetAirStateCollider(true);
 
         
-        while (targetDistance >= 0)
+        while (targetDistance >= 0 && transform.position.y < endY)
         {
             targetDistance = endY - transform.position.y;
 
@@ -257,6 +218,7 @@ public class AirborneComponent : MonoBehaviour
         OnAirborneChange?.Invoke();
 
         rigidbody.velocity = Vector3.zero;
+        
         rigidbody.useGravity = true;
     }
 

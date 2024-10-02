@@ -10,14 +10,14 @@ namespace AI.BT.CustomBTNodes
 
         BTAIController controller;
         StateComponent state;
-        IActionComponent action;
+        ActionComponent action;
 
         public TaskNode_Action(GameObject owner, SO_Blackboard blackboard)
             : base(owner, blackboard)
         {
             this.nodeName = "Action";
 
-            action = owner.GetComponent<IActionComponent>();
+            action = owner.GetComponent<ActionComponent>();
             controller = owner.GetComponent<BTAIController>();
             state = owner.GetComponent<StateComponent>();
             onBegin = OnBegin;
@@ -53,7 +53,7 @@ namespace AI.BT.CustomBTNodes
             //Debug.Log($"{nodeName} action update");
             bool bCheck = true;
             bCheck &= (state.IdleMode);
-            bCheck &= controller.ActionMode == false;
+            bCheck &= action.InAction == false;
 
             if (bCheck)
             {
@@ -71,7 +71,9 @@ namespace AI.BT.CustomBTNodes
             if(currActionState == ActionState.End)
                 return NodeState.Abort;
 
-            action.End_DoAction();    
+            state.SetIdleMode();
+            action.End_DoAction();
+
             Debug.Log($"{nodeName} action abort {state.IdleMode}");
 
             return NodeState.Success;

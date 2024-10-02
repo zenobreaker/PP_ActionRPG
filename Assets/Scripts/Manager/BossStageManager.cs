@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BossStageManager : MonoBehaviour
 {
@@ -28,22 +29,31 @@ public class BossStageManager : MonoBehaviour
     public GameObject[] Boses;
     public GameObject[] SpawnPoints;
 
-    public int enemyCount;
+
+    private bool bAppearFlag = false; 
+
+    private int enemyCount;
     public void SetEnemyCount(int count)
     {
         enemyCount -= 1;
     }
+
+    
+
 
     public event Action<GameObject> OnAppearBoss;
     public GameObject tempObj; 
 
     private void Start()
     {
+        //cutscene.OnCutsceneBegin += OnCutSceneBegin;
         cutscene.OnCutSceneEnd += OnAppearEndBoss;
+        cutscene.OnCutSceneEnd += OnBossSpawn;
+        //cutscene.OnBossSpawn += OnBossSpawn;
     }
 
     private bool bSpawned = false;
-    // ���� ����
+    // 보스 스폰
     private AIController_Boss selctedBoss; 
     public void SpawnBoss(int index)
     {
@@ -53,14 +63,15 @@ public class BossStageManager : MonoBehaviour
         if (obj == null)
             return;
 
-        bSpawned = true; 
-        if (obj.TryGetComponent<AIController_Boss>(out AIController_Boss boss))
-        {
-            boss.CanMove = false;
-            selctedBoss = boss;
-            OnAppearBoss?.Invoke(obj);
-        }
+        bSpawned = true;
+        //if (obj.TryGetComponent<AIController_Boss>(out AIController_Boss boss))
+        //{
+        //    boss.CanMove = false;
+        //    selctedBoss = boss;
+        //    OnAppearBoss?.Invoke(obj);
+        //}
 
+        SetBossAppear_Dragon(obj);
     }
        
 
@@ -74,19 +85,34 @@ public class BossStageManager : MonoBehaviour
 
         if( enemyCount <= 0)
         {
+            //TODO: 한시적으로 고정값 전달 
             StartCoroutine(Spawn_Boss(0));
         }
     }
 
     private IEnumerator Spawn_Boss(int index)
     {
-        yield return new WaitForSeconds(1.3f);
 
-        SpawnBoss(index);
+        // 컷씬에서 컨신을 실행 후에 보스를 등장시킨다.
+        cutscene?.OnPlay();
+
+        // 특정 플래그가 될 때까지 무한정 대기 
+        while(true)
+        {
+            if (bAppearFlag == true)
+                break; 
+
+            yield return null; 
+        }
 
    
         yield return new WaitForSeconds(0.5f);
-        cutscene.OnPlay();
+        SpawnBoss(index);
+    }
+
+    private void OnBossSpawn()
+    {
+        bAppearFlag = true; 
     }
 
     private void OnAppearEndBoss()
@@ -97,7 +123,7 @@ public class BossStageManager : MonoBehaviour
         if(selctedBoss != null)
             selctedBoss.CanMove = true;
 
-        //TODO: ���߿� ���� �����ؾ� �Ѵٰ� �����Ѵ�..
+        //TODO: 나중에 여길 수정해야 한다고 생각한다..
         {
             BossGaugeController.Instance.OnAppearGauge(selctedBoss.gameObject);
         }
@@ -108,6 +134,18 @@ public class BossStageManager : MonoBehaviour
         //if (tempObj != null)
         //    tempObj.gameObject.SetActive(true);
 
-        cutscene.SetPlayableData("Boss_End" , true);
+        cutscene?.SetPlayableData("Boss_End" , true);
+    }
+
+
+    private void SetBossAppear_Dragon(GameObject boss)
+    {
+        if (boss == null)
+            return;
+        if (!boss.TryGetComponent<BTAIController_Dragon>(out BTAIController_Dragon dragon))
+            return;
+
+        dragon.OnEnableAI();
+
     }
 }

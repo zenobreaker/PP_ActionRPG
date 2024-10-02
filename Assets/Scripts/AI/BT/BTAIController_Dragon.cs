@@ -78,29 +78,34 @@ public class BTAIController_Dragon : BTAIController
     {
         dragonPatternTable.Add(1, new DragonPattern(1, 3));
         dragonPatternTable.Add(2, new DragonPattern(2, 4));
-        dragonPatternTable.Add(3, new DragonPattern(3, 5));
-        dragonPatternTable.Add(4, new DragonPattern(4, 10));
-        dragonPatternTable.Add(5, new DragonPattern(5, 20));
+        dragonPatternTable.Add(3, new DragonPattern(3, 10));
+        dragonPatternTable.Add(4, new DragonPattern(4, 20));
+        dragonPatternTable.Add(5, new DragonPattern(5, 30));
     }
 
     protected void OnEnable()
     {
         cur_DragonState = DragonState.Idle;
 
-        btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
-        btRunner.RunBehaviorTree(tickInterval);
+        
+        //btRunner.RunBehaviorTree(tickInterval);
+        //StartCoroutine(CoolDownCoroutine());
 
-
-        StartCoroutine(CoolDownCoroutine());
+        if (bCanMove)
+            OnEnableAI();
     }
 
     protected void OnDisable()
     {
         btRunner.StopBehaviorTree();
+
+        StopAllCoroutines();
     }
 
     protected override void Update()
     {
+        if (bCanMove == false)
+            return; 
         base.Update();
         userInterface.text += "\n" + waitCondition.ToString();
         userInterface.text += "\n" + state.Type.ToString();
@@ -128,6 +133,9 @@ public class BTAIController_Dragon : BTAIController
 
     protected override void FixedUpdate()
     {
+        if (bCanMove == false)
+            return;
+
         base.FixedUpdate();
 
         if (CheckMode())
@@ -161,6 +169,9 @@ public class BTAIController_Dragon : BTAIController
 
     protected override void LateUpdate()
     {
+        if (bCanMove == false)
+            return;
+
         LateUpdate_DeathMotion();
 
         if (health.Dead)
@@ -175,6 +186,18 @@ public class BTAIController_Dragon : BTAIController
         {
             LateUpdate_AnimalMove();
         }
+    }
+
+    public override void OnEnableAI()
+    {
+        base.OnEnableAI();
+
+
+        btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
+        btRunner.RunBehaviorTree(tickInterval);
+        navMeshAgent.enabled = true; 
+
+        StartCoroutine(CoolDownCoroutine());
     }
 
     private void LateUpdate_AnimalMove()

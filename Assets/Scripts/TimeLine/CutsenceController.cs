@@ -31,6 +31,7 @@ public class CutsenceController : MonoBehaviour
     [SerializeField] private GameObject cameraArm;
 
     public event Action OnCutsceneBegin;
+    public event Action OnBossSpawn;
     public event Action OnCutSceneEnd;
 
     private void Awake()
@@ -59,14 +60,14 @@ public class CutsenceController : MonoBehaviour
 
     private void Start()
     {
-        //TODO: ¾Æ ... ÀÌ°Å ¸Â³ª..
+        //TODO: ì•„ ... ì´ê±° ë§ë‚˜..
         BossStageManager.Instance.OnAppearBoss += SetAnimationTarget;
         playableDirector.played += OnBeginTimeLinePlay;
         playableDirector.stopped += OnBossAppaerEnd;
     }    
 
 
-    // Playable µ¥ÀÌÅÍ ¼¼ÆÃ 
+    // Playable ë°ì´í„° ì„¸íŒ… 
     public void SetPlayableData(string name, bool bPlay = false)
     {
         if(playableDataTable.TryGetValue(name, out PlayableAsset asset)) 
@@ -97,7 +98,7 @@ public class CutsenceController : MonoBehaviour
 
         var emptyAnimationTracks = FindEmptyAnimationTracksInTimeline(timelineAsset);
 
-        // Æ®·¢ Áß ¾Ö´Ï¸ŞÀÌ¼Ç Æ®·¢À» Ã£¾Æ °Å±â¼­ ÇÒ´ç
+        // íŠ¸ë™ ì¤‘ ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë™ì„ ì°¾ì•„ ê±°ê¸°ì„œ í• ë‹¹
         foreach (var track  in emptyAnimationTracks)
         {
             if(track is AnimationTrack)
@@ -110,19 +111,19 @@ public class CutsenceController : MonoBehaviour
     }
 
     /// <summary>
-    /// ¾Ö´Ï¸ŞÀÌ¼Ç Æ®·¢¿¡¼­ ¾Ö´Ï¸ŞÀÌÅÍ°¡ ¾ø´Â Æ®·¢À» Ã£¾Æ ¹İÈ¯
+    /// ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë™ì—ì„œ ì• ë‹ˆë©”ì´í„°ê°€ ì—†ëŠ” íŠ¸ë™ì„ ì°¾ì•„ ë°˜í™˜
     /// </summary>
     /// <param name="timelineAsset"></param>
     /// <returns></returns>
     private IEnumerable<AnimationTrack> FindEmptyAnimationTracksInTimeline(TimelineAsset timelineAsset)
     {
-        // Å¸ÀÓ¶óÀÎÀÇ ¸ğµç Æ®·¢À» È®ÀÎ
+        // íƒ€ì„ë¼ì¸ì˜ ëª¨ë“  íŠ¸ë™ì„ í™•ì¸
         foreach (var track in timelineAsset.GetOutputTracks())
         {
-            // Æ®·¢ÀÌ AnimationTrackÀÎÁö È®ÀÎ
+            // íŠ¸ë™ì´ AnimationTrackì¸ì§€ í™•ì¸
             if (track is AnimationTrack animationTrack)
             {
-                // ¾Ö´Ï¸ŞÀÌ¼Ç Å¬¸³ÀÌ ¾ø´ÂÁö È®ÀÎ
+                // ì• ë‹ˆë©”ì´ì…˜ í´ë¦½ì´ ì—†ëŠ”ì§€ í™•ì¸
                 //if (!animationTrack.GetClips().Any())
                 if(playableDirector.GetGenericBinding(animationTrack) == null)
                 {
@@ -151,6 +152,8 @@ public class CutsenceController : MonoBehaviour
             return;
         followCam.gameObject.SetActive(false);
         cameraArm.SetActive(true);
+
+        OnBossSpawn?.Invoke();
     }
 
     private void OnBeginTimeLinePlay(PlayableDirector director)
@@ -170,12 +173,12 @@ public class CutsenceController : MonoBehaviour
         if(director == playableDirector)
         {
             var currentPlayable = playableDirector.playableAsset;
-            if (currentPlayable.name != "Boss_Intro")
+            if (currentPlayable.name != "Boss_Intro_Dragon")
                 return; 
             
             OnCutSceneEnd?.Invoke();
             
-            // º¸½º¿£µåÄ·ÀÌ ÄÑÁ® ÀÖ´Ù¸ç ¿©±â¼­ ²¨ÁØ´Ù. 
+            // ë³´ìŠ¤ì—”ë“œìº ì´ ì¼œì ¸ ìˆë‹¤ë©° ì—¬ê¸°ì„œ êº¼ì¤€ë‹¤. 
             bossEndCam.gameObject.SetActive(false);
         }
     }

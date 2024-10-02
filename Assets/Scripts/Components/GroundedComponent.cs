@@ -119,6 +119,7 @@ public class GroundedComponent : MonoBehaviour
         {
             OnChangedGorund?.Invoke();
             OnCharacterGround?.Invoke();
+            rigidbody.drag = originDrag;
         }
 
         previousGround = newGroundState;

@@ -8,9 +8,8 @@ public enum WeaponType
     Unarmed = 0, Fist = 1, Sword, Hammer, FireBall, Dual, Gun, Warp, MAX,
 }
 
-public class WeaponComponent 
-    : MonoBehaviour
-    , IActionComponent
+public class WeaponComponent
+    :  ActionComponent
     , ICollisionHandler
 
 {
@@ -29,8 +28,6 @@ public class WeaponComponent
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
    
     public event Action OnEndEquip;
-    public event Action OnBeginDoAction;
-    public event Action OnEndDoAction;
 
     public bool UnarmedMode { get => type == WeaponType.Unarmed; }
     public bool FistMode { get => type == WeaponType.Fist; }
@@ -244,11 +241,12 @@ public class WeaponComponent
         weaponTable[type].DoIdleAction();
     }
 
-    public void DoAction()
+    public override void DoAction()
     {
         if (weaponTable[type] == null)
             return;
 
+        base.DoAction();
         animator.SetBool("IsAction", true);
 
         weaponTable[type].DoAction();
@@ -324,8 +322,9 @@ public class WeaponComponent
         weaponTable[type].End_SubAction();
     }
 
-    public void End_DoAction()
+    public override void End_DoAction()
     {
+        base.End_DoAction();
         animator.SetBool("IsAction", false);
 
         weaponTable[type]?.End_DoAction();
@@ -410,4 +409,5 @@ public class WeaponComponent
         weaponTable[type].End_SkillAciton();
     }
 
+   
 }

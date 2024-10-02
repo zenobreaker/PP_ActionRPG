@@ -1,3 +1,4 @@
+using AI.BT.Helpers;
 using AI.BT.Nodes;
 using System.Collections;
 using Unity.VisualScripting;
@@ -48,7 +49,9 @@ namespace AI.BT
             if (ownerMBH == null)
                 return;
 
-            ownerMBH.StopCoroutine(btRunCoroutine);
+            CoroutineHelper.Instance.StopAllCoroutines();
+            if(btRunCoroutine != null)
+                ownerMBH.StopCoroutine(btRunCoroutine);
             StopEvaluate();
         }
 

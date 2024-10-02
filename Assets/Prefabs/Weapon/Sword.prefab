@@ -134,7 +134,7 @@ MonoBehaviour:
   - bDownable: 0
     bLauncher: 0
     Power: 0
-    Distance: 10
+    Distance: 3
     heightValue: 0
     StopFrame: 2
     impulseDirection: {x: 0, y: 0, z: 0}

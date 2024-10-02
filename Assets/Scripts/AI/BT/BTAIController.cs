@@ -104,8 +104,10 @@ public abstract class BTAIController : MonoBehaviour
     protected PerceptionComponent perception;
     protected ConditionComponent condition;
     protected StateComponent state;
-    protected IActionComponent action;
+    protected ActionComponent action;
 
+
+    protected bool bCanMove = false; 
     protected Vector3 dest;
 
     protected virtual void Awake()
@@ -117,7 +119,7 @@ public abstract class BTAIController : MonoBehaviour
         enemy = GetComponent<Enemy>();
         condition = GetComponent<ConditionComponent>(); 
         state = GetComponent<StateComponent>();
-        action = GetComponent<IActionComponent>();
+        action = GetComponent<ActionComponent>();
         perception = GetComponent<PerceptionComponent>();
         Debug.Assert(perception != null);
     }
@@ -166,6 +168,10 @@ public abstract class BTAIController : MonoBehaviour
             navMeshAgent.updateRotation = true;
     }
 
+    public virtual void OnEnableAI()
+    {
+        bCanMove = true; 
+    }
 
     private void OnPerceptionUpdated(List<GameObject> gameObjects)
     {
@@ -182,7 +188,6 @@ public abstract class BTAIController : MonoBehaviour
     protected virtual bool CheckMode()
     {
         bool check = false;
-        check |= ActionMode;
         check |= DamagedMode;
         
         return check;
@@ -301,24 +306,33 @@ public abstract class BTAIController : MonoBehaviour
     public void SetSpeed(float speed)
     {
         Debug.Log($"Set Speed {speed} == ");
-        navMeshAgent.isStopped = true;  // 경로를 일시 중지
-        navMeshAgent.speed = speed;  // 속도 변경
-        navMeshAgent.isStopped = false; // 다시 이동 시작
+        if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled)
+        {
+            navMeshAgent.isStopped = true;  // 경로를 일시 중지
+            navMeshAgent.speed = speed;  // 속도 변경
+            navMeshAgent.isStopped = false; // 다시 이동 시작
+        }
     }
 
     public void Slow_NavMeshSpeed(float slowFactor)
     {
-        navOriginSpeed = navMeshAgent.speed;
-        navOriginAngularSpeed = navMeshAgent.angularSpeed;
+        if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled)
+        {
+            navOriginSpeed = navMeshAgent.speed;
+            navOriginAngularSpeed = navMeshAgent.angularSpeed;
 
-        navMeshAgent.speed = navMeshAgent.speed * slowFactor;
-        navMeshAgent.angularSpeed = navMeshAgent.angularSpeed * slowFactor;
+            navMeshAgent.speed = navMeshAgent.speed * slowFactor;
+            navMeshAgent.angularSpeed = navMeshAgent.angularSpeed * slowFactor;
+        }
     }
 
     public void Reset_NavMeshSpeed()
     {
-        navMeshAgent.speed = navOriginSpeed;
-        navMeshAgent.angularSpeed = navOriginAngularSpeed;
+        if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled)
+        {
+            navMeshAgent.speed = navOriginSpeed;
+            navMeshAgent.angularSpeed = navOriginAngularSpeed;
+        }
     }
 
     public virtual void End_Damage()
@@ -341,6 +355,6 @@ public abstract class BTAIController : MonoBehaviour
 
     protected virtual void OnEndDoAction()
     {
-        SetWaitMode();
+        //SetWaitMode();
     }
 }

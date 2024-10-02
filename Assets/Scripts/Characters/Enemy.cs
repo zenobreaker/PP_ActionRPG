@@ -210,17 +210,17 @@ public class Enemy :
 
         animator.SetInteger(HitIndex, 0);
 
-        if (ground != null)
-        {
-            if (ground.IsGround)
-                state.SetIdleMode();
-            else
-                condition.SetAirborneCondition();
-        }
-        else
-        {
+        //if (ground != null)
+        //{
+        //    if (ground.IsGround)
+        //        state.SetIdleMode();
+        //    else
+        //        condition.SetAirborneCondition();
+        //}
+        //else
+        //{
+        //}
             state.SetIdleMode();
-        }
 
         // ai야 너 스스로가 처리해
         aiController?.End_Damage();

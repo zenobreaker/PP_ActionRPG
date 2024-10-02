@@ -9,8 +9,7 @@ using UnityEngine;
 /// </summary>
 
 public class DragonPatternComponent
-    : MonoBehaviour
-    , IActionComponent
+    : ActionComponent
     , ICollisionHandler
     , IPatternHandler
 {
@@ -39,10 +38,6 @@ public class DragonPatternComponent
     public GameObject wingTriggerL;
     public GameObject wingTriggerR;
 
-    public event Action OnBeginDoAction;
-    public event Action OnEndDoAction;
-
-    private bool isAction;
 
     private static readonly int Mode = Animator.StringToHash("Mode");
     private static readonly int IDInt = Animator.StringToHash("IDInt");
@@ -75,13 +70,14 @@ public class DragonPatternComponent
         return currentPattern;
     }
 
-    public void DoAction()
+    public override void DoAction()
     {
-        if (isAction)
+        if (bInAction)
             return;
 
+        base.DoAction();
+
         state.SetActionMode();
-        isAction = true;
         Debug.Log($"Dragon Action ! {currentPattern}");
         
         animator.SetInteger(IDInt, 0);
@@ -188,15 +184,16 @@ public class DragonPatternComponent
         OnBeginDoAction?.Invoke();
     }
 
-    public void End_DoAction()
+    public override void End_DoAction()
     {
+        base.End_DoAction();
+
         if (animator != null)
         {
             animator.SetInteger(Mode, 0);
             animator.SetInteger(IDInt, -2);
         }
 
-        isAction = false;
         state.SetIdleMode();
 
         OnEndDoAction?.Invoke();

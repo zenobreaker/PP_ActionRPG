@@ -44,10 +44,18 @@ public class BTAIController_Melee : BTAIController
         base.FixedUpdate();
 
         if (CheckMode())
-            return; 
+            return;
 
         if (NoneCondition == false)
+        {
+            return;
+        }
+
+        if(condition.NoneCondition == false)
+        {
+            SetWaitMode(true);
             return; 
+        }
 
         GameObject player = perception.GetPercievedPlayer();
         if (player == null)
@@ -82,8 +90,9 @@ public class BTAIController_Melee : BTAIController
         }
         else
         {
-            animator.SetFloat("SpeedX", navMeshAgent.velocity.z); 
-            animator.SetFloat("SpeedY", navMeshAgent.velocity.magnitude);
+            animator.SetFloat("SpeedX", navMeshAgent.velocity.z);
+            float deltaSpeed = navMeshAgent.velocity.magnitude / navMeshAgent.speed * 2.0f;
+            animator.SetFloat("SpeedY", deltaSpeed );
         }
     }
 
@@ -171,13 +180,15 @@ public class BTAIController_Melee : BTAIController
 
                 SelectorNode strafeSelector = new SelectorNode();
 
-                TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 2.5f);
+                TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 5.0f);
                 strafeNode.OnDestination += OnDestination;
-                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
+                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
                 backward.OnDestination += OnDestination;
-                
+                WaitNode sfWaitNode2 = new WaitNode(waitDelay, waitDelayRandom);
+
                 strafeSelector.AddChild(strafeNode);
                 strafeSelector.AddChild(backward);
+                strafeSelector.AddChild(sfWaitNode2);
 
                 SequenceNode sequenceNode = new SequenceNode();
                 sequenceNode.AddChild(sfSpeed);

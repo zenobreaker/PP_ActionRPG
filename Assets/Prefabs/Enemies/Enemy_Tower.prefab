@@ -3738,7 +3738,9 @@ GameObject:
   - component: {fileID: 5532808461678546166}
   - component: {fileID: 5532808461678546165}
   - component: {fileID: 5532808461678546056}
-  - component: {fileID: 5532808461678546066}
+  - component: {fileID: 142485062833788811}
+  - component: {fileID: 4580701139702590335}
+  - component: {fileID: 4301694114893754340}
   m_Layer: 7
   m_Name: Enemy_Tower
   m_TagString: Enemy
@@ -3861,6 +3863,7 @@ MonoBehaviour:
   surfaceName: Ch25
   weaponType: 3
   grade: 0
+  isLaunchable: 1
 --- !u!114 &5532808461678546162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3951,7 +3954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bGround: 1
-  distance: 0.15
+  checkDistance: 0.5
 --- !u!114 &5532808461678546056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3970,7 +3973,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 320
---- !u!114 &5532808461678546066
+--- !u!114 &142485062833788811
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3979,17 +3982,52 @@ MonoBehaviour:
   m_GameObject: {fileID: 5532808461678546164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 958b9b23b6159da40a9d2c9c8d1fb03d, type: 3}
+  m_Script: {fileID: 11500000, guid: bc5d8b0e75d9f18439cbe381a01fd4f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4580701139702590335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5532808461678546164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f753d2114c5a64bb7a38e1f2e97201, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speeds:
+  - 2
+  - 4
+  - 6
+--- !u!114 &4301694114893754340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5532808461678546164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ad7cd25f81c32a4b8f5d8899462dd26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 1.5
   attackDelay: 2
-  attackDelayRandom: 0.9
-  damageDelay: 1
-  damageDelayRandom: 0.5
+  attackDelayRandom: 0.5
+  damageDelay: 2
+  damageDelayRandom: 1
+  waitDelay: 1
+  waitDelayRandom: 0.5
+  moveSpeed: 1
+  radius: 0
+  patrolPoints: {fileID: 0}
+  bDrawDebug: 1
   uiStateName: EnemyAIState
-  currentCoolTime: 0
-  bDrawDebug: 0
+  so_blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
+  tickInterval: 0.1
+  maxWaitCondtionPattern: 1
 --- !u!1 &5532808461773302886
 GameObject:
   m_ObjectHideFlags: 0

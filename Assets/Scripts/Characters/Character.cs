@@ -21,7 +21,7 @@ public abstract class Character
     protected GroundedComponent ground;
     protected StateComponent state;
     protected HealthPointComponent healthPoint;
-    protected IActionComponent action;
+    protected ActionComponent action;
 
     protected Coroutine downConditionCoroutine;
 
@@ -49,7 +49,7 @@ public abstract class Character
         condition = GetComponent<ConditionComponent>();
         state = GetComponent<StateComponent>();
         healthPoint = GetComponent<HealthPointComponent>();
-        action = GetComponent<IActionComponent>();
+        action = GetComponent<ActionComponent>();
     }
 
     protected virtual void Start()

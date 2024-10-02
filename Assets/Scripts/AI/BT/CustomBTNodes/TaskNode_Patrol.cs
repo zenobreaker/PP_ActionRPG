@@ -122,6 +122,12 @@ namespace AI.BT.CustomBTNodes
         private IEnumerator CreateNavMeshPathRoutine()
         {
             NavMeshPath path = null;
+            navMeshPath = null; 
+
+            if (agent == null || agent.enabled == false )
+            {
+                yield break; 
+            }
 
             if(hasPatrolPoints)
             {

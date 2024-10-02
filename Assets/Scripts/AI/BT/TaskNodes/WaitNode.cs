@@ -14,6 +14,7 @@ namespace AI.BT.TaskNodes
         private float currentWaitTime;
         public float CurrentWaitTime { get => currentWaitTime; }
 
+        private float lastTime; 
         public WaitNode()
             : base(null, null, null)
         {
@@ -42,16 +43,17 @@ namespace AI.BT.TaskNodes
             //Debug.Log("Wait Node Begin");
             currentWaitTime = Random.Range(waitTime + (-1.0f * waitRandDelay),
                 waitTime + (+1.0f * waitRandDelay));
-
+            lastTime = Time.time; 
             return NodeState.Running;
         }
 
 
         protected override BTNode.NodeState OnUpdate()
         {
-            currentWaitTime -= Time.deltaTime;
+            //currentWaitTime = Time.time;
 
-            if (currentWaitTime > 0)
+            //Debug.Log($"Time : {Time.time - lastTime} / {currentWaitTime} ");
+            if (Time.time - lastTime < currentWaitTime)
             {
                 return BTNode.NodeState.Running;
             }

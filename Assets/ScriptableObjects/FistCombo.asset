@@ -16,21 +16,21 @@ MonoBehaviour:
   - comboIndex: 0
     ComboName: Fist_Combo1
     lastComboCheckTime: 0.01
-    lastInputCheckTime: 0.3
+    lastInputCheckTime: 0.1
     comboMaintainTime: 0.15
     doActionData:
       bDownable: 0
       bLauncher: 0
-      Power: 0
-      Distance: 0
+      Power: 5
+      Distance: 3
       heightValue: 0
-      StopFrame: 0
-      impulseDirection: {x: 0, y: 0, z: 0}
-      impulseSettings: {fileID: 0}
-      effectSoundName: 
-      HitImpactIndex: 0
-      hitSoundName: 
-      HitParticle: {fileID: 0}
+      StopFrame: 3
+      impulseDirection: {x: 0.1, y: 0.1, z: 0.25}
+      impulseSettings: {fileID: 11400000, guid: 6531d9f11125af345b83c1e661d08c93, type: 2}
+      effectSoundName: Sword_Slash
+      HitImpactIndex: 1
+      hitSoundName: Fist_Impact
+      HitParticle: {fileID: 5024009746357069194, guid: 277c88633f53efb44b2dc6a966748827, type: 3}
       HitParticlePositionOffset: {x: 0, y: 0, z: 0}
       HitParticleSacleOffset: {x: 1, y: 1, z: 1}
       bCanMove: 0
@@ -38,23 +38,23 @@ MonoBehaviour:
   - comboIndex: 1
     ComboName: Fist_Combo2
     lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.3
-    comboMaintainTime: 0.2
+    lastInputCheckTime: 0.5
+    comboMaintainTime: 0.15
     doActionData:
       bDownable: 0
       bLauncher: 0
-      Power: 0
-      Distance: 0
+      Power: 12
+      Distance: 4
       heightValue: 0
-      StopFrame: 0
-      impulseDirection: {x: 0, y: 0, z: 0}
-      impulseSettings: {fileID: 0}
-      effectSoundName: 
-      HitImpactIndex: 0
-      hitSoundName: 
-      HitParticle: {fileID: 0}
+      StopFrame: 1
+      impulseDirection: {x: 0.1, y: 0.2, z: 0.2}
+      impulseSettings: {fileID: 11400000, guid: b92171e15583e7448960e4c5376f97aa, type: 2}
+      effectSoundName: Sword_Slash
+      HitImpactIndex: 2
+      hitSoundName: Fist_Impact
+      HitParticle: {fileID: 5024009746357069194, guid: 277c88633f53efb44b2dc6a966748827, type: 3}
       HitParticlePositionOffset: {x: 0, y: 0, z: 0}
-      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      HitParticleSacleOffset: {x: 1.2, y: 1.2, z: 1.2}
       bCanMove: 0
       Particle: {fileID: 0}
   - comboIndex: 2
@@ -63,18 +63,18 @@ MonoBehaviour:
     lastInputCheckTime: 0.5
     comboMaintainTime: 0.01
     doActionData:
-      bDownable: 0
+      bDownable: 1
       bLauncher: 0
-      Power: 0
-      Distance: 0
-      heightValue: 0
-      StopFrame: 0
-      impulseDirection: {x: 0, y: 0, z: 0}
-      impulseSettings: {fileID: 0}
-      effectSoundName: 
+      Power: 10
+      Distance: 1.5
+      heightValue: 5
+      StopFrame: 2
+      impulseDirection: {x: 0.22, y: 0.75, z: 0}
+      impulseSettings: {fileID: 11400000, guid: 693748b6266cc9749a129b80cee3a191, type: 2}
+      effectSoundName: Sword_Slash
       HitImpactIndex: 0
-      hitSoundName: 
-      HitParticle: {fileID: 0}
+      hitSoundName: Fist_Impact
+      HitParticle: {fileID: 5024009746357069194, guid: 277c88633f53efb44b2dc6a966748827, type: 3}
       HitParticlePositionOffset: {x: 0, y: 0, z: 0}
       HitParticleSacleOffset: {x: 1, y: 1, z: 1}
       bCanMove: 0
@@ -85,36 +85,36 @@ MonoBehaviour:
     lastInputCheckTime: 0.3
     comboMaintainTime: 1
     doActionData:
-      bDownable: 0
-      bLauncher: 0
-      Power: 0
-      Distance: 0
+      bDownable: 1
+      bLauncher: 1
+      Power: 20
+      Distance: 10
       heightValue: 0
-      StopFrame: 0
-      impulseDirection: {x: 0, y: 0, z: 0}
-      impulseSettings: {fileID: 0}
-      effectSoundName: 
+      StopFrame: 5
+      impulseDirection: {x: 0.59, y: 0.31, z: 0}
+      impulseSettings: {fileID: 11400000, guid: a04e4113b6699344c8b49aa4f1499c35, type: 2}
+      effectSoundName: Sword_Slash
       HitImpactIndex: 0
-      hitSoundName: 
-      HitParticle: {fileID: 0}
-      HitParticlePositionOffset: {x: 0, y: 0, z: 0}
-      HitParticleSacleOffset: {x: 1, y: 1, z: 1}
+      hitSoundName: Fist_Impact
+      HitParticle: {fileID: 5024009746357069194, guid: 277c88633f53efb44b2dc6a966748827, type: 3}
+      HitParticlePositionOffset: {x: 0, y: 1, z: 0}
+      HitParticleSacleOffset: {x: 2, y: 2, z: 2}
       bCanMove: 0
       Particle: {fileID: 0}
   subActionData:
     bDownable: 0
     bLauncher: 0
-    Power: 0
+    Power: 10
     Distance: 0
     heightValue: 0
-    StopFrame: 0
-    impulseDirection: {x: 0, y: 0, z: 0}
-    impulseSettings: {fileID: 0}
+    StopFrame: 1
+    impulseDirection: {x: 0, y: 0.025, z: 0.025}
+    impulseSettings: {fileID: 11400000, guid: a04e4113b6699344c8b49aa4f1499c35, type: 2}
     effectSoundName: 
     HitImpactIndex: 0
     hitSoundName: 
-    HitParticle: {fileID: 0}
-    HitParticlePositionOffset: {x: 0, y: 0, z: 0}
+    HitParticle: {fileID: 5024009746357069194, guid: ec3f674830402cc45bce805cf6493db7, type: 3}
+    HitParticlePositionOffset: {x: 0, y: 1, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
     bCanMove: 0
-    Particle: {fileID: 0}
+    Particle: {fileID: 6436963888938637340, guid: 7345f2bac093bf24a84a538f3b00cce7, type: 3}

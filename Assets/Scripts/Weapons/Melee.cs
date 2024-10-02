@@ -47,6 +47,8 @@ public class Melee : Weapon
     protected Transform slashTransform;
     protected AIController aiController;
 
+    protected DoActionData currentActionData;
+
     public event Action<GameObject> OnHitTarget;
 
     protected override void Awake()
@@ -235,7 +237,7 @@ public class Melee : Weapon
 
         if (state.IdleMode == false)
             return;
-
+        currentActionData = doActionDatas[index];
         base.DoAction();
 
     }
@@ -257,7 +259,7 @@ public class Melee : Weapon
         isAnimating = true;
         //Debug.Log($"{this.rootObject.name} Combo : " + index);
         animator.Play(comboObjData.comboDatas[index].ComboName);
-        
+        currentActionData = comboObjData.comboDatas[index].doActionData;
 
         if (state.IdleMode == false)
             return;
@@ -283,8 +285,8 @@ public class Melee : Weapon
         //isAnimating = true;
 
         this.index = index %= (doActionDatas.Length);
-
         animator.Play(comboData.GetComboName);
+        currentActionData = comboData.doActionData;
 
         if (state.IdleMode == false)
             return;
@@ -303,7 +305,7 @@ public class Melee : Weapon
 
     protected void CanMove()
     {
-        if (doActionDatas[index].bCanMove == true)
+        if (currentActionData.bCanMove == true)
         {
             Move();
             return;
@@ -333,6 +335,7 @@ public class Melee : Weapon
         base.End_DoAction();
         
         comboObjData?.OnChangeCombo(index);
+        
         isAnimating = false; 
         index = 0;
         bEnable = false;
@@ -344,18 +347,18 @@ public class Melee : Weapon
         if (impulse == null)
             return;
 
-        if (doActionDatas[index].impulseSettings == null)
+        if (currentActionData.impulseSettings == null)
             return;
-        if (doActionDatas[index].impulseDirection.magnitude <= 0.0f)
+        if (currentActionData.impulseDirection.magnitude <= 0.0f)
             return;
         if (listener == null)
             return;
 
         base.Play_Impulse();
 
-        listener.m_ReactionSettings.m_SecondaryNoise = doActionDatas[index].impulseSettings;
+        listener.m_ReactionSettings.m_SecondaryNoise = currentActionData.impulseSettings;
 
-        impulse.GenerateImpulse(doActionDatas[index].impulseDirection);
+        impulse.GenerateImpulse(currentActionData.impulseDirection);
 
     }
 
@@ -392,12 +395,15 @@ public class Melee : Weapon
         if (other.CompareTag(this.rootObject.tag))
             return;
 
+        if (currentActionData == null)
+            return;
+
         hittedList.Add(other.gameObject);
 
         IDamagable damagable = other.GetComponent<IDamagable>();
 
         // hit Sound Play
-        SoundManager.Instance.PlaySFX(doActionDatas[index].hitSoundName);
+        SoundManager.Instance.PlaySFX(currentActionData.hitSoundName);
 
         if (damagable == null)
             return;
@@ -421,26 +427,7 @@ public class Melee : Weapon
         
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
-        //var text = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        //GameObject temp = Instantiate<GameObject>(text,
-        //    other.transform, false);
-        //temp.transform.localPosition = hitPoint;
-        //temp.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-        //Debug.Log($"{rootObject.name} : current data {doActionDatas[index].dataID}");
-
-
-        //if (moving != null)
-        //{
-        //    // �и�Ÿ���� ���� �۾� ���濡 �¾Ѱ� ���� �����𿡰� ī�޶� ������ 
-        //    Vector3 direction = other.gameObject.transform.position - rootObject.transform.position;
-        //    Quaternion q = Quaternion.FromToRotation(rootObject.transform.forward, direction.normalized);
-
-        //    // ��ġ�� 0���̶� ȸ���Ϸ��� �����̴� ���߿� �ȷο�Ÿ���� �����ͼ� ������ �ϰ� �����ؾ��� �� 
-        //    rootObject.transform.rotation *= Quaternion.Euler(0, q.eulerAngles.y, 0);
-        //    moving.Rotation = rootObject.transform.rotation;
-        //}
-
-        damagable.OnDamage(rootObject, this, hitPoint, doActionDatas[index]);
+        damagable.OnDamage(rootObject, this, hitPoint, currentActionData);
         OnHitTarget?.Invoke(other.gameObject);
         if (aiController == null)
             Play_Impulse();
@@ -451,97 +438,12 @@ public class Melee : Weapon
     {
         Vector3 forward = rootObject.transform.forward;
         Vector3 toRefer = (forward - rootObject.transform.up).normalized;
-
+        
         float dot = Vector3.Dot(toRefer, forward);
 
         if (dot < 0)
             return false;
         return true;
-    }
-
-    protected virtual void CreateSlashParticle_Test()
-    {
-        if (slashTransform == null)
-            return;
-
-        if (doActionDatas[index].Particle == null)
-            return;
-
-
-        Vector3 direction = endPosObj.transform.position - startPosObj.transform.position;
-
-        // ��: ���� ��ǥ���� z��� �� ���� ���� ������ ���� ���
-        Vector3 referenceDirection = Vector3.forward;
-        float angle = Vector3.SignedAngle(referenceDirection, direction.normalized, Vector3.up);
-
-        Debug.Log($"�� ���� ����: {direction}");
-        Debug.Log($"z��� �� ���� ���� ������ ����: {angle}��");
-
-        //float dot = Vector3.Dot(rootObject.transform.position.normalized, direction.normalized);
-        //float theta = Mathf.Acos(dot) * Mathf.Rad2Deg;
-        //float angleRadian = Mathf.Atan2(direction.z, direction.x);
-        //float angleDegree = angleRadian * Mathf.Rad2Deg;
-
-        //Debug.DrawLine(startPosObj.transform.position, endPosObj.transform.position, Color.green, 4.0f);
-        //Debug.Log($"dot : {theta} / angle : {angleRadian} / {angleDegree}");
-
-        //Vector3 cross1 = Vector3.Cross(rootObject.transform.position, direction.normalized);
-        //Vector3 cross2 = Vector3.Cross(direction.normalized, rootObject.transform.position);
-        //Debug.Log($"cross : {cross1} / {cross2}");
-
-
-
-        //GameObject obj = Instantiate<GameObject>(doActionDatas[index].Particle, slashTransform);
-        //Debug.Assert(obj != null);
-        //if (obj == null)
-        //    return;
-        //obj.transform.rotation = Quaternion.Euler(0, rootObject.transform.eulerAngles.y, 0);
-        //if (cross1.y < 0)
-        //    theta *= -1.0f;
-        //obj.transform.rotation = Quaternion.Euler(0, 0, theta);
-
-
-
-        //VFXController vfx = obj.GetComponent<VFXController>();
-        //if (vfx != null)
-        //    vfx.ControllParticleSystem(cross.y < 0);
-        //RotateVFS(obj, cross.y < 0);
-    }
-
-
-    private void RotateVFS(GameObject obj, bool right)
-    {
-        if (obj == null)
-            return;
-
-        ParticleSystem particleSystem = obj.GetComponent<ParticleSystem>();
-        if (particleSystem == null) return;
-
-        // RotateOverLifetime ����� ��������
-        var rotateOverLifetime = particleSystem.rotationOverLifetime;
-        rotateOverLifetime.enabled = true;
-        rotateOverLifetime.separateAxes = true;
-
-        
-        AnimationCurve curve = new AnimationCurve(
-            new Keyframe(0f, 15),
-            new Keyframe(1f, rotateOverLifetime.y.curve.keys[0].value)
-        );
-
-        
-        for (int i = 0; i < curve.keys.Length; i++)
-        {
-            Keyframe key = curve.keys[i];
-            key.value = key.value;
-            curve.MoveKey(i, key);
-        }
-
-        
-        ParticleSystem.MinMaxCurve yCurve = new ParticleSystem.MinMaxCurve(1f, curve);
-        Debug.Log($"{rotateOverLifetime.y.curve.keys[0].value}/ {rotateOverLifetime.y.curve.keys[1].value}");
-
-        
-        rotateOverLifetime.y = yCurve;
     }
 
 
@@ -550,12 +452,12 @@ public class Melee : Weapon
         if (slashTransform == null)
             return;
 
-        if (doActionDatas[index].Particle == null)
+        if (currentActionData.Particle == null)
             return;
 
-        Debug.Assert(doActionDatas[index].Particle != null);
+        Debug.Assert(currentActionData.Particle != null);
         // ��ƼŬ ������Ʈ�� �ν��Ͻ�ȭ�ϰ� ȸ���� �����մϴ�.
-        GameObject obj = Instantiate<GameObject>(doActionDatas[index].Particle, slashTransform, false);
+        GameObject obj = Instantiate<GameObject>(currentActionData.Particle, slashTransform, false);
         Debug.Assert(obj != null);
         if (obj == null)
             return;
@@ -607,7 +509,7 @@ public class Melee : Weapon
     {
         base.Play_Sound();
         // Sound Play
-        SoundManager.Instance.PlaySFX(doActionDatas[index].effectSoundName);
+        SoundManager.Instance.PlaySFX(currentActionData.effectSoundName);
 
     }
 
