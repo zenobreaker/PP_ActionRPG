@@ -64,8 +64,9 @@ namespace AI.BT.CustomBTNodes
             loopCount = 0; 
             navMeshPath = null; 
             initPosition = goalPosition = agent.transform.position;
-            agent.updateRotation = false; 
+            agent.updateRotation = false;
 
+            Debug.Log("Backward Start!! ");
             backwardCoroutine = CoroutineHelper.Instance.StartHelperCoroutine(CreateNavMeshPathRoutine());
             // 경로에 따른 처리 
             if (navMeshPath != null)
@@ -74,8 +75,8 @@ namespace AI.BT.CustomBTNodes
                 agent.SetPath(navMeshPath);
                 return NodeState.Running;
             }
-            
 
+            Debug.Log("Backward it is come here?");
             return NodeState.Failure;
         }
 
@@ -92,12 +93,15 @@ namespace AI.BT.CustomBTNodes
                 return NodeState.Running;
             }
 
+            Debug.Log("Backward End to Success!!");
             agent.updateRotation = true;
             return base.OnUpdate();
         }
 
         protected override NodeState OnEnd()
         {
+
+            Debug.Log("Backward End!! tq!!");
             ResetAgent();
 
             return base.OnEnd();
@@ -172,7 +176,7 @@ namespace AI.BT.CustomBTNodes
         {
             if (currActionState == ActionState.Begin || currActionState == ActionState.Update)
             {
-                //Debug.Log($"Backward Abort / {currActionState}");
+                Debug.Log($"Backward Abort / {currActionState}");
                 CoroutineHelper.Instance.StopHelperCoroutine(backwardCoroutine);
 
                 //TODO: Abort 중단되었을 때 상태를 돌리는게 좋은걸까?

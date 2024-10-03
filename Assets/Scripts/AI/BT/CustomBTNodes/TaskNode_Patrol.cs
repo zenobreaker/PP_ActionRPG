@@ -134,8 +134,13 @@ namespace AI.BT.CustomBTNodes
                 goalPosition = patrolPoints.GetMoveToPosition();
 
                 path = new NavMeshPath();
-                bool bCheck = agent.CalculatePath(goalPosition, path); 
-                Debug.Assert(bCheck);
+                bool bCheck = agent.CalculatePath(goalPosition, path);
+                if (bCheck == false)
+                {
+                    Debug.LogError("Area Calc Erorr");
+                    yield break;
+                }
+
                 navMeshPath = path;
 
                 patrolPoints.UpdateNextIndex();

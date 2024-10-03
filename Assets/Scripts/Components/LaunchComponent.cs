@@ -166,7 +166,7 @@ public class LaunchComponent : MonoBehaviour
         bCheck |= (airborne && airborne.AirCondition);
         bCheck |= data.heightValue > 0;
         bCheck |= condition.AirborneCondition;
-        Debug.Log($"{airborne.AirCondition} / {data.heightValue > 0} / {condition.AirborneCondition}");
+        //Debug.Log($"{airborne.AirCondition} / {data.heightValue > 0} / {condition.AirborneCondition}");
 
         if (bCheck)
         {

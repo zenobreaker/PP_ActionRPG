@@ -23,8 +23,9 @@ public class Player
     private Color targetColor;
 
     public event Action OnEvadeState;
-    public event Action OnDamaged; 
+    public event Action OnDamaged;
 
+    public bool isInvicible = false;
     protected override void Awake()
     {
         base.Awake();
@@ -143,6 +144,9 @@ public class Player
 
     public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
+        if (isInvicible)
+            return;
+
         if (state.Type == StateType.Evade)
         {
             OnEvadeState?.Invoke();

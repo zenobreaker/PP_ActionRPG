@@ -5,8 +5,7 @@ using UnityEngine;
 namespace AI.BT.CustomBTNodes
 {
     /// <summary>
-    /// WaitCondition의 관련한 처리를 하는 Decorator
-    /// WaitCondtion의 종속적이기 때문에 해당 enum을 쓰지 않으면 사용할 순 없다.
+    /// TODO: 관찰자를 추가해서 해당 관찰자 상태에 따라 로직이 틀리면 바로 끝낼지 말지 추가해야할 듯
     /// </summary>
     public class Decorator_Composit<T> : DecoratorNode where T : IComparable
     {
@@ -31,7 +30,10 @@ namespace AI.BT.CustomBTNodes
         {
             if (controller == null)
                 return false;
-            return blackboard.CompareValue(boardKey, key);
+
+            bool result = blackboard.CompareValue(boardKey, key);
+            //Debug.Log($"Sibal {controller.MyWaitCondition} / {key} / {result}");
+            return result;
         }
 
         public override void StopEvaluate()

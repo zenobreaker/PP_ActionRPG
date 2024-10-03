@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using static UnityEditor.PlayerSettings;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace AI.BT.CustomBTNodes
 {
@@ -27,9 +28,14 @@ namespace AI.BT.CustomBTNodes
 
         private bool hasFirst = true;
         private bool bRight = true; // 왼쪽으로 갈지 오른쪽으로 갈지 정하기 
-        private float maxAngle = 100.0f; // 특정 방향으로 진행 최대 각
+        
         private float currentAngle = 0.0f;
         private float angleStep = 10.0f; // 각도 변화폭
+
+        private float moveTime;
+        private float moveTimeDelay;
+        private float lastTime;
+        private float currentMoveTime;
 
         private Vector3 targetPos = Vector3.zero;
         private Vector3 centerPos = Vector3.zero;
@@ -39,7 +45,8 @@ namespace AI.BT.CustomBTNodes
 
         private bool bSuceess = false;
 
-        public TaskNode_Strafe(GameObject ownerObject, SO_Blackboard blackboard, float radius)
+        public TaskNode_Strafe(GameObject ownerObject, SO_Blackboard blackboard, float radius,
+            float moveTime = 1.0f, float moveTimeDelay= 0.0f)
             : base(ownerObject, blackboard)
         {
             nodeName = "Strafe";
@@ -49,6 +56,8 @@ namespace AI.BT.CustomBTNodes
             agent = owner.GetComponent<NavMeshAgent>();
 
             this.radius = radius;
+            this.moveTime = moveTime;
+            this.moveTimeDelay = moveTimeDelay;
 
             onBegin = OnBegin;
             onUpdate = OnUpdate;
@@ -102,6 +111,11 @@ namespace AI.BT.CustomBTNodes
                 OnDestination?.Invoke(goalPosition);
                 agent.SetPath(navMeshPath);
 
+
+                currentMoveTime = Random.Range(moveTime + (-1.0f * moveTimeDelay),
+               moveTime + (+1.0f * moveTimeDelay));
+                lastTime = Time.time;
+
                 return NodeState.Running;
             }
 
@@ -144,8 +158,8 @@ namespace AI.BT.CustomBTNodes
                 }
             }
 
-            // 정해진 각도가 될 때까지 움직이기 
-            if (Mathf.Abs(currentAngle) < maxAngle)
+            // 정해진 시간 동안 움직인다.
+            if (Time.time - lastTime < currentMoveTime)
             {
                 return NodeState.Running;
             }
@@ -228,7 +242,6 @@ namespace AI.BT.CustomBTNodes
 
                     float dir = bRight ? 1 : -1;
                     currentAngle += angleStep * dir;
-
                     // 각도를 라디안으로 변환 (원호 이동을 위한 좌표 계산)
                     float radian = currentAngle * Mathf.Deg2Rad;
 

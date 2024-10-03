@@ -19,7 +19,10 @@ public class BTAIController_Melee : BTAIController
         base.Awake();
         health = GetComponent<HealthPointComponent>();
         if (action != null)
+        {
+            action.OnBeginDoAction += OnBeginDoAction;
             action.OnEndDoAction += OnEndDoAction;
+        }
     }
 
     protected override void Start()
@@ -28,6 +31,7 @@ public class BTAIController_Melee : BTAIController
 
         waitCondition = WaitCondition.None;
         blackboard.AddEnumComparisonStrategy<AIStateType>();
+        blackboard.AddEnumComparisonStrategy<WaitCondition>();
         btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
         btRunner.RunBehaviorTree(0.01f);
         navMeshAgent.avoidancePriority = Random.Range(1, 100);
@@ -51,12 +55,6 @@ public class BTAIController_Melee : BTAIController
             return;
         }
 
-        if(condition.NoneCondition == false)
-        {
-            SetWaitMode(true);
-            return; 
-        }
-
         GameObject player = perception.GetPercievedPlayer();
         if (player == null)
         {
@@ -67,7 +65,7 @@ public class BTAIController_Melee : BTAIController
         }
 
         float distanceSquared = Vector3.Distance(player.transform.position, this.transform.position);
-        distanceSquared = Mathf.Floor(distanceSquared * 10 ) / 10 ;
+        distanceSquared = Mathf.Floor(distanceSquared * 10) / 10;
         if (distanceSquared <= attackRange)
         {
             // 배회 or 공격 
@@ -78,13 +76,15 @@ public class BTAIController_Melee : BTAIController
             return;
         }
 
-        SetApproachMode();
+        if (NoneCondition)
+            SetApproachMode();
     }
 
     protected override void LateUpdate()
     {
         if (WaitMode && IdleCondition)
         {
+            animator.SetFloat("SpeedX", 0.0f);
             animator.SetFloat("SpeedY", 0.0f);
             return;
         }
@@ -92,7 +92,7 @@ public class BTAIController_Melee : BTAIController
         {
             animator.SetFloat("SpeedX", navMeshAgent.velocity.z);
             float deltaSpeed = navMeshAgent.velocity.magnitude / navMeshAgent.speed * 2.0f;
-            animator.SetFloat("SpeedY", deltaSpeed );
+            animator.SetFloat("SpeedY", deltaSpeed);
         }
     }
 
@@ -102,13 +102,87 @@ public class BTAIController_Melee : BTAIController
         // 모든 데코레이터노드가 해당 키로 비교한다. 
         blackboard.SetValue<AIStateType>("AIStateType", AIStateType.Wait);
 
-        // 각각의 데코레이터노드에서 값을 비교하기 위한 값들
-        //blackboard.SetValue<AIStateType>("Wait", AIStateType.Wait);
-        //blackboard.SetValue<AIStateType>("Approach", AIStateType.Approach);
-        //blackboard.SetValue<AIStateType>("Patrol", AIStateType.Patrol);
-        //blackboard.SetValue<AIStateType>("Action", AIStateType.Action);
-        //blackboard.SetValue<AIStateType>("Damaged", AIStateType.Damaged);
+        blackboard.SetValue<WaitCondition>("WaitCondition", WaitCondition.None);
     }
+
+    private BTNode CreateWaitCondition()
+    {
+        SequenceNode sequenceNode = new SequenceNode();
+
+
+        // WaitMode
+        SelectorNode waitSelector = new SelectorNode();
+        {
+            waitSelector.NodeName = "WaitSelector";
+
+
+            WaitNode waitNode1 = new WaitNode(waitDelay, waitDelayRandom);
+
+            // 대기 
+            WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
+            Decorator_Composit<WaitCondition> idleDeco =
+                new Decorator_Composit<WaitCondition>("Idle", waitNode, this.gameObject,
+                blackboard, "WaitCondition", WaitCondition.Idle);
+
+            Decorator_WaitCondition idleEnd = new Decorator_WaitCondition(idleDeco,
+            this.gameObject, WaitCondition.Idle);
+
+            // 뒷걸음 
+            WaitNode bwWaitNode = new WaitNode(waitDelay, waitDelayRandom);
+            TaskNode_Speed bwSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
+            TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
+            bwWaitNode.NodeName = "Backward";
+            SequenceNode backsequenceNode = new SequenceNode();
+            backsequenceNode.AddChild(bwSpeed);
+            backsequenceNode.AddChild(backward);
+
+            Decorator_Composit<WaitCondition> backwardDeco =
+                new Decorator_Composit<WaitCondition>("Backward",
+                backsequenceNode, this.gameObject, blackboard,
+                "WaitCondition", WaitCondition.Backward);
+
+
+            // 옆 걸음
+
+            WaitNode sfWaitNode = new WaitNode(waitDelay, waitDelayRandom);
+            sfWaitNode.NodeName = "StrafeWait";
+            TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
+
+            SelectorNode strafeSelector = new SelectorNode();
+
+            TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 5.0f, waitDelay, waitDelayRandom);
+            strafeNode.OnDestination += OnDestination;
+            TaskNode_Backward sfbackward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
+            backward.OnDestination += OnDestination;
+            WaitNode sfWaitNode2 = new WaitNode(waitDelay, waitDelayRandom);
+
+            strafeSelector.AddChild(strafeNode);
+            strafeSelector.AddChild(sfbackward);
+            strafeSelector.AddChild(sfWaitNode2);
+
+            SequenceNode sfsequenceNode = new SequenceNode();
+            sfsequenceNode.AddChild(sfSpeed);
+            sfsequenceNode.AddChild(strafeSelector);
+
+            Decorator_Composit<WaitCondition> strafeDeco =
+              new Decorator_Composit<WaitCondition>("Strafe",
+              sfsequenceNode, this.gameObject, blackboard,
+              "WaitCondition", WaitCondition.Strafe);
+
+
+            waitSelector.AddChild(idleDeco);
+            waitSelector.AddChild(backwardDeco);
+            waitSelector.AddChild(strafeDeco);
+        }
+
+        TaskNode_WaitEnd waitEnd = new TaskNode_WaitEnd(this.gameObject, blackboard);
+
+        sequenceNode.AddChild(waitSelector);
+        sequenceNode.AddChild(waitEnd);
+
+        return sequenceNode;
+    }
+
 
     protected override RootNode CreateBTTree()
     {
@@ -130,7 +204,7 @@ public class BTAIController_Melee : BTAIController
         Decorator_Blackboard<AIStateType> damagedDeco =
             new Decorator_Blackboard<AIStateType>("DamagedDeco", DamagedSequence,
             this.gameObject, blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
-            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
+            Decorator_Blackboard<AIStateType>.ObserveAborts.None,
             "AIStateType", AIStateType.Damaged);
 
         DamagedSelector.AddChild(damagedDeco);
@@ -139,81 +213,13 @@ public class BTAIController_Melee : BTAIController
         SelectorNode selector = new SelectorNode();
 
         // WaitMode
-        SelectorNode waitSelector = new SelectorNode();
-        {
-            waitSelector.NodeName = "WaitSelector";
-
-            // 대기 
-            WaitNode waitNode = new WaitNode(waitDelay, waitDelayRandom);
-            Decorator_WaitCondition idleDeco = new Decorator_WaitCondition(waitNode, this.gameObject,
-                WaitCondition.Idle);
-            idleDeco.NodeName = "Idle";
-
-            // 뒷걸음 
-            ParallelNode waitBackwardParallel = new ParallelNode(ParallelNode.FinishCondition.All);
-            {
-                waitBackwardParallel.NodeName = "WaitBackWardParallel";
-
-                WaitNode bwWaitNode = new WaitNode(waitDelay, waitDelayRandom);
-                TaskNode_Speed bwSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
-                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 1.5f);
-                bwWaitNode.NodeName = "Backward";
-                SequenceNode sequenceNode = new SequenceNode();
-                sequenceNode.AddChild(bwSpeed);
-                sequenceNode.AddChild(backward);
-
-                waitBackwardParallel.AddChild(bwWaitNode);
-                waitBackwardParallel.AddChild(sequenceNode);
-            }
-            Decorator_WaitCondition backwardDeco = new Decorator_WaitCondition(
-                waitBackwardParallel, this.gameObject, WaitCondition.Backward);
-            backwardDeco.NodeName = " Backward";
-
-            // 옆 걸음
-            ParallelNode strafeParallel = new ParallelNode(ParallelNode.FinishCondition.All);
-            {
-                strafeParallel.NodeName = "StarfeParallel";
-
-                WaitNode sfWaitNode = new WaitNode(waitDelay, waitDelayRandom);
-                sfWaitNode.NodeName = "StrafeWait";
-                TaskNode_Speed sfSpeed = new TaskNode_Speed(this.gameObject, blackboard, SpeedType.Walk);
-
-                SelectorNode strafeSelector = new SelectorNode();
-
-                TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 5.0f);
-                strafeNode.OnDestination += OnDestination;
-                TaskNode_Backward backward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
-                backward.OnDestination += OnDestination;
-                WaitNode sfWaitNode2 = new WaitNode(waitDelay, waitDelayRandom);
-
-                strafeSelector.AddChild(strafeNode);
-                strafeSelector.AddChild(backward);
-                strafeSelector.AddChild(sfWaitNode2);
-
-                SequenceNode sequenceNode = new SequenceNode();
-                sequenceNode.AddChild(sfSpeed);
-                sequenceNode.AddChild(strafeSelector);
-
-                strafeParallel.AddChild(sfWaitNode);
-                strafeParallel.AddChild(sequenceNode);
-            }
-            Decorator_WaitCondition strafeDeco = new Decorator_WaitCondition(
-                strafeParallel, this.gameObject, WaitCondition.Strafe);
-            strafeDeco.NodeName = "Strafe";
-
-
-            waitSelector.AddChild(idleDeco);
-            waitSelector.AddChild(backwardDeco);
-            waitSelector.AddChild(strafeDeco);
-        }
-
         Decorator_Blackboard<AIStateType> waitDeco =
-            new Decorator_Blackboard<AIStateType>("WaitDeco", waitSelector, this.gameObject,
+            new Decorator_Blackboard<AIStateType>("WaitDeco", CreateWaitCondition(), this.gameObject,
             blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
             Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
             "AIStateType", AIStateType.Wait);
 
-      
+
 
         // 타겟으로 이동
         SequenceNode approachSequence = new SequenceNode();
@@ -261,7 +267,7 @@ public class BTAIController_Melee : BTAIController
         Decorator_Blackboard<AIStateType> patrolDeco =
          new Decorator_Blackboard<AIStateType>("PatrolDeco", patrolSequence, this.gameObject,
          blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
-            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft, 
+            Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
             "AIStateType", AIStateType.Patrol);
 
         // 공격 
@@ -279,12 +285,13 @@ public class BTAIController_Melee : BTAIController
 
         attackSequence.AddChild(equipNode);
         attackSequence.AddChild(actionNode);
-        attackSequence.AddChild(attackWaitNode);
-       // attackSequence.AddChild(actionEnd);
+        attackSequence.AddChild(CreateWaitCondition());
+        // attackSequence.AddChild(actionEnd);
 
         Decorator_Blackboard<AIStateType> attackDeco =
             new Decorator_Blackboard<AIStateType>("ActionDeco",
-            attackSequence, this.gameObject, blackboard, Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
+            attackSequence, this.gameObject, blackboard, 
+            Decorator_Blackboard<AIStateType>.NotifyObserver.OnResultChange,
             Decorator_Blackboard<AIStateType>.ObserveAborts.Selft,
             "AIStateType",
             AIStateType.Action);
@@ -325,7 +332,7 @@ public class BTAIController_Melee : BTAIController
         base.SetWaitMode(isDamaged);
 
         //waitCondition = WaitCondition.Idle;
-        if(isDamaged == false)
+        if (isDamaged == false)
             DeicideWaitCondition();
     }
 
@@ -334,6 +341,25 @@ public class BTAIController_Melee : BTAIController
         base.SetPatrolMode();
 
         NavMeshUpdateRotationSet();
+    }
+
+    public override void SetApproachMode()
+    {
+        if(CheckTargetArround() == false)
+        {
+            SetWaitMode();
+
+            return; 
+        }
+
+        base.SetApproachMode();
+    }
+
+    protected override void ChangeWaitCondition(WaitCondition condition)
+    {
+        base.ChangeWaitCondition(condition);
+
+        blackboard.SetValue("WaitCondition", condition);
     }
 
     private void DeicideWaitCondition()
@@ -345,7 +371,6 @@ public class BTAIController_Melee : BTAIController
 
         int num = Random.Range(1, maxConditionValue);
 
-
         WaitCondition codition = (WaitCondition)num;
         Debug.Log($"Decide Wait Condtion  {codition}");
 
@@ -355,56 +380,100 @@ public class BTAIController_Melee : BTAIController
             SetWaitState_IdleCondition();
             break;
 
-            case WaitCondition.Backward:
-            //SetWaitState_StrafeCondition();
-            SetWaitState_BackwardCondition();
-            break;
-
             case WaitCondition.Strafe:
             NavMeshUpdateRotationSet();
             SetWaitState_StrafeCondition();
             break;
 
+            case WaitCondition.Backward:
+            SetWaitState_BackwardCondition();
+            break;
+
+
             default:
-                SetWaitState_IdleCondition();
+            SetWaitState_IdleCondition();
             break;
         }
 
     }
 
 
-    // 배회 경로 상에 무언가가 있는지 체크 
-    private bool CheckSafetyProwl()
+    // 대상의 일정 범위 내에 무언가가 있고 그 상태를 체크 후에 그에대 갈지 말지를 결정한다.
+    private bool CheckTargetArround()
     {
-        Vector3 position = transform.position;
-        Vector3 behindPos = -transform.forward;
-        Vector3 castStartPosition = position + behindPos * 0.5f; 
-        
-        RaycastHit[] hits = Physics.BoxCastAll(castStartPosition, transform.lossyScale, behindPos,
-            transform.rotation, 1.0f);
 
-        int otherCount = 0;
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.transform.gameObject == this.gameObject)
-                continue;
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
-                continue;
-
-            //Debug.Log($"{hit.transform.name}");
-            otherCount++;
-        }
-
-        if (otherCount != 0)
+        GameObject player = perception.GetPercievedPlayer();
+        if (player == null)
             return false;
 
-        return true; 
+        Vector3 targetPosition = player.transform.position;
+
+        // 1. 대상과 나 사이에 무언가가 있는지 검사
+        Vector3 position = transform.position;
+        Vector3 direction = targetPosition - position;
+        direction.Normalize();
+        direction.y += 1;
+        // 해당 방향으로 레이 발사 
+        RaycastHit[] candidates = Physics.RaycastAll(position, direction);
+        foreach (RaycastHit c in candidates)
+        {
+            if (c.transform.gameObject == player)
+                continue;
+            if(c.transform.gameObject == this.gameObject)
+                continue;
+            if (c.transform.gameObject.layer == LayerMask.GetMask("Ground"))
+                continue;
+
+            // 충돌된 다른 무언가가 있다면 해당 경로로는 추격을 금지
+            Debug.Log("대상으로 향하는 방향에 장애물 있음");
+            return false; 
+        }
+
+        // 2. 대상 주변 검사 
+        Collider[] colliders = Physics.OverlapSphere(targetPosition, attackRange);
+
+        foreach (Collider collider in colliders)
+        {
+            // 대상 주변에 내 공격 범위 만큼 측정했을 때 State 가진 무언가가 존재한다면?
+            if (collider.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                // 그 적의 행위 계산 
+                if (enemy.TryGetComponent<StateComponent>(out StateComponent state))
+                {
+                    // 공격하고 있다면 난 안할래 
+                    if (state.ActionMode)
+                    {
+                        Debug.Log("대상으로 주변에 무언가가 이미 공격 중");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        Debug.Log("대상으로 추격이 온전히 가능 ");
+        return true;
     }
+
+
+    protected override void OnBeginDoAction()
+    {
+        base.OnBeginDoAction();
+
+        DeicideWaitCondition();
+    }
+
+    protected override void OnEndDoAction()
+    {
+        base.OnEndDoAction();
+
+    }
+
 
     private void OnDestination(Vector3 destination)
     {
         dest = destination;
     }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

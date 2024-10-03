@@ -27,7 +27,7 @@ namespace AI.BT.CustomBTNodes
         }
 
         protected NotifyObserver notifyObserver;
-        protected ObserveAborts aborts;
+        protected ObserveAborts observerAborts;
         protected BB_KeyQuery keyQuery;
 
         private T key;
@@ -43,7 +43,7 @@ namespace AI.BT.CustomBTNodes
             base(nodeName, childNode, owner, blackboard, boardKey /*key, keyQuery*/)
         {
             this.notifyObserver = notifyObserver;
-            this.aborts = observeAborts;
+            this.observerAborts = observeAborts;
             this.keyQuery = keyQuery;
             this.key = key;
 
@@ -116,13 +116,17 @@ namespace AI.BT.CustomBTNodes
             if (changedKey != boardKey)
                 return;
 
+            if (observerAborts == ObserveAborts.None)
+                return;
+
             bool newResult = CompareValueToQuery<T>(changedKey) == false;
             
-            if (changedKey == "AIState")
+            if (changedKey == "DragonPattern")
             {
                 var value = blackboard.GetValue<T>(changedKey);
                 Debug.Log($"{nodeName} +  Examine {value} / {key}");
             }
+
             if (prevResult != newResult)
             {
                 prevResult = newResult;
@@ -148,6 +152,11 @@ namespace AI.BT.CustomBTNodes
                 var value = blackboard.GetValue<T>(changedKey);
                 Debug.Log($"{nodeName} +  Examine {value} / {key}");
             }
+
+            // 중단을 아무것도 안시킨다면 여기서 로직 종료
+            if (observerAborts == ObserveAborts.None)
+                return; 
+
             // 비교 했을 때 다르다면?
             if (CompareValueToQuery<T>(changedKey) == false)
             {

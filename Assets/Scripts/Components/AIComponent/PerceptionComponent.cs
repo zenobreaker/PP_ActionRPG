@@ -92,6 +92,7 @@ public class PerceptionComponent : MonoBehaviour
 
         Vector3 direction = position - owner.transform.position;
         float radius = owner.transform.FindGreaterBounds().magnitude * 0.5f;
+        direction.y = owner.transform.position.y + radius;
         Collider[] colliders = Physics.OverlapSphere(direction, radius);
         int myLayer = owner.layer;
 
@@ -102,6 +103,7 @@ public class PerceptionComponent : MonoBehaviour
             bDrawCheckDebug = debug;
         }
 
+
         int count = 0;
         foreach (Collider collider in colliders)
         {
@@ -109,6 +111,9 @@ public class PerceptionComponent : MonoBehaviour
                 continue;
             if (collider.gameObject.layer.Equals(myLayer))
                 continue;
+
+
+            
 
             count++; 
         }
@@ -139,8 +144,10 @@ public class PerceptionComponent : MonoBehaviour
 
         if (bDrawCheckDebug)
         {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.transform.position + debug_direction.normalized, debug_radius);
+            Gizmos.color = Color.red;
+            Vector3 sposition = transform.transform.position;
+            sposition.y = 0;
+            Gizmos.DrawWireSphere(sposition + debug_direction.normalized, debug_radius);
         }
 
 

@@ -308,7 +308,7 @@ public class WeaponComponent
     private void Begin_DoAction()
     {
         weaponTable[type].Begin_DoAction();
-        //Debug.Log("Call first?");
+        Debug.Log("Call first?");
         OnBeginDoAction?.Invoke();
     }
 

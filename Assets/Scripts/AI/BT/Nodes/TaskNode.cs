@@ -95,7 +95,7 @@ namespace AI.BT.Nodes
                     if (result == NodeState.Running)
                         ChangeActionState(ActionState.Update);
                     
-                    Debug.Log($"{nodeName} Action Node Begin {currActionState} {result}");
+                    //Debug.Log($"{nodeName} Action Node Begin {currActionState} {result}");
                     previousResult = result;
                     
                     return result;
@@ -109,7 +109,7 @@ namespace AI.BT.Nodes
                         ChangeActionState(ActionState.End);
                     
                     previousResult = result;
-                    return result;
+                    return NodeState.Running;
                 }
                 case ActionState.End:
                 {

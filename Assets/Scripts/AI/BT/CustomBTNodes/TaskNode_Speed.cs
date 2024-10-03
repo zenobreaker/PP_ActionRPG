@@ -43,7 +43,6 @@ namespace AI.BT.CustomBTNodes
                 break;
             }
 
-            ChangeActionState(ActionState.End);
             return NodeState.Success;
         }
 

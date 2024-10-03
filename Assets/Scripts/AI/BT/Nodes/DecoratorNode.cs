@@ -63,7 +63,7 @@ namespace AI.BT.Nodes
         }
 
        
-        public void AbortTask()
+        public virtual void AbortTask()
         {
             //Debug.Log($"Task Aboarted  {nodeName}");
             if (isRunning == false)

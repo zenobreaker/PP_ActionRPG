@@ -77,6 +77,7 @@ namespace AI.BT.TaskNodes
             }
 
             ResetAgent();
+            ChangeActionState(ActionState.End);
             return NodeState.Success;
         }
 
