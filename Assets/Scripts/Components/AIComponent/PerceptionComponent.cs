@@ -88,17 +88,18 @@ public class PerceptionComponent : MonoBehaviour
     public bool CheckPositionOther(GameObject owner, Vector3 position, bool debug = false)
     {
         if (owner == null)
-            return false; 
+            return false;
 
-        Vector3 direction = position - owner.transform.position;
+        Vector3 currentPosition = position;
         float radius = owner.transform.FindGreaterBounds().magnitude * 0.5f;
-        direction.y = owner.transform.position.y + radius;
-        Collider[] colliders = Physics.OverlapSphere(direction, radius);
+        currentPosition = new Vector3(currentPosition.x, currentPosition.y + radius, currentPosition.z);
+        
+        Collider[] colliders = Physics.OverlapSphere(currentPosition, radius);
         int myLayer = owner.layer;
 
         if(debug)
         {
-            debug_direction = direction;
+            debug_direction = currentPosition;
             debug_radius = radius;  
             bDrawCheckDebug = debug;
         }
@@ -108,6 +109,8 @@ public class PerceptionComponent : MonoBehaviour
         foreach (Collider collider in colliders)
         {
             if (collider.gameObject.layer.Equals(LayerMask.NameToLayer("Ground")))
+                continue;
+            if (collider.gameObject.layer.Equals(LayerMask.NameToLayer("Ignore Raycast")))
                 continue;
             if (collider.gameObject.layer.Equals(myLayer))
                 continue;

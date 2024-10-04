@@ -2633,7 +2633,7 @@ MonoBehaviour:
   attackDelayRandom: 0.25
   damageDelay: 2
   damageDelayRandom: 1
-  waitDelay: 1
+  waitDelay: 2
   waitDelayRandom: 0.5
   moveSpeed: 1
   radius: 20

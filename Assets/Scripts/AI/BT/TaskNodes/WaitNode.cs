@@ -61,13 +61,5 @@ namespace AI.BT.TaskNodes
             return NodeState.Success;
         }
 
-
-        protected override BTNode.NodeState OnEnd()
-        {
-            //Debug.Log("Wait Node End");
-             
-            return base.OnEnd();
-        }
-
     }
 }

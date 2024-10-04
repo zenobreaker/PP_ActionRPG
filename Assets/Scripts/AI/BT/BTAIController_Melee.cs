@@ -41,6 +41,11 @@ public class BTAIController_Melee : BTAIController
     {
         base.Update();
         userInterface.text += "\n" + waitCondition.ToString();
+
+        if (health.Dead)
+        {
+            btRunner.StopBehaviorTree();
+        }
     }
 
     protected override void FixedUpdate()
@@ -76,8 +81,8 @@ public class BTAIController_Melee : BTAIController
             return;
         }
 
-        if (NoneCondition)
-            SetApproachMode();
+
+        SetApproachMode();
     }
 
     protected override void LateUpdate()

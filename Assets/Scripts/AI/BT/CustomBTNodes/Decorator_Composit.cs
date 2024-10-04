@@ -32,7 +32,6 @@ namespace AI.BT.CustomBTNodes
                 return false;
 
             bool result = blackboard.CompareValue(boardKey, key);
-            //Debug.Log($"Sibal {controller.MyWaitCondition} / {key} / {result}");
             return result;
         }
 

@@ -179,7 +179,7 @@ public class Enemy :
 
         MovableStopper.Instance.Delete(this);
         MovableSlower.Instance.Delete(this);
-        //BossStageManager.Instance.SetEnemyCount(1);
+        BossStageManager.Instance.SetEnemyCount(1);
         Destroy(gameObject, 5);
     }
 

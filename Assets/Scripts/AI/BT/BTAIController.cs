@@ -239,6 +239,9 @@ public abstract class BTAIController : MonoBehaviour
 
     protected virtual void ChangeType(AIStateType type)
     {
+        if (this.type == type)
+            return; 
+
         AIStateType prevType = this.type;
         Debug.Log($"prev Type {prevType} new type : {type}");
         blackboard.SetValue("AIStateType", type);

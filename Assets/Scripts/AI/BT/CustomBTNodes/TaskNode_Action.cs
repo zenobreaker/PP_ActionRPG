@@ -31,11 +31,6 @@ namespace AI.BT.CustomBTNodes
         {
             if (action == null)
                 return NodeState.Failure;
-            if (state.IdleMode == false)
-                return NodeState.Failure;
-
-            if(currActionState != ActionState.Begin)
-                return NodeState.Failure;
 
             action.DoAction();
 

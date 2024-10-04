@@ -42,6 +42,11 @@ public class BTAIController_Dragon : BTAIController
     private Dictionary<int, DragonPattern> dragonPatternTable = new Dictionary<int, DragonPattern>();
     private int currentAttackPattern = 0;
     public int GetCurrPattern { get => currentAttackPattern; }
+    private void SetPattern(int patternID)
+    {
+        currentAttackPattern = patternID;
+        blackboard.SetValue<int>("DragonPattern", patternID);
+    }
 
     private HealthPointComponent health;
     private DragonState cur_DragonState;
@@ -284,9 +289,9 @@ public class BTAIController_Dragon : BTAIController
 
             SelectorNode strafeSelector = new SelectorNode();
 
-            TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 5.0f, waitDelay, waitDelayRandom);
+            TaskNode_Strafe strafeNode = new TaskNode_Strafe(gameObject, blackboard, 10.0f, waitDelay+4, waitDelayRandom);
             strafeNode.OnDestination += OnDestination;
-            TaskNode_Backward sfbackward = new TaskNode_Backward(gameObject, blackboard, 3.5f);
+            TaskNode_Backward sfbackward = new TaskNode_Backward(gameObject, blackboard, 5.5f);
             backward.OnDestination += OnDestination;
             WaitNode sfWaitNode2 = new WaitNode(waitDelay, waitDelayRandom);
 
@@ -646,8 +651,7 @@ public class BTAIController_Dragon : BTAIController
         // 날아 오르고 화염 
         if (health.GetCurrentHPByPercent <= 0.3f && dragonPatternTable[5].Usable)
         {
-            currentAttackPattern = 5;
-            blackboard.SetValue("DragonPattern", currentAttackPattern);
+            SetPattern(5);
             return;
         }
 
@@ -703,9 +707,7 @@ public class BTAIController_Dragon : BTAIController
         {
             if (loopCount >= maxLoopCount)
             {
-                currentAttackPattern = 0;
-                //Debug.Log($"Dragon is No {currentAttackPattern} Decided pattern");
-                blackboard.SetValue("DragonPattern", currentAttackPattern);
+                SetPattern(0);
                 patternDecideCoroutine = null;
                 SetWaitMode(false);
                 yield break;
@@ -717,9 +719,8 @@ public class BTAIController_Dragon : BTAIController
 
             if (dragonPatternTable[num].Usable)
             {
-                currentAttackPattern = num;
                 //Debug.Log($"{currentAttackPattern} Decided pattern");
-                blackboard.SetValue("DragonPattern", currentAttackPattern);
+                SetPattern(num);
                 patternDecideCoroutine = null;
                 yield break;
             }
@@ -734,8 +735,10 @@ public class BTAIController_Dragon : BTAIController
         base.OnBeginDoAction();
 
         DeicideWaitCondition();
-
-        dragonPatternTable[currentAttackPattern].SetCoolDown();
+        
+        if(dragonPatternTable.TryGetValue(currentAttackPattern, out DragonPattern pattern))
+            pattern.SetCoolDown();
+        
         if (currentAttackPattern == 5)
         {
             cur_DragonState = DragonState.Fly;
@@ -746,7 +749,7 @@ public class BTAIController_Dragon : BTAIController
     protected override void OnEndDoAction()
     {
         // 공격을 끝냈으니 패턴을 초기화
-        currentAttackPattern = 0;
+        SetPattern(0);
         SetWaitMode();
         base.OnEndDoAction();
     }

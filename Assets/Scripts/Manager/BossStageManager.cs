@@ -31,8 +31,9 @@ public class BossStageManager : MonoBehaviour
 
 
     private bool bAppearFlag = false; 
+    private bool bSpawned = false;
 
-    private int enemyCount;
+    [SerializeField] private int enemyCount;
     public void SetEnemyCount(int count)
     {
         enemyCount -= 1;
@@ -52,39 +53,22 @@ public class BossStageManager : MonoBehaviour
         //cutscene.OnBossSpawn += OnBossSpawn;
     }
 
-    private bool bSpawned = false;
     // 보스 스폰
     private AIController_Boss selctedBoss; 
-    public void SpawnBoss(int index)
-    {
-        selctedBoss = null;
-        GameObject obj = Instantiate<GameObject>(Boses[index], SpawnPoints[index].transform.position,
-            Quaternion.Euler(0, 180.0f, 0));
-        if (obj == null)
-            return;
-
-        bSpawned = true;
-        //if (obj.TryGetComponent<AIController_Boss>(out AIController_Boss boss))
-        //{
-        //    boss.CanMove = false;
-        //    selctedBoss = boss;
-        //    OnAppearBoss?.Invoke(obj);
-        //}
-
-        SetBossAppear_Dragon(obj);
-    }
-       
 
 
-    public void OnTriggerEnter(Collider other)
+
+    public void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player") == false)
             return;
+
         if (bSpawned)
             return; 
 
         if( enemyCount <= 0)
         {
+            bSpawned = true;
             //TODO: 한시적으로 고정값 전달 
             StartCoroutine(Spawn_Boss(0));
         }
@@ -109,6 +93,18 @@ public class BossStageManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         SpawnBoss(index);
     }
+    public void SpawnBoss(int index)
+    {
+      
+        selctedBoss = null;
+        GameObject obj = Instantiate<GameObject>(Boses[index], SpawnPoints[index].transform.position,
+            Quaternion.Euler(0, 180.0f, 0));
+        if (obj == null)
+            return;
+
+        SetBossAppear_Dragon(obj);
+    }
+
 
     private void OnBossSpawn()
     {
@@ -145,7 +141,7 @@ public class BossStageManager : MonoBehaviour
         if (!boss.TryGetComponent<BTAIController_Dragon>(out BTAIController_Dragon dragon))
             return;
 
-        dragon.OnEnableAI();
+        //dragon.OnEnableAI();
 
     }
 }

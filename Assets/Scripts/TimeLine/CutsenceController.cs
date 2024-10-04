@@ -17,18 +17,20 @@ public class PlayableData
 public class CutsenceController : MonoBehaviour
 {
     [SerializeField] private PlayableDirector playableDirector;
-    [SerializeField] private PlayableData[] playables;  
+    [SerializeField] private PlayableData[] playables;
     private Dictionary<string, PlayableAsset> playableDataTable;
 
 
     private CinemachineBrain brain;
     [SerializeField] private CinemachineVirtualCamera followCam;
     [SerializeField] private CinemachineVirtualCamera bossEndCam;
-    [SerializeField] private Cinemachine.NoiseSettings noise; 
+    [SerializeField] private Cinemachine.NoiseSettings noise;
     private CinemachineImpulseListener bossEndlistener;
     CinemachineBasicMultiChannelPerlin bmcp;
 
     [SerializeField] private GameObject cameraArm;
+    [SerializeField] private ParticleSystem particleSystem;
+
 
     public event Action OnCutsceneBegin;
     public event Action OnBossSpawn;
@@ -41,20 +43,20 @@ public class CutsenceController : MonoBehaviour
         {
             followCam.gameObject.SetActive(false);
         }
-        
+
         if (bossEndCam != null)
         {
             bossEndlistener = bossEndCam.GetComponent<CinemachineImpulseListener>();
-            
+
         }
 
         cameraArm = FindObjectOfType<CameraArm>().gameObject;
         playableDirector = GetComponent<PlayableDirector>();
 
         playableDataTable = new Dictionary<string, PlayableAsset>();
-        for(int i = 0; i < playables.Length; i++) 
+        for (int i = 0; i < playables.Length; i++)
         {
-            playableDataTable.Add(playables[i].name, playables[i].asset); 
+            playableDataTable.Add(playables[i].name, playables[i].asset);
         }
     }
 
@@ -64,13 +66,13 @@ public class CutsenceController : MonoBehaviour
         BossStageManager.Instance.OnAppearBoss += SetAnimationTarget;
         playableDirector.played += OnBeginTimeLinePlay;
         playableDirector.stopped += OnBossAppaerEnd;
-    }    
+    }
 
 
     // Playable 데이터 세팅 
     public void SetPlayableData(string name, bool bPlay = false)
     {
-        if(playableDataTable.TryGetValue(name, out PlayableAsset asset)) 
+        if (playableDataTable.TryGetValue(name, out PlayableAsset asset))
         {
             playableDirector.playableAsset = asset;
             if (bPlay)
@@ -82,7 +84,7 @@ public class CutsenceController : MonoBehaviour
     {
         if (playableDirector != null)
         {
-          
+
             playableDirector.Play();
         }
     }
@@ -91,7 +93,7 @@ public class CutsenceController : MonoBehaviour
     {
         if (playableDirector == null)
             return;
-        if (target == null) 
+        if (target == null)
             return;
 
         TimelineAsset timelineAsset = (TimelineAsset)playableDirector.playableAsset;
@@ -99,12 +101,12 @@ public class CutsenceController : MonoBehaviour
         var emptyAnimationTracks = FindEmptyAnimationTracksInTimeline(timelineAsset);
 
         // 트랙 중 애니메이션 트랙을 찾아 거기서 할당
-        foreach (var track  in emptyAnimationTracks)
+        foreach (var track in emptyAnimationTracks)
         {
-            if(track is AnimationTrack)
+            if (track is AnimationTrack)
             {
                 playableDirector.SetGenericBinding(track, target);
-                return; 
+                return;
             }
         }
 
@@ -125,7 +127,7 @@ public class CutsenceController : MonoBehaviour
             {
                 // 애니메이션 클립이 없는지 확인
                 //if (!animationTrack.GetClips().Any())
-                if(playableDirector.GetGenericBinding(animationTrack) == null)
+                if (playableDirector.GetGenericBinding(animationTrack) == null)
                 {
                     yield return animationTrack;
                 }
@@ -170,14 +172,14 @@ public class CutsenceController : MonoBehaviour
 
     private void OnBossAppaerEnd(PlayableDirector director)
     {
-        if(director == playableDirector)
+        if (director == playableDirector)
         {
             var currentPlayable = playableDirector.playableAsset;
             if (currentPlayable.name != "Boss_Intro_Dragon")
-                return; 
-            
+                return;
+
             OnCutSceneEnd?.Invoke();
-            
+
             // 보스엔드캠이 켜져 있다며 여기서 꺼준다. 
             bossEndCam.gameObject.SetActive(false);
         }
@@ -194,18 +196,27 @@ public class CutsenceController : MonoBehaviour
         cameraArm.SetActive(false);
         //bossEndlistener.m_ReactionSettings.m_SecondaryNoise = noise;
         bmcp = bossEndCam.AddCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        if(bmcp)
+        if (bmcp)
             bmcp.m_NoiseProfile = noise;
     }
 
     public void End_EndBoss()
     {
         cameraArm.SetActive(true);
-        
+
+        PlayParticles();
         if (bmcp == null)
             return;
-
         //bossEndlistener.m_ReactionSettings.m_SecondaryNoise = null;
         bmcp.m_NoiseProfile = null;
+    }
+
+    public void PlayParticles()
+    {
+        if (particleSystem != null && !particleSystem.isPlaying)
+        {
+            particleSystem.Play();
+        }
+
     }
 }
