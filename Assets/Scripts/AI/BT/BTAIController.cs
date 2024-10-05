@@ -308,7 +308,7 @@ public abstract class BTAIController : MonoBehaviour
 
     public void SetSpeed(float speed)
     {
-        Debug.Log($"Set Speed {speed} == ");
+        //Debug.Log($"Set Speed {speed} == ");
         if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled)
         {
             navMeshAgent.isStopped = true;  // 경로를 일시 중지

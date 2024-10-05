@@ -120,6 +120,10 @@ public class Enemy :
 
     public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
+        // 이미 죽었다면 더 이상 데미지는 무효
+        if (healthPoint.Dead)
+            return; 
+
         healthPoint.Damage(data.Power);
         if (grade == CharacterGrade.Boss)
             BossGaugeController.Instance.SetGauge(healthPoint);
@@ -171,16 +175,7 @@ public class Enemy :
         // Dead
         state.SetDeadMode();
 
-        Collider collider = GetComponent<Collider>();
-        collider.enabled = false;
-
-        if (!condition.DownCondition)
-            animator.SetTrigger(DeadTrigger);
-
-        MovableStopper.Instance.Delete(this);
-        MovableSlower.Instance.Delete(this);
-        BossStageManager.Instance.SetEnemyCount(1);
-        Destroy(gameObject, 5);
+        StartCoroutine(OnDeath());
     }
 
 
@@ -194,6 +189,35 @@ public class Enemy :
         skinMaterial.color = originColor;
     }
 
+    private IEnumerator OnDeath()
+    {
+        // 지면 위치를 찾아서 캐릭터를 바로 땅 위로 이동 
+        yield return new WaitUntil(()=>ground.IsGround);
+
+
+        Collider collider = GetComponent<Collider>();
+        collider.enabled = false;
+        rigidbody.isKinematic = true; 
+
+        if (!condition.DownCondition)
+            animator.SetTrigger(DeadTrigger);
+
+        MovableStopper.Instance.Delete(this);
+        MovableSlower.Instance.Delete(this);
+        BossStageManager.Instance.SetEnemyCount(1);
+        Destroy(gameObject, 5);
+    }
+
+    private Vector3 GetGroundPosition()
+    {
+        // Raycast 등으로 땅의 위치를 계산
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit))
+        {
+            return hit.point;
+        }
+        return transform.position; // 땅을 찾지 못하면 현재 위치를 반환
+    }
 
     private IEnumerator Change_IsKinematics(int frame)
     {
@@ -209,18 +233,7 @@ public class Enemy :
         base.End_Damaged();
 
         animator.SetInteger(HitIndex, 0);
-
-        //if (ground != null)
-        //{
-        //    if (ground.IsGround)
-        //        state.SetIdleMode();
-        //    else
-        //        condition.SetAirborneCondition();
-        //}
-        //else
-        //{
-        //}
-            state.SetIdleMode();
+        state.SetIdleMode();
 
         // ai야 너 스스로가 처리해
         aiController?.End_Damage();

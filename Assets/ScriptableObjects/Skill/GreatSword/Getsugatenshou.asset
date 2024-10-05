@@ -36,7 +36,7 @@ MonoBehaviour:
     HitParticle: {fileID: 2925219166463879683, guid: a8c7f1ab3e4494540a7183d4b8d796aa, type: 3}
     HitParticlePositionOffset: {x: 0, y: 0.5, z: 0}
     HitParticleSacleOffset: {x: 1, y: 1, z: 1}
-    HitDelayTime: 0.2
+    HitDelayTime: 0.075
   EffectParticle: {fileID: 3506193529601828011, guid: c64c734e54d727c4ba431adbebe1c2ac, type: 3}
   additionalPos: {x: 0, y: 1, z: 0}
   bSameOwner: 1

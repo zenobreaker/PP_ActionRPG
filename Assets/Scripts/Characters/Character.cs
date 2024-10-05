@@ -163,11 +163,14 @@ public abstract class Character
 
     protected virtual void Begin_GetUp()
     {
+        if (healthPoint.Dead)
+            return;
         if (state != null && state.DeadMode)
             return;
         if (condition == null)
             return;
-
+        if (condition.DownCondition == false)
+            return;
 
         condition.SetNoneConditon();
         animator.SetBool(IsDownCondition, false);

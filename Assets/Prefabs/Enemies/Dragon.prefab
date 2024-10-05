@@ -2638,7 +2638,7 @@ MonoBehaviour:
   moveSpeed: 1
   radius: 20
   patrolPoints: {fileID: 0}
-  bDrawDebug: 1
+  bDrawDebug: 0
   uiStateName: EnemyAIState
   so_blackboard: {fileID: 11400000, guid: fc93d2f35c52ed14884ca0a52b3c627a, type: 2}
   tickInterval: 0.01

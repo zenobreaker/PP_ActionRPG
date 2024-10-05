@@ -229,8 +229,8 @@ public class BTAIController_Dragon : BTAIController
         if (health.Dead == false)
             return;
 
-        if (cur_DragonState == DragonState.Fly)
-            animator.SetInteger("LastState", 3);
+        //if (cur_DragonState == DragonState.Fly)
+        //    animator.SetInteger("LastState", 3);
 
         animator.SetInteger("State", 7);
     }
@@ -593,7 +593,7 @@ public class BTAIController_Dragon : BTAIController
     {
         base.ChangeType(type);
 
-        animator.SetInteger("State", (int)cur_DragonState);
+       
     }
 
     protected override void ChangeWaitCondition(WaitCondition condition)
@@ -601,6 +601,8 @@ public class BTAIController_Dragon : BTAIController
         base.ChangeWaitCondition(condition);
 
         blackboard.SetValue("WaitCondition", condition);
+
+        animator.SetInteger("State", (int)cur_DragonState);
     }
 
 
@@ -617,13 +619,13 @@ public class BTAIController_Dragon : BTAIController
         int num = Random.Range(1, maxConditionValue);
 
 
+        cur_DragonState = DragonState.Idle;
         WaitCondition codition = (WaitCondition)num;
         //Debug.Log($"Decide Wait Condition  {codition}");
 
         switch (codition)
         {
             case WaitCondition.Idle:
-            cur_DragonState = DragonState.Idle;
             SetWaitState_IdleCondition();
             break;
 
