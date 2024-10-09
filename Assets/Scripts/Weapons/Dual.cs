@@ -70,11 +70,12 @@ public class Dual : Melee
             for (int i = 0; i < (int)PartType.Max; i++)
             {
                 colliders[i].enabled = true;
+                trail_Collisions[i].OnActivate();
             }
             return;
         }
         colliders[e.intParameter].enabled = true;
-
+        trail_Collisions[e.intParameter].OnActivate();
     }
 
     protected override void SetParticleObject(int index)

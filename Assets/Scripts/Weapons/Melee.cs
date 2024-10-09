@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UIElements;
 
 public class Melee : Weapon
@@ -16,11 +17,10 @@ public class Melee : Weapon
     [SerializeField] protected SO_Combo comboObjData;
     public SO_Combo ComboObjData { get => comboObjData; }
 
-  //  [SerializeField] private bool bDebugMode = false;
 
-    [SerializeField] protected int index;
+    [SerializeField] protected Weapon_Trail_Collision[] trail_Collisions;
 
-    protected int useSkillID = -1;
+    protected int index;
 
     protected Collider[] colliders;
     protected List<GameObject> hittedList;
@@ -34,8 +34,6 @@ public class Melee : Weapon
 
     #region Particle Offset
     [SerializeField] protected string slashTransformName = "Slash_Transform";
-    [SerializeField] GameObject startPosObj;
-    [SerializeField] GameObject endPosObj;
     #endregion
 
     [Header("Particle")]
@@ -43,11 +41,10 @@ public class Melee : Weapon
     [SerializeField] protected string[] particleTransformNames = { "StartPos", };
     protected Transform[] particleTransforms;
     protected GameObject[] trailParticles;
-
     protected Transform slashTransform;
-    protected AIController aiController;
-
     protected DoActionData currentActionData;
+
+    protected BTAIController controller;
 
     public event Action<GameObject> OnHitTarget;
 
@@ -58,11 +55,22 @@ public class Melee : Weapon
         hittedList = new List<GameObject>();
         colliders = GetComponentsInChildren<Collider>();
         Debug.Assert(colliders != null);
+        trail_Collisions = GetComponentsInChildren<Weapon_Trail_Collision>();
+        if (trail_Collisions != null)
+        {
+            foreach (var collision in trail_Collisions)
+            {
+                collision.SetRootObject(rootObject);
+                collision.OnDamage += OnDamage;
+            }
+        }
+
         impulse = GetComponent<CinemachineImpulseSource>();
 
         slashTransform = rootObject.transform.FindChildByName(slashTransformName);
 
-        aiController = GetComponent<AIController>();
+        controller = rootObject.GetComponent<BTAIController>();
+
 
         particleTransforms = new Transform[particleTransformNames.Length];
         for (int i = 0; i < particleTransformNames.Length; i++)
@@ -89,16 +97,6 @@ public class Melee : Weapon
         //Debug.Log($"{rootObject.name} = {name}");
         End_Collision();
     }
-
-    public virtual void Begin_Collision(AnimationEvent e)
-    {
-        foreach (Collider collider in colliders)
-            collider.enabled = true;
-
-
-    }
-
-    // ��ƼŬ ���� 
     protected virtual void SetParticleObject(int index)
     {
         if (particleTransforms == null)
@@ -107,14 +105,27 @@ public class Melee : Weapon
         if (particlePrefabs == null)
             return;
 
-        if (particlePrefabs.Length == 0 ||  
+        if (particlePrefabs.Length == 0 ||
             (index < 0 && index >= particlePrefabs.Length))
             return;
-        
+
         trailParticles[index] = Instantiate<GameObject>(particlePrefabs[index], particleTransforms[index]);
         trailParticles[index].transform.localPosition = Vector3.zero;
-        
+
     }
+
+    public virtual void Begin_Collision(AnimationEvent e)
+    {
+        foreach (Collider collider in colliders)
+            collider.enabled = true;
+
+        foreach (Weapon_Trail_Collision collision in trail_Collisions)
+            collision.OnActivate();
+
+
+    }
+
+
 
     private Coroutine rotateCoroutine;
     public virtual void End_Collision()
@@ -122,7 +133,10 @@ public class Melee : Weapon
         foreach (Collider collider in colliders)
             collider.enabled = false;
 
-        float angle = -2.0f; 
+        foreach (Weapon_Trail_Collision collision in trail_Collisions)
+            collision.OnInactivate();
+
+        float angle = -2.0f;
         GameObject candidate = null;
 
         foreach (GameObject hit in hittedList)
@@ -139,11 +153,11 @@ public class Melee : Weapon
             if (dot < 0.75f || dot < angle)
                 continue;
 
-            angle = dot; 
+            angle = dot;
             candidate = hit;
         }
 
-        if(candidate != null)
+        if (candidate != null)
         {
             Vector3 direction = candidate.transform.position - rootObject.transform.position;
             direction.Normalize();
@@ -161,6 +175,7 @@ public class Melee : Weapon
         DeleteParticle();
     }
 
+
     IEnumerator RotateToTarget(Quaternion rotation)
     {
         // ȸ�� �ӵ�
@@ -172,12 +187,12 @@ public class Melee : Weapon
         {
             elapasedTime += Time.deltaTime;
             // ���� ȸ���� ��ǥ ȸ���� ���� �����մϴ�.
-            rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, rotation, (elapasedTime * rotationSpeed)/duration);
+            rootObject.transform.rotation = Quaternion.Slerp(rootObject.transform.rotation, rotation, (elapasedTime * rotationSpeed) / duration);
             float differ = Quaternion.Angle(rootObject.transform.rotation, rotation);
-            if(differ < 2.0f )
+            if (differ < 2.0f)
             {
                 rootObject.transform.rotation = rotation;
-                yield break; 
+                yield break;
             }
 
             // ���� �������� ��ٸ��ϴ�.
@@ -263,7 +278,7 @@ public class Melee : Weapon
 
         if (state.IdleMode == false)
             return;
-        
+
         base.DoAction(bNext);
     }
 
@@ -277,7 +292,7 @@ public class Melee : Weapon
 
         ComboData comboData = comboObjData.GetComboDataByRewind(index);
         if (comboData == null)
-            return; 
+            return;
 
         //if (isAnimating)
         //    return;
@@ -319,7 +334,7 @@ public class Melee : Weapon
         isAnimating = false;
         index++;
         index %= (doActionDatas.Length);
-      
+
         if (bExist == false)
             return;
 
@@ -333,10 +348,10 @@ public class Melee : Weapon
     public override void End_DoAction()
     {
         base.End_DoAction();
-        
+
         comboObjData?.OnChangeCombo(index);
-        
-        isAnimating = false; 
+
+        isAnimating = false;
         index = 0;
         bEnable = false;
 
@@ -400,6 +415,12 @@ public class Melee : Weapon
 
         hittedList.Add(other.gameObject);
 
+        OnDamage(other);
+    }
+
+
+    protected void OnDamage(Collider other)
+    {
         IDamagable damagable = other.GetComponent<IDamagable>();
 
         // hit Sound Play
@@ -422,23 +443,22 @@ public class Melee : Weapon
         }
 
 
-        
+
         hitPoint = enabledCollider.ClosestPoint(other.transform.position);
-        
+
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
         damagable.OnDamage(rootObject, this, hitPoint, currentActionData);
         OnHitTarget?.Invoke(other.gameObject);
-        if (aiController == null)
+        if (controller == null)
             Play_Impulse();
     }
-
 
     protected bool CheckPlayerToForward()
     {
         Vector3 forward = rootObject.transform.forward;
         Vector3 toRefer = (forward - rootObject.transform.up).normalized;
-        
+
         float dot = Vector3.Dot(toRefer, forward);
 
         if (dot < 0)
@@ -469,15 +489,12 @@ public class Melee : Weapon
         Vector3 initPos = this.transform.position.normalized;
         Vector3 slashPos = slashTransform.position.normalized;
 
-        // ������ ������ �̿��Ͽ� ������ ���մϴ�.
         float dotProduct = Vector3.Dot(initPos, slashPos);
         float angle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg; // ������ ������ ��ȯ�մϴ�.
         Vector3 referVec = slashTransform.forward;
         Vector3 dirVec = transform.position - slashTransform.transform.position;
-        // ���� ������Ʈ�� ���� ���Ϳ� Ÿ�� ������Ʈ�� ���ϴ� ������ ũ�ν� ���δ�Ʈ ���
         Vector3 crossProdut = Vector3.Cross(referVec, dirVec);
         VFXController vfx = obj.GetComponent<VFXController>();
-        // ũ�ν� ���δ�Ʈ�� y���� ������� ���������� ������ ����
         if (vfx != null)
             vfx.ControllParticleSystem(crossProdut.y > 0);
 

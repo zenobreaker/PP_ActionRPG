@@ -298,9 +298,7 @@ public abstract class Weapon : MonoBehaviour
         {
             Vector3 hitPoint = Vector3.zero;
 
-            // ���� �� ��ǥ 
             hitPoint = other.transform.position + skillData.HitParticlePositionOffset;
-            // ���࿭ ���ؼ� ���� �� ��ǥ�� �Ұ��ؼ� ������ǥ�� ��ȯ
             hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
             damage?.OnDamage(rootObject, this, hitPoint, skillData);

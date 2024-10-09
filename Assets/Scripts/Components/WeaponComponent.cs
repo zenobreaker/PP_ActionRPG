@@ -24,6 +24,10 @@ public class WeaponComponent
     private WeaponType type = WeaponType.Unarmed;
     public WeaponType Type { get => type; }
 
+    private bool bInSkillAction = false;
+    public bool InSkillAction { get => bInSkillAction; private set => bInSkillAction = value; }
+
+
     public event Action<WeaponType, WeaponType> OnWeaponTypeChanged; 
     public event Action<SO_Combo> OnWeaponTypeChanged_Combo; 
    
@@ -308,7 +312,6 @@ public class WeaponComponent
     private void Begin_DoAction()
     {
         weaponTable[type].Begin_DoAction();
-        Debug.Log("Call first?");
         OnBeginDoAction?.Invoke();
     }
 
@@ -400,11 +403,13 @@ public class WeaponComponent
 
     public void BeginSkillAction()
     {
+        InSkillAction = true; 
         weaponTable[type].Begin_SkillAction();
     }
 
     public void EndSkillAction()
     {
+        InSkillAction = false;
         End_DoAction();
         weaponTable[type].End_SkillAciton();
     }

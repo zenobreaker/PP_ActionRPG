@@ -15,9 +15,9 @@ MonoBehaviour:
   comboDatas:
   - comboIndex: 0
     ComboName: Dual_Combo_1
-    lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.5
-    comboMaintainTime: 0.2
+    lastComboCheckTime: 0
+    lastInputCheckTime: 0.25
+    comboMaintainTime: 0.25
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -37,9 +37,9 @@ MonoBehaviour:
       Particle: {fileID: 0}
   - comboIndex: 1
     ComboName: Dual_Combo_2
-    lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.5
-    comboMaintainTime: 1
+    lastComboCheckTime: 0.5
+    lastInputCheckTime: 0.85
+    comboMaintainTime: 0.1
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
     ComboName: Dual_Combo_3
     lastComboCheckTime: 0.1
     lastInputCheckTime: 0.5
-    comboMaintainTime: 1
+    comboMaintainTime: 0.1
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -83,7 +83,7 @@ MonoBehaviour:
     ComboName: Dual_Combo_4
     lastComboCheckTime: 0.1
     lastInputCheckTime: 0.5
-    comboMaintainTime: 1
+    comboMaintainTime: 0.1
     doActionData:
       bDownable: 1
       bLauncher: 1

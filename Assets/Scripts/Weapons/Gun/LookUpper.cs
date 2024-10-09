@@ -38,12 +38,12 @@ public class LookUpper : MonoBehaviour
                     if (gun.SubAction)
                     {
 
-                        // Ä«¸Ş¶óÀÇ Àü¹æ º¤ÅÍ¸¦ °¡Á®¿Í¼­ LookRotation »ç¿ë
+                        // ì¹´ë©”ë¼ì˜ ì „ë°© ë²¡í„°ë¥¼ ê°€ì ¸ì™€ì„œ LookRotation ì‚¬ìš©
                         Vector3 forward = arm.GetRifleForward();
 
                         Quaternion spineTargetRotation = Quaternion.LookRotation(forward);
 
-                        // ¸öÃ¼ÀÇ È¸ÀüÀ» ±âÁØÀ¸·Î »óÃ¼ È¸ÀüÀ» º¸Á¤
+                        // ëª¸ì²´ì˜ íšŒì „ì„ ê¸°ì¤€ìœ¼ë¡œ ìƒì²´ íšŒì „ì„ ë³´ì •
                         Quaternion relativeRotation = Quaternion.Inverse(transform.rotation) * spineTargetRotation;
                         playerSpine.localRotation = relativeRotation;
                     }

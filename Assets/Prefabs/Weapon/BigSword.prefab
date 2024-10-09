@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: StartPos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3500354102378999462}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.025, y: 1.655, z: 0}
+  m_LocalPosition: {x: -0.025, y: 1.843, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43,7 +43,8 @@ GameObject:
   - component: {fileID: 2955602430816688295}
   - component: {fileID: 1875147668764477981}
   - component: {fileID: 6466081912068433141}
-  m_Layer: 0
+  - component: {fileID: 6754473755708211234}
+  m_Layer: 12
   m_Name: BigSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -163,10 +164,9 @@ MonoBehaviour:
   subActionDatas: []
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 6914b112c1edd524286736885d955764, type: 2}
-  index: 0
+  trail_Collisions:
+  - {fileID: 6754473755708211234}
   slashTransformName: Slash_Transform
-  startPosObj: {fileID: 3500354102378999462}
-  endPosObj: {fileID: 9207627373608812441}
   particlePrefabs:
   - {fileID: 6275266010445765594, guid: 0be8d7759937af04e88d7921bdfc9ab1, type: 3}
   particleTransformNames:
@@ -225,6 +225,21 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &6754473755708211234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3562533772447042769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc87d421bb2165449ac7a9a6e8609ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsuleRadius: 0.8
+  startPoint: {fileID: 7795492082553254052}
+  endPoint: {fileID: 7842494622757978048}
 --- !u!1 &8833299369255377109
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +337,7 @@ GameObject:
   m_Layer: 0
   m_Name: EndPos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -334,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9207627373608812441}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.185, z: 0}
+  m_LocalPosition: {x: 0, y: -0.295, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

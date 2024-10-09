@@ -16,7 +16,7 @@ MonoBehaviour:
   - comboIndex: 0
     ComboName: Gun_Combo1
     lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.3
+    lastInputCheckTime: 0.25
     comboMaintainTime: 0.2
     doActionData:
       bDownable: 0
@@ -38,8 +38,8 @@ MonoBehaviour:
   - comboIndex: 1
     ComboName: Gun_Combo2
     lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.3
-    comboMaintainTime: 1
+    lastInputCheckTime: 0.25
+    comboMaintainTime: 0.25
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -60,8 +60,8 @@ MonoBehaviour:
   - comboIndex: 2
     ComboName: Gun_Combo3
     lastComboCheckTime: 0.1
-    lastInputCheckTime: 0.3
-    comboMaintainTime: 1
+    lastInputCheckTime: 0.25
+    comboMaintainTime: 0.25
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -82,8 +82,8 @@ MonoBehaviour:
   - comboIndex: 3
     ComboName: Gun_Combo4
     lastComboCheckTime: 0.1
-    lastInputCheckTime: 1
-    comboMaintainTime: 1.75
+    lastInputCheckTime: 0.75
+    comboMaintainTime: 0.25
     doActionData:
       bDownable: 0
       bLauncher: 0

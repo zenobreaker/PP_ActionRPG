@@ -17,7 +17,7 @@ MonoBehaviour:
     ComboName: Hammer_Combo1
     lastComboCheckTime: 0.1
     lastInputCheckTime: 0.63
-    comboMaintainTime: 1
+    comboMaintainTime: 0.5
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     ComboName: Hammer_Combo2
     lastComboCheckTime: 0.1
     lastInputCheckTime: 0.62
-    comboMaintainTime: 1
+    comboMaintainTime: 0.5
     doActionData:
       bDownable: 0
       bLauncher: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
     ComboName: Hammer_Combo3
     lastComboCheckTime: 0.1
     lastInputCheckTime: 0.61
-    comboMaintainTime: 1
+    comboMaintainTime: 0.5
     doActionData:
       bDownable: 1
       bLauncher: 0

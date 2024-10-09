@@ -25,6 +25,7 @@ public class DashComponent : MonoBehaviour
     //[SerializeField] private string sprintAnimName = ""; // 스프린트 애니메이션 
 
     private PlayerMovingComponent moving;
+    private ConditionComponent condition;
     private StateComponent state;
 
     private bool bTargetMode;
@@ -43,7 +44,8 @@ public class DashComponent : MonoBehaviour
         animator = GetComponent<Animator>();
         moving = GetComponent<PlayerMovingComponent>();
         Debug.Assert(moving != null);
-        
+
+        condition = GetComponent<ConditionComponent>();
         state = GetComponent<StateComponent>();
         Debug.Assert(state != null);
         state.OnStateTypeChanged += OnStateTypeChanged;
@@ -52,6 +54,9 @@ public class DashComponent : MonoBehaviour
 
     public void DoAction_Dash(Vector3 direction)
     {
+        if (condition != null && condition.DownCondition)
+            return;
+
         StopAllCoroutines();
         StartCoroutine(Start_Dash(direction));
     }
@@ -63,8 +68,8 @@ public class DashComponent : MonoBehaviour
 
         //TODO: 애니메이션이 어색하면 구간 시간을 조금씩 느리게 흘러가게 해볼까
         if (bBegin)
-        { 
-     
+        {
+
             Debug.Log($"현재 이름 :  {stateInfo.shortNameHash}");
             if (stateInfo.normalizedTime >= 0.5f && stateInfo.normalizedTime <= 0.6f)
             {
@@ -86,7 +91,7 @@ public class DashComponent : MonoBehaviour
         distance = Vector3.Distance(targetPos, transform.position);
 
         float resultTime = distance / dashSpeed;
-        Debug.Log($"최종 걸리는 시간 {resultTime}");
+        //Debug.Log($"최종 걸리는 시간 {resultTime}");
 
         moving.Stop();
         //AdjustingAnimation(true);
@@ -104,9 +109,9 @@ public class DashComponent : MonoBehaviour
             if (time - startTime >= resultTime)
                 break;
         }
-        
-        Debug.Log("대쉬 종료");
-        
+
+        //Debug.Log("대쉬 종료");
+
         //AdjustingAnimation(false);
         moving.Move();
         //TODO: Test
@@ -159,7 +164,7 @@ public class DashComponent : MonoBehaviour
                     }
                 }
 
-                if(value.magnitude == 0.0f)
+                if (value.magnitude == 0.0f)
                     direction = EvadeDirection.Backward;
 
                 //// 회피 동작 실행
@@ -169,7 +174,7 @@ public class DashComponent : MonoBehaviour
                 Vector3 dir = Vector3.zero;
                 if (direction == EvadeDirection.Forward)
                     dir = Vector3.forward;
-                else if(direction == EvadeDirection.Backward)
+                else if (direction == EvadeDirection.Backward)
                     dir = Vector3.back;
 
                 DoAction_Dash(dir);

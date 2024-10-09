@@ -366,10 +366,8 @@ MonoBehaviour:
     Particle: {fileID: 6436963888938637340, guid: 7345f2bac093bf24a84a538f3b00cce7, type: 3}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: efbd23f3bdf9d234b8a9b7e0feb46e81, type: 2}
-  index: 0
+  trail_Collisions: []
   slashTransformName: Slash_Transform
-  startPosObj: {fileID: 0}
-  endPosObj: {fileID: 0}
   particlePrefabs:
   - {fileID: 5271631783490035935, guid: 924492f25c4cdcc43ac2dd20a42581fe, type: 3}
   - {fileID: 5271631783490035935, guid: 924492f25c4cdcc43ac2dd20a42581fe, type: 3}

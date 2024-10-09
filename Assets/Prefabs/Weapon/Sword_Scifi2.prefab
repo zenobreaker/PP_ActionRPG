@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: EndPos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4535424573569921740}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.182, z: 0}
+  m_LocalPosition: {x: 0, y: 0.679, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43,7 +43,7 @@ GameObject:
   m_Layer: 0
   m_Name: StartPos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -55,7 +55,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5206477538750415318}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.44, z: 0}
+  m_LocalPosition: {x: 0, y: -0.842, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -74,7 +74,8 @@ GameObject:
   - component: {fileID: 2275344105972751802}
   - component: {fileID: 6581424627428618029}
   - component: {fileID: 4428589776670971191}
-  m_Layer: 0
+  - component: {fileID: 4499758206079811738}
+  m_Layer: 12
   m_Name: Sword_Scifi2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,10 +211,9 @@ MonoBehaviour:
     Particle: {fileID: 0}
   isAnimating: 0
   comboObjData: {fileID: 11400000, guid: 4626d0966bfb0304f906846fa073cbe9, type: 2}
-  index: 0
+  trail_Collisions:
+  - {fileID: 4499758206079811738}
   slashTransformName: Slash_Transform
-  startPosObj: {fileID: 5206477538750415318}
-  endPosObj: {fileID: 4535424573569921740}
   particlePrefabs:
   - {fileID: 5434334610164639469, guid: c169ae8fa0c178b40b6d0200f0837d49, type: 3}
   particleTransformNames:
@@ -273,6 +273,21 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &4499758206079811738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6619808094151676039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc87d421bb2165449ac7a9a6e8609ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsuleRadius: 0.5
+  startPoint: {fileID: 5173147342901345486}
+  endPoint: {fileID: 4619793776914643882}
 --- !u!1 &9176130245622290527
 GameObject:
   m_ObjectHideFlags: 0

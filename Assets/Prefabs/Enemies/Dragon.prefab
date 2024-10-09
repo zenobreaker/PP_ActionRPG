@@ -2473,7 +2473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f46acc9baeb21147a4d7cc0a7f8a09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealthPoint: 500
+  maxHealthPoint: 700
   uiPlayerName: 
   uiEnemyName: EnemyHealthBar
 --- !u!114 &3988132422297725819

@@ -204,7 +204,8 @@ public class Enemy :
 
         MovableStopper.Instance.Delete(this);
         MovableSlower.Instance.Delete(this);
-        BossStageManager.Instance.SetEnemyCount(1);
+        if(BossStageManager.Instance != null)
+            BossStageManager.Instance.SetEnemyCount(1);
         Destroy(gameObject, 5);
     }
 

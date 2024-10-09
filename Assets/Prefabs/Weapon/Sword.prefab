@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 5561285524350182010}
   - component: {fileID: 2588985942839884550}
   - component: {fileID: 7114741318296942556}
+  - component: {fileID: 4687242026192632195}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -198,10 +199,8 @@ MonoBehaviour:
   subActionDatas: []
   isAnimating: 0
   comboObjData: {fileID: 0}
-  index: 0
+  trail_Collisions: []
   slashTransformName: Slash_Transform
-  startPosObj: {fileID: 0}
-  endPosObj: {fileID: 0}
   particlePrefabs: []
   particleTransformNames:
   - StartPos
@@ -221,3 +220,18 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4687242026192632195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5561285524350418522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc87d421bb2165449ac7a9a6e8609ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capsuleRadius: 0.5
+  startPoint: {fileID: 0}
+  endPoint: {fileID: 0}

@@ -144,6 +144,7 @@ public class Player
 
     public void OnDamage(GameObject attacker, Weapon causer, Vector3 hitPoint, ActionData data)
     {
+
         if (isInvicible)
             return;
 
@@ -154,11 +155,14 @@ public class Player
             return;
         }
 
+
         OnDamaged?.Invoke();
 
         healthPoint.Damage(data.Power);
 
-        // MovableStopper.Instance.Start_Delay(data.StopFrame);
+        // 스킬 액션 중이라면 데미지만 닳도록
+        if (weapon != null && weapon.InSkillAction)
+            return; 
 
         if (data.HitParticle != null)
         {

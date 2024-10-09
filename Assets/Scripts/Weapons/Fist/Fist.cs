@@ -204,13 +204,11 @@ public class Fist : Melee
 
         Vector3 hitPoint = Vector3.zero;
 
-        // ���� �� ��ǥ 
         hitPoint = other.transform.position;
-        // ���࿭ ���ؼ� ���� �� ��ǥ�� �Ұ��ؼ� ������ǥ�� ��ȯ
         hitPoint = other.transform.InverseTransformPoint(hitPoint);
 
         damagable.OnDamage(rootObject, this, hitPoint, subActionDatas[0]);
-        if (aiController == null)
+        if (controller == null)
             Play_Impulse(subActionDatas[0]);
 
     }
@@ -302,7 +300,7 @@ public class Fist : Melee
         switch (currSkillData.skillName)
         {
             case "PowerSpike":
-            Debug.Log("��ų ��?");
+
             // PerceptFrontViewNearEnemy();
             break;
         }

@@ -58,7 +58,11 @@ public class ComboComponent : MonoBehaviour
         uiCanvas = GameObject.Find(canvasName).GetComponent<Canvas>();
         Debug.Assert(uiCanvas != null);
         comboInputUIPrefab = Resources.Load<GameObject>(comboInputUIName);
-        comboInputBase = uiCanvas.transform.FindChildByName(inputBaseName).gameObject;
+        var targetTransform = uiCanvas.transform.FindChildByName(inputBaseName);
+        if(targetTransform != null)
+        {
+            comboInputBase = targetTransform.gameObject;
+        }
         var uiGauge = uiCanvas.transform.FindChildByName(comboMaintainGaugeName);
         Debug.Assert(uiGauge != null);
         if(uiGauge != null)
@@ -84,7 +88,7 @@ public class ComboComponent : MonoBehaviour
         ResetCombo();
 
 
-        comboMaintainTimeGauge.InitializeGauge(comboMaintainTime);
+        comboMaintainTimeGauge?.InitializeGauge(comboMaintainTime);
 
     }
 
@@ -113,12 +117,12 @@ public class ComboComponent : MonoBehaviour
     {
         if (bDebugDraw == false)
         {
-            comboMaintainTimeGauge.gameObject.SetActive(false);
+            comboMaintainTimeGauge?.gameObject.SetActive(false);
             return;
         }
 
-        comboMaintainTimeGauge.gameObject.SetActive(true);
-        comboMaintainTimeGauge.SetValue(curr_MaintainTime);
+        comboMaintainTimeGauge?.gameObject.SetActive(true);
+        comboMaintainTimeGauge?.SetValue(curr_MaintainTime);
     }
 
     #endregion
@@ -130,6 +134,12 @@ public class ComboComponent : MonoBehaviour
 
     private void ExecuteAttack(ref InputElement inputElement)
     {
+        if(weapon.Type == WeaponType.FireBall)
+        {
+            weapon.DoAction();
+            return; 
+        }
+
         if (currComboObj == null)
             return;
 
@@ -246,6 +256,7 @@ public class ComboComponent : MonoBehaviour
         // 진행했던 애니메이션이 끝나고 이곳을 호출하게 되면 종료자를 호출한다. 
         comboMaintainCoroutine = StartCoroutine(ComboMaintainCoroutine());
     }
+
 
     private void ResetCombo()
     {
