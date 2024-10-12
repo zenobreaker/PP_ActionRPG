@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -95,6 +96,9 @@ public class Melee : Weapon
         }
 
         //Debug.Log($"{rootObject.name} = {name}");
+        foreach (Weapon_Trail_Collision collision in trail_Collisions)
+            collision.OnInactivate();
+
         End_Collision();
     }
     protected virtual void SetParticleObject(int index)
@@ -118,10 +122,11 @@ public class Melee : Weapon
     {
         foreach (Collider collider in colliders)
             collider.enabled = true;
+        
+        hittedList.Clear();
 
         foreach (Weapon_Trail_Collision collision in trail_Collisions)
             collision.OnActivate();
-
 
     }
 
@@ -300,6 +305,16 @@ public class Melee : Weapon
         //isAnimating = true;
 
         this.index = index %= (doActionDatas.Length);
+        Debug.Log($"current index {this.index}");
+        if (trail_Collisions != null)
+        {
+            foreach (var collision in trail_Collisions)
+            {
+                collision.bDebug = (this.index >= 3);
+                //collision.bDebug = true;
+            }
+        }
+
         animator.Play(comboData.GetComboName);
         currentActionData = comboData.doActionData;
 
@@ -411,6 +426,9 @@ public class Melee : Weapon
             return;
 
         if (currentActionData == null)
+            return;
+
+        if (trail_Collisions != null)
             return;
 
         hittedList.Add(other.gameObject);

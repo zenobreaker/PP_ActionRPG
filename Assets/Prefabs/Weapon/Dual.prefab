@@ -43,7 +43,7 @@ GameObject:
   m_Layer: 12
   m_Name: EndPos_Collision
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -374,6 +374,7 @@ MonoBehaviour:
   capsuleRadius: 0.1
   startPoint: {fileID: 901619061141593843}
   endPoint: {fileID: 3787919264298705437}
+  bDebug: 0
 --- !u!1 &3359446207850369746
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,6 +454,7 @@ MonoBehaviour:
   capsuleRadius: 0.1
   startPoint: {fileID: 7901729879618992874}
   endPoint: {fileID: 377423035532243069}
+  bDebug: 0
 --- !u!1 &4068031007133570025
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,7 +498,7 @@ GameObject:
   m_Layer: 12
   m_Name: EndPos_Collision
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
