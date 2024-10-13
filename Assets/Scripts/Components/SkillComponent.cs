@@ -21,6 +21,7 @@ public class SkillComponent : MonoBehaviour
     private Dictionary<string, float> skillCooldownTimerTable;
     private Dictionary<string, string> skillInputTable;
 
+    public SkillEvent skillEvent;
     private void Awake()
     {
         skillInputTable = new Dictionary<string, string>
@@ -39,7 +40,9 @@ public class SkillComponent : MonoBehaviour
         weapon = GetComponent<WeaponComponent>();
         Debug.Assert(weapon != null);
         weapon.OnWeaponTypeChanged += OnWeaponTypeChanged;
-        
+
+        skillEvent = SkillEventHelpers.CreateSkillEvent("SkillEvent");
+
         Awake_SkillData();
 
         skillCooldownTimerTable = new Dictionary<string, float>();
@@ -62,7 +65,7 @@ public class SkillComponent : MonoBehaviour
         if (skillCooldownTimerTable == null)
             return; 
 
-        // ƒ¥ŸøÓ ≈∏¿Ã∏” æ˜µ•¿Ã∆Æ
+        // Ïø®Îã§Ïö¥ ÌÉÄÏù¥Î®∏ ÏóÖÎç∞Ïù¥Ìä∏
         var keys = new List<string>(skillCooldownTimerTable.Keys);
         foreach (var key in keys)
         {
@@ -73,7 +76,15 @@ public class SkillComponent : MonoBehaviour
         }
     }
 
-    // Ω∫≈≥ Ω««‡ 
+    private void LateUpdate()
+    {
+        if (skillEvent == null || currentSkill == null)
+            return;
+
+        skillEvent?.OnCoolDown(skillCooldownTimerTable[skillInputTable["Skill1"]]);
+    }
+
+    // Ïä§ÌÇ¨ Ïã§Ìñâ 
     public void DoSkillAction(string skillInput, Weapon weapon)
     {
         if (weapon == null)
@@ -93,10 +104,10 @@ public class SkillComponent : MonoBehaviour
             float currentCooldown = skillCooldownTimerTable[skillName];
             if (currentCooldown <= 0f)
             {
-                // Ω∫≈≥ Ω««‡ ∑Œ¡˜
+                // Ïä§ÌÇ¨ Ïã§Ìñâ Î°úÏßÅ
                 ExecuteSkill(skillName);
 
-                // ƒ¥ŸøÓ Ω√∞£ º≥¡§
+                // Ïø®Îã§Ïö¥ ÏãúÍ∞Ñ ÏÑ§Ï†ï
                 var skill = currentSkillDatas.Find(s => s.skillName == skillName);
                 if (skill != null)
                 {
@@ -116,15 +127,10 @@ public class SkillComponent : MonoBehaviour
             float currentCooldown = skillCooldownTimerTable[skillName];
             if (currentCooldown <= 0f)
             {
-                // Ω∫≈≥ Ω««‡ ∑Œ¡˜
+                // Ïä§ÌÇ¨ Ïã§Ìñâ Î°úÏßÅ
                 ExecuteSkill(skillName, weapon);
 
-                // ƒ¥ŸøÓ Ω√∞£ º≥¡§
-                var skill = currentSkillDatas.Find(s => s.skillName == skillName);
-                if (skill != null)
-                {
-                    skillCooldownTimerTable[skillName] = skill.cooldown;
-                }
+                SetCoolDown(skillName);
             }
         }
 
@@ -153,6 +159,17 @@ public class SkillComponent : MonoBehaviour
     }
 
 
+    private void SetCoolDown(string skillName)
+    {
+        // Ïø®Îã§Ïö¥ ÏãúÍ∞Ñ ÏÑ§Ï†ï
+        SkillData skill = currentSkillDatas.Find(s => s.skillName == skillName);
+        if (skill != null)
+        {
+            skillCooldownTimerTable[skillName] = skill.cooldown;
+  
+        }
+    }
+
     public void Play_SkillEffect()
     {
         if (currentSkill == null)
@@ -171,7 +188,7 @@ public class SkillComponent : MonoBehaviour
     public void End_SkillAction()
     {
         weapon?.EndSkillAction();
-        currentSkill = null;
+        ///currentSkill = null;
     }
 
     private void OnSetSkillData()
@@ -217,23 +234,32 @@ public class SkillComponent : MonoBehaviour
         {
             currentSkillDatas = skillDataTable[newType];
 
-            //TODO: ªÁΩ« ±◊∑∏∞‘ ¡¡¿∫ ∞« æ∆¥œ∂Û∞Ì ∫ª¥Ÿ
-            foreach(SkillData skillData in currentSkillDatas)
+            if(currentSkillDatas.Count <= 0 )
+                skillEvent?.OnUnequipment();
+
+            //TODO: ÏÇ¨Ïã§ Í∑∏Î†áÍ≤å Ï¢ãÏùÄ Í±¥ ÏïÑÎãàÎùºÍ≥† Î≥∏Îã§
+            foreach (SkillData skillData in currentSkillDatas)
             {
                 SkillDataManager.SkillSlot slot = SkillDataManager.Instance.GetSkillSlotBySkillData(skillData);
                 if (slot == SkillDataManager.SkillSlot.NONE)
-                    continue; 
+                    continue;
 
-                if(slot == SkillDataManager.SkillSlot.Skill1)
+                if (slot == SkillDataManager.SkillSlot.Skill1)
+                {
                     skillInputTable["Skill1"] = skillDataTable[newType][0].skillName;
+                    skillEvent?.SetSkillOne(skillData);
+                }
                 //else if(slot == SkillDataManager.SkillSlot.Skill2)
                 //    skillInputTable["Skill2"] = skillDataTable[newType][1].skillName;
                 //else if(slot == SkillDataManager.SkillSlot.Skill3)
                 //    skillInputTable["Skill3"] = skillDataTable[newType][2].skillName;
 
+                
+                
             }
             
         }
+     
     }
 
 

@@ -428,7 +428,7 @@ public class Melee : Weapon
         if (currentActionData == null)
             return;
 
-        if (trail_Collisions != null)
+        if (trail_Collisions != null && trail_Collisions.Length > 0)
             return;
 
         hittedList.Add(other.gameObject);

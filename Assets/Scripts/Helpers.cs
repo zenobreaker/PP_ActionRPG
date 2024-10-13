@@ -74,6 +74,15 @@ public static class Extend_Vector3
 
 }
 
+public static class SkillEventHelpers
+{
+    public static SkillEvent CreateSkillEvent(string resourceName)
+    {
+        SkillEvent skillEvent = Resources.Load<SkillEvent>(resourceName);
+
+        return skillEvent;
+    }
+}
 
 
 public static class UIHelpers

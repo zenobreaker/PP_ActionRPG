@@ -14,6 +14,7 @@ public class SkillDataManager : MonoBehaviour
     public class SkillSlotPairClass
     {
         public SkillData skillData;
+        public Sprite skillSprite;
         public SkillSlot slotNumber;
     }
 
@@ -26,6 +27,7 @@ public class SkillDataManager : MonoBehaviour
     [SerializeField] private List<SkillSlotPairClass> skillSlotList;
 
     public event Action OnSetSkillData;
+
 
     private void Awake()
     {
@@ -68,6 +70,13 @@ public class SkillDataManager : MonoBehaviour
             return pair.slotNumber;
 
         return SkillSlot.NONE;
+    }
+
+    public Sprite GetSkillSprite(string skillName)
+    {
+        if (skillName == null) return null;
+
+        return skillSlotList.Find(x => x.skillData.name == skillName)?.skillSprite;
     }
 
 }
