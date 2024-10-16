@@ -27,11 +27,11 @@ public class DashComponent : MonoBehaviour
     private PlayerMovingComponent moving;
     private ConditionComponent condition;
     private StateComponent state;
+    private SlopeMovement slopeMovement;
 
     private bool bTargetMode;
 
     private Vector3 targetPos;
-    private float distance;
 
 
     private Animator animator;
@@ -50,9 +50,12 @@ public class DashComponent : MonoBehaviour
         Debug.Assert(state != null);
         state.OnStateTypeChanged += OnStateTypeChanged;
 
+        slopeMovement = GetComponent<SlopeMovement>();
+        Debug.Assert(slopeMovement != null);
+
     }
 
-    public void DoAction_Dash(Vector3 direction)
+    public void DoAction_Dash(EvadeDirection direction)
     {
         if (condition != null && condition.DownCondition)
             return;
@@ -83,38 +86,59 @@ public class DashComponent : MonoBehaviour
 
 
 
-
-    private IEnumerator Start_Dash(Vector3 direction)
+    private Vector3 GetDashDirection(EvadeDirection dir)
     {
+        if (dir == EvadeDirection.Forward)
+            return Vector3.forward;
+        else if (dir == EvadeDirection.Backward)
+            return Vector3.back;
+
+        return Vector3.back;
+    }
+    
+    private IEnumerator Start_Dash(EvadeDirection evadeDir)
+    {
+        // 1. 로컬 방향 계산 
+        Vector3 direction = GetDashDirection(evadeDir);
+        Vector3 dashDirection = transform.TransformDirection(direction);
+
+        // 2. 경사면이 조정이 필요하면 적용
+        if (slopeMovement?.OnSlope() == true)
+        {
+            dashDirection = slopeMovement.AdjustDirecionToSlope(dashDirection);
+        }
+
+        // 3. 목표 위치설정
+        targetPos = transform.position + (dashDirection.normalized * dashDistance);
+        Vector3 finalDir = (targetPos - transform.position).normalized;
+        
+        float distance = dashDistance;
+
         float startTime = Time.time;
-        targetPos = transform.position + (direction.normalized * dashDistance);
-        distance = Vector3.Distance(targetPos, transform.position);
-
         float resultTime = distance / dashSpeed;
-        //Debug.Log($"최종 걸리는 시간 {resultTime}");
 
+        // 사운드 재생 및 시작 
         moving.Stop();
-        //AdjustingAnimation(true);
-
         SoundManager.Instance.PlaySFX("Dash_Sound");
 
+        // 4. 대시 이동 로직
         while (distance > 0)
         {
-            transform.Translate(direction.normalized * dashSpeed * Time.fixedDeltaTime);
+            // 로컬 좌표계 이동 -> 이동 시 월드 좌표계를 유지하여 원하는 방향으로 대시할 수 있게 보장.
+            transform.Translate(finalDir.normalized * dashSpeed * Time.fixedDeltaTime, Space.World);
+            
+            // 남은 거리 계산
             distance = Vector3.Distance(targetPos, transform.position);
 
             yield return new WaitForFixedUpdate();
+            
+            // 시간 초과 체크
             float time = Time.time;
-            //Debug.Log($"측정 시간{time}");
             if (time - startTime >= resultTime)
                 break;
         }
 
-        //Debug.Log("대쉬 종료");
-
-        //AdjustingAnimation(false);
         moving.Move();
-        //TODO: Test
         state.SetIdleMode();
     }
 
@@ -171,13 +195,7 @@ public class DashComponent : MonoBehaviour
                 animator.SetInteger("Direction", (int)direction);
                 animator.SetTrigger("Evade");
 
-                Vector3 dir = Vector3.zero;
-                if (direction == EvadeDirection.Forward)
-                    dir = Vector3.forward;
-                else if (direction == EvadeDirection.Backward)
-                    dir = Vector3.back;
-
-                DoAction_Dash(dir);
+                DoAction_Dash(direction);
 
             }
             return;
@@ -206,7 +224,17 @@ public class DashComponent : MonoBehaviour
         if (Application.isPlaying == false)
             return;
 
+        Gizmos.color = Color.green;
 
+        Gizmos.DrawLine(targetPos, targetPos + Vector3.up * 5.0f);
+
+        // 대쉬 방향
+        {
+            //Gizmos.color = Color.red;
+            //Vector3 from = transform.position;
+            //Vector3 to = transform.forward * dashDistance + Vector3.up * 1.0f;
+            //Gizmos.DrawLine(from, to);
+        }
     }
 
 #endif

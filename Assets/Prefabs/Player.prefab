@@ -782,6 +782,7 @@ GameObject:
   - component: {fileID: 4355128017842358625}
   - component: {fileID: 4355128017842358624}
   - component: {fileID: 4357706423153243068}
+  - component: {fileID: 289225762256354309}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -929,6 +930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a866d37a8b8b86843ac35025ce60344e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInvicible: 0
 --- !u!114 &4355128017842358685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -968,6 +970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78275415dfd8a0140a8c5f3497a19910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillEvent: {fileID: 0}
 --- !u!114 &4355128017842358686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1053,7 +1056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bGround: 1
-  distance: 0.1
+  checkDistance: 0.5
 --- !u!114 &4355128017842358682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1068,9 +1071,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comboInputUIPrefab: {fileID: 4478532678978796288, guid: 44bc55d9379a5c841bfea4bc61470dfe, type: 3}
   comboInputBase: {fileID: 0}
-  comboInputTimingGauge: {fileID: 0}
+  comboMaintainTimeGauge: {fileID: 0}
   bDebugDraw: 0
-  inputLimitTime: 1
+  comboCheckTime: 0.5
+  lastInputCheckTime: 0.25
+  comboMaintainTime: 1
+  currComboObj: {fileID: 0}
 --- !u!114 &4355128017842358629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,11 +1089,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b5289dccac08145ab990957ad45fc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 0.086
+  distance: 1
   weight: 1
-  layerMask:
+  lengthFromHeelToToes: 0.1
+  maxRotationAngle: 45
+  ankleHeightOffset: 0
+  enableIKPositioing: 1
+  enableIKRotating: 1
+  globalWeight: 1
+  leftFootWeight: 1
+  rightFootWeight: 1
+  smmothTime: 0.075
+  raySphereRadius: 0.05
+  rayCastRange: 2
+  groundLayers:
     serializedVersion: 2
     m_Bits: 520
+  ignoreTriggers: 1
+  leftFootRayStartHeight: 0.5
+  rightFootRayStartHeight: 0.5
+  enableFootLifting: 1
+  floorRange: 0
+  enableBodyPositioning: 1
+  crouchRange: 0.25
+  stretchRange: 0
+  giveWorldHeightOffset: 0
+  worldHeightOffset: 0
 --- !u!114 &4355128017842358628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1198,6 +1225,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5d8b0e75d9f18439cbe381a01fd4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &289225762256354309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4355128017842358627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64b9146b058a61d4e9a0638535ca6f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 520
 --- !u!1 &4355128017859864710
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,6 +28,8 @@ public class PlayerMovingComponent : MonoBehaviour
     [SerializeField] private Vector2 limitPitchAngle = new Vector2(20, 340);
     [SerializeField] private float mouseRotationLerp = 0.25f;
 
+    private SlopeMovement slopeMovement;
+
 
     private float walkToRunRatio = 2.0f;
     private bool bCanMove = true;
@@ -38,7 +40,7 @@ public class PlayerMovingComponent : MonoBehaviour
     private WeaponComponent weapon;
     private StateComponent state;
     private ConditionComponent condition;
-  
+
     private Vector3 inputMove;
     public Vector2 InputMove { get => inputMove; }
 
@@ -64,8 +66,8 @@ public class PlayerMovingComponent : MonoBehaviour
         weapon = GetComponent<WeaponComponent>();
         state = GetComponent<StateComponent>();
         condition = GetComponent<ConditionComponent>();
-        //state.OnStateTypeChanged += OnStateTypeChangaed;
-
+        slopeMovement = GetComponent<SlopeMovement>();
+        Debug.Assert(slopeMovement != null);
         cameraArm = FindObjectOfType<CameraArm>();
         Debug.Assert(cameraArm != null);
 
@@ -157,9 +159,9 @@ public class PlayerMovingComponent : MonoBehaviour
     private void Update()
     {
         currentInputMove = Vector2.SmoothDamp(currentInputMove, inputMove, ref velocity, 1.0f / sensitivity);
-        
+
         if (condition.NoneCondition == false)
-            return; 
+            return;
 
         if (bCanMove == false)
             return;
@@ -175,13 +177,22 @@ public class PlayerMovingComponent : MonoBehaviour
             //direction = (transform.right * currentInputMove.x) + (transform.forward * currentInputMove.y);
             //TODO: 카메라 바뀌면 여기 수정 
             direction = (cameraArm.transform.right * currentInputMove.x) + (cameraArm.transform.forward * currentInputMove.y);
-            
+
             direction.y = 0;
-            direction = direction.normalized * speed;
             transform.localRotation = Quaternion.LookRotation(direction);
         }
 
+        // 경사면일 경우 
+        if (slopeMovement?.OnSlope() == true)
+        {
+            // 경사면에서 투영된 결과로 방향을 보정
+            direction = slopeMovement.AdjustDirecionToSlope(direction);
+            Debug.Log("경사면 처리 중");
+        }
+
+        direction = direction.normalized * speed;
         transform.Translate(direction * Time.deltaTime, Space.World);
+
         float deltaSpeed = direction.magnitude / walkSpeed * walkToRunRatio;
         if (weapon.UnarmedMode)
         {
@@ -207,7 +218,7 @@ public class PlayerMovingComponent : MonoBehaviour
         // 회전 축 제한 
         Vector3 angles = followTargetTransform.localEulerAngles;
         angles.z = 0.0f;
-        
+
         // 회전각 제한
         float xAngle = followTargetTransform.localEulerAngles.x;
 
@@ -227,5 +238,4 @@ public class PlayerMovingComponent : MonoBehaviour
 
     }
 
-  
 }
