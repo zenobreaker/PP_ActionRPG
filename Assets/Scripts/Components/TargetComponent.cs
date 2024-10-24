@@ -12,19 +12,50 @@ public class TargetComponent : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     //[SerializeField] private float rotateSpeed = 1.0f; // 타게팅 대상까지 회전할 속도 
 
-    private GameObject targetObject;
+    [SerializeField] private GameObject targetObject;
+    [SerializeField]
     //private float deltaRotation = 0.0f;
     private bool bMovingFocus;
+
+    private CameraArm cameraArm;
 
     private void Awake()
     {
         PlayerInput input = GetComponent<PlayerInput>();
         Debug.Assert(input != null);
+
+        cameraArm = FindObjectOfType<CameraArm>();
+        Debug.Assert(cameraArm != null);
+
         InputActionMap actionMap = input.actions.FindActionMap("Player");
         Debug.Assert(actionMap != null);
 
-    
+        InputAction targetingAction = actionMap.FindAction("Targeting");
+        targetingAction.performed += Input_Targeting_Performed;
+
+        InputAction targeting_Right_Action = actionMap.FindAction("Targeting_Right");
+        targeting_Right_Action.performed += Input_Targeting_Right_Performed;
+
+
+        InputAction targeting_Left_Action = actionMap.FindAction("Targeting_Left");
+        targeting_Left_Action.performed += Input_Targeting_Left_Performed;
     }
+
+    private void Input_Targeting_Performed(InputAction.CallbackContext context)
+    {
+        Begin_Targeting();
+    }
+
+    private void Input_Targeting_Right_Performed(InputAction.CallbackContext context)
+    {
+        ChangeFocucs(true);
+    }
+
+    private void Input_Targeting_Left_Performed(InputAction.CallbackContext context)
+    {
+        ChangeFocucs(false);
+    }
+
 
     public void Begin_Targeting(bool bRotation = false)
     {
@@ -56,16 +87,16 @@ public class TargetComponent : MonoBehaviour
         {
             Vector3 enemyPosition = obj.transform.position;
             Vector3 direction = enemyPosition - position;
-            float distance = Vector3.Distance(enemyPosition, position); 
+            float distance = Vector3.Distance(enemyPosition, position);
 
             float angle = Vector3.Dot(transform.forward, direction.normalized);
 
             if (angle < 1.0f - 0.5f)
-                continue; 
+                continue;
 
-            if(minDistance > distance)
+            if (minDistance > distance)
             {
-                minDistance = distance; 
+                minDistance = distance;
                 minAngle = angle;
                 candinate = obj;
             }
@@ -85,6 +116,11 @@ public class TargetComponent : MonoBehaviour
         EndTargeting();
 
         targetObject = target;
+
+        if (cameraArm != null)
+        {
+            cameraArm.SetTarget(targetObject);
+        }
     }
 
 
@@ -103,12 +139,12 @@ public class TargetComponent : MonoBehaviour
         Quaternion from = transform.localRotation;
         Quaternion to = Quaternion.LookRotation(direction.normalized, Vector3.up);
 
-        if(Quaternion.Angle(from,to) < 2.0f)
+        if (Quaternion.Angle(from, to) < 2.0f)
         {
             //deltaRotation = 0.0f;
             transform.localRotation = to;
 
-            return; 
+            return;
         }
 
         transform.localRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
@@ -190,6 +226,8 @@ public class TargetComponent : MonoBehaviour
 
         //deltaRotation = 0.0f;
         targetObject = null;
+        if (cameraArm != null)
+            cameraArm.SetTarget(null);
 
         // 후보자가 없으면 그냥 다 풀어.. 
         //if (bLookForward == true)

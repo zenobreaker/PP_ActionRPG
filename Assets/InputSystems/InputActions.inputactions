@@ -141,9 +141,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Target",
+                    "name": "Targeting",
+                    "type": "Button",
+                    "id": "8e4e4d57-7fe8-4334-8276-29ac69ac297c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Targeting_Right",
                     "type": "Button",
                     "id": "e7e65869-be3f-4323-bf4c-c5628f798aa1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Targeting_Left",
+                    "type": "Button",
+                    "id": "0835ce80-c486-4b69-a099-f44c534966b6",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -319,11 +337,11 @@
                 {
                     "name": "",
                     "id": "1c071e0e-a67e-4820-9f54-2e7f3eedef28",
-                    "path": "",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Target",
+                    "action": "Targeting_Right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -379,6 +397,28 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Evade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "054035e7-0caa-45ae-b77c-26e89af93e54",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Targeting_Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "43e6d1f4-90fb-4280-9f3c-b2ed9a906266",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Targeting",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

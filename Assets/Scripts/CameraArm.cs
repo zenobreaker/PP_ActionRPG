@@ -33,6 +33,29 @@ public class CameraArm : MonoBehaviour
     [SerializeField] private GameObject target;
     [SerializeField] private CutsenceController cutscene;
 
+    // Targeting
+    private bool bTargeting = false; 
+    public bool Targeting { set => bTargeting = value; }
+    private GameObject targetingObject; 
+    public void SetTarget(GameObject target)
+    {
+        if (target != null)
+        {
+            bTargeting = true;
+        }
+        else
+        {
+            bTargeting = false;
+        }
+
+        targetingObject = target;
+        
+        if(vcamera != null)
+        {
+            vcamera.LookAt = targetingObject?.transform;
+        }
+    }
+
     private Vector2 inputLook;
     public bool bDebugMode = false; 
     private  bool visibleCursor;

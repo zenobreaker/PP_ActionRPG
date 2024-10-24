@@ -412,6 +412,8 @@ public class FootIK : MonoBehaviour
         }
 
         // Foot height correction related debug draws
+        if (leftFootTransform == null || rightFootTransform == null)
+            return; 
         Handles.DrawWireDisc(
             leftFootTransform.position,
             leftFootOrientationReference.rotation * transform.up,
