@@ -9,6 +9,7 @@ public class SlopeMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     private float Ray_Distance = 2.0f;      // 경사면 검사할 거리
     private float Max_SlopeAngle = 45.0f;   // 경사면 오르지 못하는 각도
+    private float Min_SlopeAngle = 7.5f;    // 평지로 간주할 최소 경사각도
     private RaycastHit slopeHit;            // 경사면 충돌 결과
 
     public bool OnSlope()
@@ -19,7 +20,7 @@ public class SlopeMovement : MonoBehaviour
         {
             float angle = Vector3.Angle(slopeHit.normal, Vector3.up); // 레이로 쏴서 닿아진 면적과 계산
 
-            if (angle != 0 && angle < Max_SlopeAngle)
+            if (angle != 0 && angle < Max_SlopeAngle && angle > Min_SlopeAngle)
                 return true;
             else return false;
         }

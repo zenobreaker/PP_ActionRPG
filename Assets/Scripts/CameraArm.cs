@@ -10,9 +10,6 @@ using static UnityEngine.GraphicsBuffer;
 /// </summary>
 public class CameraArm : MonoBehaviour
 {
-    //[SerializeField] private new Camera camera;
-
-    //[SerializeField] private float cameraDistance = 1.0f;
     [SerializeField] private float cameraRotSpeed = 1.0f;
 
     [Header("Mouse")]
@@ -25,13 +22,17 @@ public class CameraArm : MonoBehaviour
     [SerializeField] private float zoomSensitivity = 0.001f;
     [SerializeField] private float zoomLerp = 1.0f;
     [SerializeField] private Vector2 zoomRange = new Vector2(1, 3);
+
     private float zoomDistance;
+    [Header("Virtual Camera")]
     [SerializeField] private CinemachineVirtualCamera vcamera;
     [SerializeField] private CinemachineVirtualCamera rifleCamera;
     private Cinemachine3rdPersonFollow tpsFollowCamera;
 
     [SerializeField] private GameObject target;
     [SerializeField] private CutsenceController cutscene;
+
+    private Quaternion rotation;
 
     // Targeting
     private bool bTargeting = false; 
@@ -168,46 +169,49 @@ public class CameraArm : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-
-
         if (bAnim)
             return;
 
-        RotateCinemachine();
-            
+        TargetMode();
+
+        if (!bTargeting)
+        {
+            RotateCinemachine();
+        }
+
         transform.position = target.transform.position + offset;
     }
 
-
-    private void OriginRotate()
+    void TargetMode()
     {
-        //Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"),
-        //    Input.GetAxis("Mouse Y")) * cameraRotSpeed;
-        //Vector3 camAngle = this.transform.rotation.eulerAngles;
-        //float x = camAngle.x - mouseDelta.y;
+        if (bTargeting == false)
+            return; 
 
-        ////target.transform.root.rotation = Quaternion.Euler(0, camAngle.y + mouseDelta.x, 0);
-        //if (x < 180f)
-        //{
-        //    x = Mathf.Clamp(x, -1f, 70f);
-        //}
-        //else
-        //{
-        //    x = Mathf.Clamp(x, 325f, 361f);
-        //}
+        // 타게팅 모드일 때 카메라 => 내 캐릭터 => 타겟 오브젝트 순으로 있어야 한다. 
+        // 캐릭터와 타겟의 중간 위치
+        Vector3 midPoint = (target.transform.position + targetingObject.transform.position) /2;
 
+        // 카메라를 중간 지점에서 일정 거리 떨어진 위치로 설정
+        Vector3 direction = (target.transform.position - targetingObject.transform.position).normalized;
+        Vector3 cameraPosition = midPoint + direction  * zoomDistance + offset;
 
-        //transform.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
+        // 카메라 위치 및 회전 설정 
+        // 카메라 위치 설정 (혹은 필요에 따라 이동 보간 추가 가능)
+        //this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, Time.deltaTime * moveSpeed); // moveSpeed를 원하는 속도로 설정
+
+        // 부드러운 회전 적용
+        Quaternion targetRotation = Quaternion.LookRotation(midPoint - this.transform.position);
+        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, Time.deltaTime * 1.5f); // rotationLerpSpeed를 원하는 회전 속도로 설정
     }
-
-    private Quaternion rotation;
+   
     void RotateCinemachine()
     {
+        // 1. 회전값 변수에 저장
         rotation *= Quaternion.AngleAxis(inputLook.x * mouseSensitivity.x * cameraRotSpeed, Vector3.up);
         rotation *= Quaternion.AngleAxis(-inputLook.y * mouseSensitivity.y * cameraRotSpeed, Vector3.right);
-        this.transform.rotation = rotation;
+        this.transform.rotation = rotation; // 회전 값 바로 적용 
 
-        //회전 축 제한하기 
+        // 2. 회전 축 제한하기 
         Vector3 angles = rotation.eulerAngles;
         angles.z = 0;
         
@@ -219,11 +223,25 @@ public class CameraArm : MonoBehaviour
         else if (xAngle > 180.0f && xAngle < limitPitchAngle.y)
             angles.x = limitPitchAngle.y;
 
-        //  회전량 보정 
+        // 3. 회전량 보정 
         rotation = Quaternion.Lerp(this.transform.rotation, rotation, mouseRotationLerp * Time.deltaTime);
         rotation.eulerAngles = new Vector3(angles.x, rotation.eulerAngles.y, 0);
         // 회전량 최종 삽입 
         this.transform.rotation = rotation;
+    }
+
+    float rotX;
+    float rotY;
+    void CameraRotation()
+    {
+        Vector2 mouseAxis = new Vector2(inputLook.x, inputLook.y);
+        rotX += (mouseAxis.x * 1.0f) * Time.deltaTime;
+        rotY -= (mouseAxis.y * 1.0f) * Time.deltaTime;
+
+        rotY = Mathf.Clamp01(rotY);
+
+        Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, localRotation, Time.deltaTime);
     }
 
     public Vector3 GetRifleForward()

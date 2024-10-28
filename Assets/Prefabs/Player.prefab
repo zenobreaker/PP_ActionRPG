@@ -1006,6 +1006,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 128
+  targetObject: {fileID: 0}
+  bMovingFocus: 0
+  lockOnUI: LockOnUI
 --- !u!114 &4355128017842358680
 MonoBehaviour:
   m_ObjectHideFlags: 0

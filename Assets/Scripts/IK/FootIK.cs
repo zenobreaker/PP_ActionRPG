@@ -12,6 +12,7 @@ public class FootIK : MonoBehaviour
 
     //[SerializeField] private LayerMask groundLayers;
 
+    private SlopeMovement slopeMovement;
     private CapsuleCollider capsule;
 
     private Animator playerAnimator;
@@ -115,7 +116,7 @@ public class FootIK : MonoBehaviour
 
     [BigHeader("IK Porperties")]
 
-    [SerializeField] private bool enableIKPositioing = true;
+    [SerializeField] private bool enableIKPositioning = true;
     [SerializeField] private bool enableIKRotating = true;
     [SerializeField]
     [Range(0, 1)] private float globalWeight = 1;
@@ -124,7 +125,7 @@ public class FootIK : MonoBehaviour
     [SerializeField]
     [Range(0, 1)] private float rightFootWeight = 1;
     [SerializeField]
-    [Range(0, 0.1f)] private float smmothTime = 0.075f;
+    [Range(0, 0.1f)] private float smoothTime = 0.075f;
 
 
     [BigHeader("Ray Properties")]
@@ -220,16 +221,36 @@ public class FootIK : MonoBehaviour
     {
         capsule = GetComponent<CapsuleCollider>();
         playerAnimator = GetComponent<Animator>();
+        slopeMovement = GetComponent<SlopeMovement>();
+        Debug.Assert(slopeMovement != null);
     }
 
-    private void LateUpdate()
+    private void Start()
     {
-        
+        InitializeVariables();
+
+        CreateOrinetationReference();
     }
+
+    private void Update()
+    {
+        UpdateCheckSlope();
+
+        UpdateFootProjection();
+
+        UpdateRayHitInfo();
+
+        UpdateIKPositionTarget();
+        UpdateIKRotationTarget();
+    }
+
     private void OnAnimatorIK(int layerIndex)
     {
+        LerpIKBufferToTarget();
 
-        Test_IK();
+        ApplyFootIK();
+        ApplyBodyIK();
+        //Test_IK();
         //Vector3 position = transform.position;
         //position.y += capsule.center.y;
 
@@ -284,6 +305,361 @@ public class FootIK : MonoBehaviour
     }
 
 
+    private void CreateOrinetationReference()
+    {
+        if (leftFootOrientationReference != null)
+        {
+            Destroy(leftFootOrientationReference);
+        }
+
+        if (rightFootOrientationReference != null)
+        {
+            Destroy(rightFootOrientationReference);
+        }
+
+        /* These gameobjects hold different orientation values from footTransform.rotation, but the delta remains the same */
+
+        leftFootOrientationReference = new GameObject("[RUNTIME] Normal_Orientation_Reference").transform;
+        rightFootOrientationReference = new GameObject("[RUNTIME] Normal_Orientation_Reference").transform;
+
+        leftFootOrientationReference.position = leftFootTransform.position;
+        rightFootOrientationReference.position = rightFootTransform.position;
+
+        leftFootOrientationReference.SetParent(leftFootTransform);
+        rightFootOrientationReference.SetParent(rightFootTransform);
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void UpdateCheckSlope()
+    {
+        if (slopeMovement == null)
+            return; 
+
+        if(slopeMovement.OnSlope() == true)
+            floorRange = 1;
+        else
+            floorRange = 0;
+    }
+
+    private void UpdateFootProjection()
+    {
+        /* This is the only part in this script (except for those gizmos) that accesses footOrientationReference */
+
+        leftFootDirectionVector = leftFootOrientationReference.rotation * initialForwardVector;
+        rightFootDirectionVector = rightFootOrientationReference.rotation * initialForwardVector;
+
+        /* World space based vector defines are used here for the representation of floor orientation */
+
+        leftFootProjectionVector = Vector3.ProjectOnPlane(leftFootDirectionVector, Vector3.up);
+        rightFootProjectionVector = Vector3.ProjectOnPlane(rightFootDirectionVector, Vector3.up);
+
+        /* Cross is done in this order because we want the underground angle to be positive */
+
+        leftFootProjectedAngle = Vector3.SignedAngle(
+            leftFootProjectionVector,
+            leftFootDirectionVector,
+            Vector3.Cross(leftFootDirectionVector, leftFootProjectionVector) *
+            // This is needed to cancel out the cross product's axis inverting behaviour
+            Mathf.Sign(leftFootDirectionVector.y));
+
+        rightFootProjectedAngle = Vector3.SignedAngle(
+            rightFootProjectionVector,
+            rightFootDirectionVector,
+            Vector3.Cross(rightFootDirectionVector, rightFootProjectionVector) *
+            // This is needed to cancel out the cross product's axis inverting behaviour
+            Mathf.Sign(rightFootDirectionVector.y));
+    }
+
+    private void UpdateRayHitInfo()
+    {
+        /* Rays will be casted from above each foot, in the downward orientation of the world */
+
+        leftFootRayStartPosition = leftFootTransform.position;
+        leftFootRayStartPosition.y += leftFootRayStartHeight;
+
+        rightFootRayStartPosition = rightFootTransform.position;
+        rightFootRayStartPosition.y += rightFootRayStartHeight;
+
+        /* SphereCast is used here just because we need a normal vector to rotate our foot towards */
+
+        // Vector3.up is used here instead of transform.up to get normal vector in world orientation
+        Physics.SphereCast(
+            leftFootRayStartPosition,
+            raySphereRadius,
+            Vector3.up * -1,
+            out leftFootRayHitInfo, rayCastRange, groundLayers,
+            (QueryTriggerInteraction)(2 - Convert.ToInt32(ignoreTriggers)));
+
+        // Vector3.up is used here instead of transform.up to get normal vector in world orientation
+        Physics.SphereCast(
+            rightFootRayStartPosition,
+            raySphereRadius,
+            Vector3.up * -1,
+            out rightFootRayHitInfo, rayCastRange, groundLayers,
+            (QueryTriggerInteraction)(2 - Convert.ToInt32(ignoreTriggers)));
+
+        // Left Foot Ray Handling
+        if (leftFootRayHitInfo.collider != null)
+        {
+            leftFootRayHitHeight = leftFootRayHitInfo.point.y;
+
+            /* Angle from the floor is also calculated to isolate the rotation caused by the animation */
+
+            // We are doing this crazy operation because we only want to count rotations that are parallel to the foot
+            leftFootRayHitProjectionVector = Vector3.ProjectOnPlane(
+                leftFootRayHitInfo.normal,
+                Vector3.Cross(leftFootDirectionVector, leftFootProjectionVector));
+
+            leftFootRayHitProjectedAngle = Vector3.Angle(
+                leftFootRayHitProjectionVector,
+                Vector3.up);
+        }
+        else
+        {
+            leftFootRayHitHeight = transform.position.y;
+        }
+
+        // Right Foot Ray Handling
+        if (rightFootRayHitInfo.collider != null)
+        {
+            rightFootRayHitHeight = rightFootRayHitInfo.point.y;
+
+            /* Angle from the floor is also calculated to isolate the rotation caused by the animation */
+
+            // We are doing this crazy operation because we only want to count rotations that are parallel to the foot
+            rightFootRayHitProjectionVector = Vector3.ProjectOnPlane(
+                rightFootRayHitInfo.normal,
+                Vector3.Cross(rightFootDirectionVector, rightFootProjectionVector));
+
+            rightFootRayHitProjectedAngle = Vector3.Angle(
+                rightFootRayHitProjectionVector,
+                Vector3.up);
+        }
+        else
+        {
+            rightFootRayHitHeight = transform.position.y;
+        }
+    }
+
+
+
+    private void UpdateIKPositionTarget()
+    {
+        /* We reset the offset values here instead of declaring them as local variables, since other functions reference it */
+
+        leftFootHeightOffset = 0;
+        rightFootHeightOffset = 0;
+
+        /* Foot height correction based on the projected angle */
+
+        float trueLeftFootProjectedAngle = leftFootProjectedAngle - leftFootRayHitProjectedAngle;
+
+        if (trueLeftFootProjectedAngle > 0)
+        {
+            leftFootHeightOffset += Mathf.Abs(Mathf.Sin(
+                Mathf.Deg2Rad * trueLeftFootProjectedAngle) *
+                lengthFromHeelToToes);
+
+            // There's no Abs here to support negative manual height offset
+            leftFootHeightOffset += Mathf.Cos(
+                Mathf.Deg2Rad * trueLeftFootProjectedAngle) *
+                GetAnkleHeight();
+        }
+        else
+        {
+            leftFootHeightOffset += GetAnkleHeight();
+        }
+
+        /* Foot height correction based on the projected angle */
+
+        float trueRightFootProjectedAngle = rightFootProjectedAngle - rightFootRayHitProjectedAngle;
+
+        if (trueRightFootProjectedAngle > 0)
+        {
+            rightFootHeightOffset += Mathf.Abs(Mathf.Sin(
+                Mathf.Deg2Rad * trueRightFootProjectedAngle) *
+                lengthFromHeelToToes);
+
+            // There's no Abs here to support negative manual height offset
+            rightFootHeightOffset += Mathf.Cos(
+                Mathf.Deg2Rad * trueRightFootProjectedAngle) *
+                GetAnkleHeight();
+        }
+        else
+        {
+            rightFootHeightOffset += GetAnkleHeight();
+        }
+
+        /* Application of calculated position */
+
+        leftFootIKPositionTarget.y = leftFootRayHitHeight + leftFootHeightOffset + _WorldHeightOffset;
+        rightFootIKPositionTarget.y = rightFootRayHitHeight + rightFootHeightOffset + _WorldHeightOffset;
+    }
+
+
+
+    private void UpdateIKRotationTarget()
+    {
+        if (leftFootRayHitInfo.collider != null)
+        {
+            leftFootIKRotationTarget = Vector3.Slerp(
+                transform.up,
+                leftFootRayHitInfo.normal,
+                Mathf.Clamp(Vector3.Angle(transform.up, leftFootRayHitInfo.normal), 0, maxRotationAngle) /
+                // Addition of 1 is to prevent division by zero, not a perfect solution but somehow works
+                (Vector3.Angle(transform.up, leftFootRayHitInfo.normal) + 1));
+        }
+        else
+        {
+            leftFootIKRotationTarget = transform.up;
+        }
+
+        if (rightFootRayHitInfo.collider != null)
+        {
+            rightFootIKRotationTarget = Vector3.Slerp(
+                transform.up,
+                rightFootRayHitInfo.normal,
+                Mathf.Clamp(Vector3.Angle(transform.up, rightFootRayHitInfo.normal), 0, maxRotationAngle) /
+                // Addition of 1 is to prevent division by zero, not a perfect solution but somehow works
+                (Vector3.Angle(transform.up, rightFootRayHitInfo.normal) + 1));
+        }
+        else
+        {
+            rightFootIKRotationTarget = transform.up;
+        }
+    }
+
+
+
+    private void LerpIKBufferToTarget()
+    {
+        /* Instead of wrangling with weights, we switch the lerp targets to make movement smooth */
+
+        if (enableFootLifting == true &&
+            playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y >=
+            leftFootIKPositionTarget.y + floorRange)
+        {
+            leftFootIKPositionBuffer.y = Mathf.SmoothDamp(
+                leftFootIKPositionBuffer.y,
+                playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y,
+                ref leftFootHeightLerpVelocity,
+                smoothTime);
+        }
+        else
+        {
+            leftFootIKPositionBuffer.y = Mathf.SmoothDamp(
+                leftFootIKPositionBuffer.y,
+                leftFootIKPositionTarget.y,
+                ref leftFootHeightLerpVelocity,
+                smoothTime);
+        }
+
+        if (enableFootLifting == true &&
+            playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y >=
+            rightFootIKPositionTarget.y + floorRange)
+        {
+            rightFootIKPositionBuffer.y = Mathf.SmoothDamp(
+                rightFootIKPositionBuffer.y,
+                playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y,
+                ref rightFootHeightLerpVelocity,
+                smoothTime);
+        }
+        else
+        {
+            rightFootIKPositionBuffer.y = Mathf.SmoothDamp(
+                rightFootIKPositionBuffer.y,
+                rightFootIKPositionTarget.y,
+                ref rightFootHeightLerpVelocity,
+                smoothTime);
+        }
+
+        leftFootIKRotationBuffer = Vector3.SmoothDamp(
+            leftFootIKRotationBuffer,
+            leftFootIKRotationTarget,
+            ref leftFootRotationLerpVelocity,
+            smoothTime);
+
+        rightFootIKRotationBuffer = Vector3.SmoothDamp(
+            rightFootIKRotationBuffer,
+            rightFootIKRotationTarget,
+            ref rightFootRotationLerpVelocity,
+            smoothTime);
+    }
+
+
+
+    private void ApplyFootIK()
+    {
+        /* Weight designation */
+
+        playerAnimator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight);
+        playerAnimator.SetIKPositionWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight);
+
+        playerAnimator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, globalWeight * leftFootWeight);
+        playerAnimator.SetIKRotationWeight(AvatarIKGoal.RightFoot, globalWeight * rightFootWeight);
+
+        /* Position handling */
+
+        CopyByAxis(ref leftFootIKPositionBuffer, playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot),
+            true, false, true);
+
+        CopyByAxis(ref rightFootIKPositionBuffer, playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot),
+            true, false, true);
+
+        if (enableIKPositioning == true)
+        {
+            playerAnimator.SetIKPosition(AvatarIKGoal.LeftFoot, leftFootIKPositionBuffer);
+            playerAnimator.SetIKPosition(AvatarIKGoal.RightFoot, rightFootIKPositionBuffer);
+        }
+
+        /* Rotation handling */
+
+        /* This part may be a bit tricky to understand intuitively, refer to docs for an explanation in depth */
+
+        // FromToRotation is used because we need the delta, not the final target orientation
+        Quaternion leftFootRotation =
+            Quaternion.FromToRotation(transform.up, leftFootIKRotationBuffer) *
+            playerAnimator.GetIKRotation(AvatarIKGoal.LeftFoot);
+
+        // FromToRotation is used because we need the delta, not the final target orientation
+        Quaternion rightFootRotation =
+            Quaternion.FromToRotation(transform.up, rightFootIKRotationBuffer) *
+            playerAnimator.GetIKRotation(AvatarIKGoal.RightFoot);
+
+        if (enableIKRotating == true)
+        {
+            playerAnimator.SetIKRotation(AvatarIKGoal.LeftFoot, leftFootRotation);
+            playerAnimator.SetIKRotation(AvatarIKGoal.RightFoot, rightFootRotation);
+        }
+    }
+
+
+
+    private void ApplyBodyIK()
+    {
+        if (enableBodyPositioning == false)
+        {
+            return;
+        }
+
+        float minFootHeight = Mathf.Min(
+                playerAnimator.GetIKPosition(AvatarIKGoal.LeftFoot).y,
+                playerAnimator.GetIKPosition(AvatarIKGoal.RightFoot).y);
+
+        /* This part moves the body 'downwards' by the root gameobject's height */
+
+        playerAnimator.bodyPosition = new Vector3(
+        playerAnimator.bodyPosition.x,
+        playerAnimator.bodyPosition.y +
+        LimitValueByRange(minFootHeight - transform.position.y, 0),
+        playerAnimator.bodyPosition.z);
+    }
+
+
+
 
     private void Test_IK()
     {
@@ -333,6 +709,42 @@ public class FootIK : MonoBehaviour
     {
         return raySphereRadius + _AnkleHeightOffset;
     }
+
+
+    private void CopyByAxis(ref Vector3 target, Vector3 source, bool copyX, bool copyY, bool copyZ)
+    {
+        target = new Vector3(
+            Mathf.Lerp(
+                target.x,
+                source.x,
+                Convert.ToInt32(copyX)),
+            Mathf.Lerp(
+                target.y,
+                source.y,
+                Convert.ToInt32(copyY)),
+            Mathf.Lerp(
+                target.z,
+                source.z,
+                Convert.ToInt32(copyZ)));
+    }
+
+
+    private float LimitValueByRange(float value, float floor)
+    {
+        if (value < floor - stretchRange)
+        {
+            return value + stretchRange;
+        }
+        else if (value > floor + crouchRange)
+        {
+            return value - crouchRange;
+        }
+        else
+        {
+            return floor;
+        }
+    }
+
 
 
 

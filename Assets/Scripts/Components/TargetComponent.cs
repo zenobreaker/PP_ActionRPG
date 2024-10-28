@@ -13,10 +13,13 @@ public class TargetComponent : MonoBehaviour
     //[SerializeField] private float rotateSpeed = 1.0f; // 타게팅 대상까지 회전할 속도 
 
     [SerializeField] private GameObject targetObject;
-    [SerializeField]
-    //private float deltaRotation = 0.0f;
-    private bool bMovingFocus;
+    [SerializeField] private bool bMovingFocus;
 
+    [Header("Targeting Settings")]
+    [SerializeField] private string lockOnUI = "LockOnUI";
+    [SerializeField]
+    [Range(0, 1.0f)]
+    private float lockOnUIScale = 0.1f;
     private CameraArm cameraArm;
 
     private void Awake()
@@ -41,6 +44,7 @@ public class TargetComponent : MonoBehaviour
         targeting_Left_Action.performed += Input_Targeting_Left_Performed;
     }
 
+
     private void Input_Targeting_Performed(InputAction.CallbackContext context)
     {
         Begin_Targeting();
@@ -59,6 +63,13 @@ public class TargetComponent : MonoBehaviour
 
     public void Begin_Targeting(bool bRotation = false)
     {
+        if(targetObject != null)
+        {
+            EndTargeting();
+
+            return; 
+        }
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask.value);
 
         GameObject[] candinates = colliders.Select(colliders => colliders.gameObject).ToArray();
@@ -120,6 +131,63 @@ public class TargetComponent : MonoBehaviour
         if (cameraArm != null)
         {
             cameraArm.SetTarget(targetObject);
+        }
+        //TODO: 회전 기능이 없으므로 여기에 정리했음
+        bMovingFocus = false;
+
+        if (lockOnUI != null)
+        {
+            if (Camera.main.transform.childCount > 0)
+            {
+                if (Camera.main.transform.GetChild(0).TryGetComponent<Camera>(out Camera subCamera))
+                {
+                    var lockOnCanvas = UIHelpers.CreateBillboardCanvas(lockOnUI, targetObject.transform, subCamera);
+                    if (lockOnCanvas != null)
+                    {
+                        lockOnCanvas.name = "LockOn";
+                        // 캔버스가 원래 위치로 가려는 성질을 죽이기 위한 작업
+                        // 자식으로 설정하면서 위치와 회전을 초기화합니다.
+                        lockOnCanvas.transform.SetParent(targetObject.transform, false);
+
+                        // 위치 초기화
+                        lockOnCanvas.transform.localPosition = Vector3.zero;
+                        lockOnCanvas.transform.localRotation = Quaternion.identity;
+
+                        // 필요한 오프셋 적용
+                        Vector3 targetPosition = Vector3.zero;
+                        if (targetObject.TryGetComponent<Collider>(out Collider collider))
+                        {
+                            float height = collider.bounds.size.y;
+                            targetPosition = new Vector3(0, height * 0.5f, 0);
+                        }
+                        lockOnCanvas.transform.localPosition += targetPosition;
+
+                        // 거리에 따른 UI 크기 설정 
+                        if (lockOnCanvas.TryGetComponent<SimpleLockOnUI>(out SimpleLockOnUI lockOnUI))
+                        {
+                            StartCoroutine(Corotuine_LockOnUIScale(lockOnUI));
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    IEnumerator Corotuine_LockOnUIScale(SimpleLockOnUI lockOnUI)
+    {
+        if (targetObject == null || lockOnUI == null)
+            yield break;
+
+        while (true)
+        {
+            if (targetObject == null || lockOnUI == null)
+                yield break;
+
+            lockOnUI.SetScale(Vector3.one * ((transform.position - targetObject.transform.position).magnitude
+                                * lockOnUIScale));
+
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -217,11 +285,16 @@ public class TargetComponent : MonoBehaviour
         if (targetObject != null)
         {
             Transform particle = targetObject.transform.FindChildByName("Target(Clone)");
+            Transform lockon = targetObject.transform.FindChildByName("LockOn");
 
             if (particle != null)
                 Destroy(particle.gameObject);
-        }
 
+            if (lockon != null)
+                Destroy(lockon.gameObject);
+
+            StopAllCoroutines();
+        }
 
 
         //deltaRotation = 0.0f;
