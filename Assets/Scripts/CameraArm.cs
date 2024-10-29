@@ -194,13 +194,26 @@ public class CameraArm : MonoBehaviour
         // 카메라를 중간 지점에서 일정 거리 떨어진 위치로 설정
         Vector3 direction = (target.transform.position - targetingObject.transform.position).normalized;
         Vector3 cameraPosition = midPoint + direction  * zoomDistance + offset;
-
         // 카메라 위치 및 회전 설정 
         // 카메라 위치 설정 (혹은 필요에 따라 이동 보간 추가 가능)
         //this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, Time.deltaTime * moveSpeed); // moveSpeed를 원하는 속도로 설정
 
+        // 회전 각 제한 
+        float xAngle = vcamera.transform.eulerAngles.x;
+        float anglesX = 0;
+
+        if (xAngle < 180.0f && xAngle > limitPitchAngle.x)
+            anglesX = limitPitchAngle.x;
+        else if (xAngle > 180.0f && xAngle < limitPitchAngle.y)
+            anglesX = limitPitchAngle.y;
+
+        Vector3 currentAngles = vcamera.transform.eulerAngles;
+        currentAngles.x = anglesX; // 제한된 x 축 회전 값으로 설정
+        vcamera.transform.eulerAngles = currentAngles;
+
         // 부드러운 회전 적용
         Quaternion targetRotation = Quaternion.LookRotation(midPoint - this.transform.position);
+        targetRotation.eulerAngles = new Vector3(0, targetRotation.eulerAngles.y, targetRotation.eulerAngles.z);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, targetRotation, Time.deltaTime * 1.5f); // rotationLerpSpeed를 원하는 회전 속도로 설정
     }
    

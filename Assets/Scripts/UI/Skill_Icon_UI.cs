@@ -5,6 +5,7 @@ public class Skill_Icon_UI : MonoBehaviour
 {
     [SerializeField] private Image icon_CoolDown;
     [SerializeField] private Image icon_SkillImage;
+    [SerializeField] private Image icon_SkillKeySlot;
 
     private float max_CoolDown; 
 
@@ -71,6 +72,8 @@ public class Skill_Icon_UI : MonoBehaviour
         Color color2 = icon_SkillImage.color;
         color2.a = 0;
         icon_SkillImage.color = color2;
+
+        icon_SkillKeySlot.gameObject.SetActive(false);
     }
 
     public void OnEnableSkill()
@@ -81,7 +84,6 @@ public class Skill_Icon_UI : MonoBehaviour
         Color color2 = icon_SkillImage.color;
         color2.a = 1;
         icon_SkillImage.color = color2;
-
-
+        icon_SkillKeySlot.gameObject.SetActive(true);
     }
 }
