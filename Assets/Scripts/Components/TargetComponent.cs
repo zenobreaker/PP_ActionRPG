@@ -20,7 +20,11 @@ public class TargetComponent : MonoBehaviour
     [SerializeField]
     [Range(0, 1.0f)]
     private float lockOnUIScale = 0.1f;
+
     private CameraArm cameraArm;
+    
+    private bool targetToggle = false;
+    public bool TargetMode { get => targetToggle; }
 
     private void Awake()
     {
@@ -47,6 +51,7 @@ public class TargetComponent : MonoBehaviour
 
     private void Input_Targeting_Performed(InputAction.CallbackContext context)
     {
+        targetToggle = !targetToggle;
         Begin_Targeting();
     }
 
@@ -127,6 +132,9 @@ public class TargetComponent : MonoBehaviour
         EndTargeting();
 
         targetObject = target;
+
+        if (targetToggle == false)
+            return; 
 
         if (cameraArm != null)
         {
@@ -279,7 +287,7 @@ public class TargetComponent : MonoBehaviour
 
 
 
-    private void EndTargeting(bool bLookForward = false)
+    public void EndTargeting(bool bLookForward = false)
     {
 
         if (targetObject != null)

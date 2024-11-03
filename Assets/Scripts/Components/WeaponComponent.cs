@@ -286,9 +286,12 @@ public class WeaponComponent
         
         if (bCheck)
         {
-            target.Begin_Targeting(true);
+            if(target.TargetMode == false)
+                target.Begin_Targeting(true);
             animator.SetBool("IsAction", true);
         }
+
+        //TODO: 타겟모드일 때 공격하면 적 돌리는 기능을 어디에 추가할까? 할까 기능?
 
         weaponTable[type].DoAction(index);
     }
@@ -329,6 +332,16 @@ public class WeaponComponent
     {
         base.End_DoAction();
         animator.SetBool("IsAction", false);
+
+        bool bCheck = false;
+        bCheck |= type == WeaponType.FireBall;
+        bCheck |= type == WeaponType.Gun;
+
+        if (bCheck)
+        {
+            if (target.TargetMode == false)
+                target.EndTargeting();
+        }
 
         weaponTable[type]?.End_DoAction();
         OnEndDoAction?.Invoke();
