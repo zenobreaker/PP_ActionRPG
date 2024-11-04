@@ -6,14 +6,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
+[BlackboardType]
+public enum AIStateType
+{
+    Wait = 0, Patrol, Approach, Equip, Action, Damaged, Dead, Max,
+}
+
 [RequireComponent(typeof(MovementComponent))]
 [RequireComponent(typeof(PerceptionComponent))]
 public abstract class BTAIController : MonoBehaviour
 {
-    public enum AIStateType
-    {
-        Wait = 0, Patrol, Approach, Equip, Action, Damaged, Dead, Max,
-    }
 
     protected AIStateType type;
     public event Action<AIStateType, AIStateType> OnAIStateTypeChanged;

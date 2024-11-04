@@ -254,9 +254,14 @@ public interface IBlackboardKey
 public class BlackboardKey<T>
     : IBlackboardKey
 {
-    public string KeyName { get; }
+    public string KeyName { get; set; }
     private T value;
 
+    //Activator.CreateInstance 호출용 기본 생성자 정의
+    public BlackboardKey()
+    {
+
+    }
     public BlackboardKey(string KeyName)
     {
         this.KeyName = KeyName;
@@ -324,6 +329,40 @@ public class SO_Blackboard : ScriptableObject
     {
         if (!keys.ContainsKey(keyName))
             keys[keyName] = new BlackboardKey<T>(keyName);
+    }
+
+    public void AddKey(Type type, string keyName)
+    {
+        if (!keys.ContainsKey(keyName))
+        {
+            // Type에 따라 다르게 생성하기 위해 리플렉션 사용
+            var keyType = typeof(BlackboardKey<>).MakeGenericType(type);
+            var keyInstance = Activator.CreateInstance(keyType);
+
+            // keyName을 설정할 수 있도록 캐스팅 후 설정
+            if (keyInstance is BlackboardKey<object> blackboardKey)
+            {
+                blackboardKey.KeyName = keyName;
+            }
+
+            // keys 딕셔너리에 추가 
+            keys[keyName] = (IBlackboardKey)keyInstance;
+        }
+    }
+
+    public Dictionary<string, IBlackboardKey> GetAllKeys()
+    {
+        return keys;
+    }
+
+    public void ClearKeys()
+    {
+        keys.Clear();
+    }
+
+    public Type GeteKeyType(string selectedKey)
+    {
+        return keys[selectedKey].GetValueType();
     }
 
     // 데이터 설정 메서드
@@ -567,4 +606,6 @@ public class SO_Blackboard : ScriptableObject
 
         return soBB;
     }
+
+
 }
