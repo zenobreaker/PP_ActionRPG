@@ -375,6 +375,9 @@ MonoBehaviour:
   startPoint: {fileID: 901619061141593843}
   endPoint: {fileID: 3787919264298705437}
   bDebug: 0
+  layermask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &3359446207850369746
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,6 +458,9 @@ MonoBehaviour:
   startPoint: {fileID: 7901729879618992874}
   endPoint: {fileID: 377423035532243069}
   bDebug: 0
+  layermask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &4068031007133570025
 GameObject:
   m_ObjectHideFlags: 0

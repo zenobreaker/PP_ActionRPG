@@ -152,6 +152,11 @@ public class BlackboardEditor : Editor
 
         if (GUILayout.Button("Add Key"))
         {
+            if(string.IsNullOrEmpty(newKey))
+            {
+                Debug.LogError("Key Name is Null or Empty!");
+                return; 
+            }
             if (isDefault)
             {
                 if (TypeMap.TryGetValue(selectedType, out var type))

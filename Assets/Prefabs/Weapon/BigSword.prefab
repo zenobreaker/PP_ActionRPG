@@ -240,6 +240,10 @@ MonoBehaviour:
   capsuleRadius: 0.8
   startPoint: {fileID: 7795492082553254052}
   endPoint: {fileID: 7842494622757978048}
+  bDebug: 0
+  layermask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &8833299369255377109
 GameObject:
   m_ObjectHideFlags: 0

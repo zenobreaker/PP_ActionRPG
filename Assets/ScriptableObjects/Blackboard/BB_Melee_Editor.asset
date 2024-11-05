@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03d1cc69bd5c1f343aa11de1db4e7c5d, type: 3}
-  m_Name: BB_Melee_EdtiorMode
+  m_Name: BB_Melee_Editor
   m_EditorClassIdentifier: 

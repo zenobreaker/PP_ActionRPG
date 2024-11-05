@@ -19,6 +19,8 @@ public class Weapon_Trail_Collision : MonoBehaviour
     public bool bDebug;
     public event Action<Collider> OnDamage;
 
+    public LayerMask layermask;
+
     private void Awake()
     {
         
@@ -71,7 +73,7 @@ public class Weapon_Trail_Collision : MonoBehaviour
             Debug.DrawRay(endPoint.position, Vector3.up * capsuleRadius, Color.green);   // Draw radius at end
         }
         // Create the capsule using Physics.OverlapCapsule for hit detection
-        Collider[] hitColliders = Physics.OverlapCapsule(startPoint.position, endPoint.position, capsuleRadius);
+        Collider[] hitColliders = Physics.OverlapCapsule(startPoint.position, endPoint.position, capsuleRadius, layermask.value);
 
         // Loop through all the colliders hit by the capsule
         foreach (var hitCollider in hitColliders)

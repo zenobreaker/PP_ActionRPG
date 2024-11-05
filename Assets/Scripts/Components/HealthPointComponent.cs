@@ -23,11 +23,12 @@ public class HealthPointComponent : MonoBehaviour
     public float GetMaxHP { get => maxHealthPoint; }
     public float GetCurrentHP { get => currHealthPoint; }
     public float GetCurrentHPByPercent { get => currHealthPoint / maxHealthPoint; }
+ 
     public bool Dead { get => currHealthPoint <= 0.0f; }
 
     private bool isEnemy;
     private bool isShow; 
-    private float hiddenTime = 60.0f;
+    [SerializeField] private float hiddenTime = 3.0f;
 
     private void Start()
     {
@@ -76,14 +77,14 @@ public class HealthPointComponent : MonoBehaviour
             currentHiddentTime = hiddenTime;
 
             userInterface.fillAmount = currHealthPoint / maxHealthPoint;
-            StartCoroutine(UpdateDelayGauge(currHealthPoint / maxHealthPoint));
+            //StartCoroutine(UpdateDelayGauge(currHealthPoint / maxHealthPoint));
             uiEnemyCanvas.gameObject.SetActive(true);
         }
     }
 
     private IEnumerator UpdateDelayGauge(float targetValue)
     {
-        while(Mathf.Abs(delayGauge.fillAmount - targetValue) > 0.01f)
+        while(Mathf.Abs(delayGauge.fillAmount) > Mathf.Epsilon)
         {
             delayGauge.fillAmount = Mathf.Lerp(delayGauge.fillAmount, targetValue, Time.deltaTime * speed);
 
@@ -114,6 +115,17 @@ public class HealthPointComponent : MonoBehaviour
                 uiEnemyCanvas.gameObject.SetActive(false);
                 isShow = false;
                 currentHiddentTime = hiddenTime;
+            }
+
+            if (userInterface != null)
+            {
+                if(userInterface.fillAmount != delayGauge.fillAmount)
+                {
+                    if (Mathf.Abs(delayGauge.fillAmount) > Mathf.Epsilon)
+                        delayGauge.fillAmount = Mathf.Lerp(delayGauge.fillAmount, userInterface.fillAmount, Time.deltaTime * speed);
+                    else
+                        delayGauge.fillAmount = userInterface.fillAmount;
+                }
             }
         }
     }
