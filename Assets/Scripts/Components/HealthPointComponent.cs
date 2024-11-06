@@ -78,7 +78,7 @@ public class HealthPointComponent : MonoBehaviour
 
             userInterface.fillAmount = currHealthPoint / maxHealthPoint;
             //StartCoroutine(UpdateDelayGauge(currHealthPoint / maxHealthPoint));
-            uiEnemyCanvas.gameObject.SetActive(true);
+            uiEnemyCanvas?.gameObject.SetActive(true);
         }
     }
 
