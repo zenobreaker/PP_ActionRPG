@@ -95,11 +95,28 @@ public class BlackboardEditor : Editor
 
         SO_Blackboard blackboard = (SO_Blackboard)target;
 
+        // 키 보여주는 섹션
+        DisplayKeys(blackboard);
+
         // 키 추가 섹션
         AddKeySection(blackboard);
 
         // 값 설정 섹션
         SetValueSection(blackboard);
+    }
+
+    private void DisplayKeys(SO_Blackboard blackboard)
+    {
+        GUILayout.Label("Current Keys", EditorStyles.boldLabel);
+
+        var keys = blackboard.GetAllKeys();
+        foreach (var key in keys)
+        {
+            EditorGUILayout.LabelField("Key Name:", key.Key);
+            EditorGUILayout.LabelField("Value Type:", key.Value.GetValueType().Name);
+            EditorGUILayout.LabelField("Current Value:", key.Value.GetValue()?.ToString() ?? "null");
+            EditorGUILayout.Space();
+        }
     }
 
     private void AddKeySection(SO_Blackboard blackboard)
