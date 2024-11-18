@@ -1,6 +1,7 @@
 # PP_ActionRPG
 
-[![Video Label](http://img.youtube.com/vi/02btGqiRt1E/0.jpg)](https://youtu.be/02btGqiRt1E)
+[![Video Label](http://img.youtube.com/vi/BnBJfVo4on0/0.jpg)](https://youtu.be/BnBJfVo4on0)
+사진을 누르면 해당 영상을 확인하실 수 있습니다.
 
 
 ## Third View Action RPG
