@@ -2,15 +2,32 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using AI.BT;
+using UnityEditor.Callbacks;
 
 
 public class BehaviorTreeEditor : EditorWindow
 {
+    private BehaviorTreeView treeView;
+    private InspectorView inspectorView;
+
     [MenuItem("BehaviorTreeEditor/Editor ...")]
     public static void OpenWindow()
     {
         BehaviorTreeEditor wnd = GetWindow<BehaviorTreeEditor>();
         wnd.titleContent = new GUIContent("BehaviorTreeEditor");
+    }
+
+    [OnOpenAsset]
+    public static bool OnOpenAsset(int instanceId, int line)
+    {
+        // 더블클릭하면 편집창을 열게한다.
+        if(Selection.activeObject is BehaviorTree)
+        {
+            OpenWindow();
+            return true; 
+        }
+        return false; 
     }
 
     public void CreateGUI()
@@ -27,5 +44,29 @@ public class BehaviorTreeEditor : EditorWindow
         // The style will be applied to the VisualElement and all of its children.
         var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/BehaviorTreeEditor.uss");
         root.styleSheets.Add(styleSheet);
+
+        // 특정 유형을 쿼리로 찾아옴
+        treeView = root.Q<BehaviorTreeView>();  
+        inspectorView = root.Q<InspectorView>();
+        treeView.OnNodeSelected = OnNodeSelectionChanged;
+        OnSelectionChange();    // 수동으로 호출하여 생성 시 선택되게 설정
+    }
+
+    private void OnSelectionChange() 
+    {
+        // 활성 개체가 BT 인 경우 
+        BehaviorTree tree = Selection.activeObject as BehaviorTree;
+        // 루트노드를 추가하려고 하면 직렬화할 수 없는 개체에 하위 개체를 
+        // 추가할 수 없다는 버그를 발생한다. 그러므로 에디터를 열기전에 tree의 인스턴스ID를 가쟈온다.
+        if(tree != null && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID())) 
+        {
+            treeView.PopulateView(tree);
+        }
+    }
+
+    // 노드를 선택하면 발생하는 이벤트 
+    private void OnNodeSelectionChanged(NodeView nodeView)
+    {
+        inspectorView.UpdateSelection(nodeView);
     }
 }

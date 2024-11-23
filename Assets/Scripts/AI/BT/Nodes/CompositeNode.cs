@@ -8,7 +8,7 @@ namespace AI.BT.Nodes
     {
         protected List<BTNode> children = new List<BTNode>();
 
-        public List<BTNode> Children => children;
+        public List<BTNode> Children { get => children; }
 
         protected bool bRunning = false; 
         protected bool hasFirstStart = true; 
@@ -45,7 +45,13 @@ namespace AI.BT.Nodes
                     compositeNode.AbortTask();
             }
         }
+        public override BTNode Clone()
+        {
+            CompositeNode node = Instantiate(this);
+            node.children = children.ConvertAll(c => c.Clone());    
 
+            return node;
+        }
     }
 
 }

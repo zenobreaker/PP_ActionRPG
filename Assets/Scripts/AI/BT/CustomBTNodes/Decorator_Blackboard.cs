@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace AI.BT.CustomBTNodes
 {
+    //TODO: 이 노드는 스크립트용으로 제작된 거여서 제네릭이 기여되어 있다.
     /// <summary>
     /// 데코레이터를 상속받는 클래스이다 
     /// 블랙보드와 연동을 주로 처리한다.

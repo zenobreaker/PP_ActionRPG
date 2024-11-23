@@ -1,0 +1,103 @@
+#node-border {
+    background-color: rgba(55, 55, 55, 255);
+    border-left-color: rgba(47, 47, 47, 255);
+    border-right-color: rgba(47, 47, 47, 255);
+    border-top-color: rgba(47, 47, 47, 255);
+    border-bottom-color: rgba(47, 47, 47, 255);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+#input {
+    align-items: center;
+}
+
+#output {
+    align-items: center;
+}
+
+#selection-border {
+    border-left-color: rgba(0, 160, 255, 255);
+    border-right-color: rgba(0, 160, 255, 255);
+    border-top-color: rgba(0, 160, 255, 255);
+    border-bottom-color: rgba(0, 160, 255, 255);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+:hover > #selection-border {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+:selected > #selection-border {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+:hover:selected > #selection-border {
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+}
+
+.node {
+    min-width: 150px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+#title {
+    -unity-font: url('project://database/Assets/TextMesh%20Pro/Fonts/LiberationSans.ttf?fileID=12800000&guid=e3265ab4bf004d28a9537516768c1c75&type=3#LiberationSans');
+    font-size: 14px;
+    color: rgba(224, 224, 224, 255);
+}
+
+#description {
+    font-size: 10px;
+}
+
+#divider {
+    min-height: 1px;
+    background-color: rgba(82, 82, 82, 255);
+}
+
+.task #input {
+    background-color: rgba(179, 62, 231, 255);
+}
+
+.composite #input {
+    background-color: rgba(145, 238, 111, 255);
+}
+
+.decorator #input {
+    background-color: rgba(92, 124, 224, 255);
+}
+
+.root #output {
+    background-color: rgba(255, 90, 90, 255);
+}

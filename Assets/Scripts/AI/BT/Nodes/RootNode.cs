@@ -8,6 +8,8 @@ namespace AI.BT.Nodes
         private SO_Blackboard blackboard;
         private BTNode childNode;
 
+        public BTNode ChildNode { get => childNode; set => childNode = value; }
+
         public RootNode(GameObject owner, SO_Blackboard blackboard, BTNode childNode)
         {
             this.nodeName = "Root";
@@ -67,6 +69,15 @@ namespace AI.BT.Nodes
         {
             return childNode.Evaluate();
         }
+
+        public override BTNode Clone()
+        {
+            RootNode node = Instantiate(this);
+            node.childNode = childNode.Clone();
+
+            return node; 
+        }
+
     }
 
 }

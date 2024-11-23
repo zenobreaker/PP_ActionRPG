@@ -8,6 +8,8 @@ namespace AI.BT
 {
     public class BehaviorTreeRunner
     {
+        public BehaviorTree tree; 
+
         private GameObject owner;
         private MonoBehaviour ownerMBH; 
         private RootNode rootNode;

@@ -14,7 +14,7 @@ namespace AI.BT.Nodes
         protected SO_Blackboard blackboard;
 
         protected BTNode childNode;
-        public BTNode ChildNode => childNode;
+        public BTNode ChildNode { get => childNode; set => childNode = value; }
 
 
         public DecoratorNode(string nodeName,
@@ -91,5 +91,14 @@ namespace AI.BT.Nodes
         {
             
         }
+
+        public override BTNode Clone()
+        {
+            DecoratorNode node = Instantiate(this);
+            node.childNode = childNode.Clone();
+
+            return node;
+        }
+
     }
 }
