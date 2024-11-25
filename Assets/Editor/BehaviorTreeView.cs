@@ -37,6 +37,17 @@ public class BehaviorTreeView : GraphView
 
     private void OnUndoRedo()
     {
+        if (tree == null) // tree가 null이면 다시 로드 시도
+        {
+            Debug.LogWarning("Tree reference lost. Attempting to reload...");
+            tree = Selection.activeObject as BehaviorTree; // 현재 선택된 BehaviorTree 에셋 다시 로드
+            if (tree == null)
+            {
+                Debug.LogError("Failed to reload the BehaviorTree. Please re-select the tree.");
+                return;
+            }
+        }
+
         PopulateView(tree);
         AssetDatabase.SaveAssets();
     }
@@ -133,6 +144,16 @@ public class BehaviorTreeView : GraphView
             });
         }
 
+        // 배치에 따른 로직 변화
+        if(graphViewChange.movedElements != null)
+        {
+            nodes.ForEach((n) =>
+            {
+                NodeView view = n as NodeView;
+                view.SortChildren();
+            });
+        }
+
         return graphViewChange;
     }
 
@@ -184,5 +205,15 @@ public class BehaviorTreeView : GraphView
         NodeView nodeView = new NodeView(node);
         nodeView.OnNodeSelected = OnNodeSelected;
         AddElement(nodeView);
+    }
+
+    // 노드 상태 확인
+    public void UpdateNodeState()
+    {
+        nodes.ForEach(n =>
+        {
+            NodeView view = n as NodeView;
+            view.UpdateState();
+        });
     }
 }

@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace AI.BT.Nodes
 {
+    [System.Serializable]
     public class RootNode : BTNode
     {
         private SO_Blackboard blackboard;
-        private BTNode childNode;
+        [SerializeField] private BTNode childNode;
 
         public BTNode ChildNode { get => childNode; set => childNode = value; }
 

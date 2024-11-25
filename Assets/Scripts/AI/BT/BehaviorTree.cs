@@ -2,6 +2,8 @@ using AI.BT.Nodes;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using System;
 
 namespace AI.BT
 {
@@ -45,7 +47,12 @@ namespace AI.BT
             Undo.RecordObject(this, "Behavior Tree (CreateBTNode)");
             nodes.Add(node);
 
-            AssetDatabase.AddObjectToAsset(node, this);
+            // 게임 실행 중에 생성하지 못하도록 
+            if(Application.isPlaying == false)
+            {
+                AssetDatabase.AddObjectToAsset(node, this);
+            }
+
             Undo.RegisterCreatedObjectUndo(node, "Behavior Tree (CreateBTNode)");
             AssetDatabase.SaveAssets();
             return node; 
@@ -53,7 +60,7 @@ namespace AI.BT
 
         public void DeleteBTNode(BTNode node)
         {
-            Undo.RecordObject(this, "Behavior Tree (CreateBTNode)");
+            Undo.RecordObject(this, "Behavior Tree (DeleteBTNode)");
             nodes.Remove(node);
             
             //AssetDatabase.RemoveObjectFromAsset(node);
@@ -84,7 +91,7 @@ namespace AI.BT
             if (composite != null)
             {
                 Undo.RecordObject(composite, "Behavior Tree (AddChild)");
-                composite.Children.Add(child);
+                composite.AddChild(child);
                 EditorUtility.SetDirty(composite);
             }
         }
@@ -111,7 +118,7 @@ namespace AI.BT
             if (composite != null)
             {
                 Undo.RecordObject(composite, "Behavior Tree (RemoveChild)");
-                composite.Children.Remove(child);
+                composite.RemoveChild(child);
                 EditorUtility.SetDirty(composite);
             }
         }
@@ -141,10 +148,27 @@ namespace AI.BT
             return childern;
         }
 
+        public void Traverse(BTNode node, Action<BTNode> visiter)
+        {
+            if(node != null)
+            {
+                visiter?.Invoke(node);
+                var children = GetChildren(node);
+                children.ForEach((n)=>Traverse(n, visiter));
+            }
+        }
+
         public BehaviorTree Clone()
         {
             BehaviorTree tree = Instantiate(this);
             tree.rootNode = tree.rootNode.Clone();
+            tree.nodes = new List<BTNode>();
+
+            Traverse(tree.rootNode, (n) =>
+            {
+                tree.nodes.Add(n);
+            });
+
             return tree; 
         }
     }

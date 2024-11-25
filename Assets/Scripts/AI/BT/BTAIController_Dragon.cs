@@ -94,15 +94,14 @@ public class BTAIController_Dragon : BTAIController
     {
         cur_DragonState = DragonState.Idle;
 
-
-        //btRunner.RunBehaviorTree(tickInterval);
+        btRunner?.RunBehaviorTree(tickInterval);
         //StartCoroutine(CoolDownCoroutine());
         OnEnableAI();
     }
 
     protected void OnDisable()
     {
-        btRunner.StopBehaviorTree();
+        btRunner?.StopBehaviorTree();
 
         StopAllCoroutines();
     }
@@ -197,8 +196,7 @@ public class BTAIController_Dragon : BTAIController
     {
         base.OnEnableAI();
 
-
-        btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
+        //btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
         btRunner.RunBehaviorTree(tickInterval);
         navMeshAgent.enabled = true;
 

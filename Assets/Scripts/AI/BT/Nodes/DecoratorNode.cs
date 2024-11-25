@@ -3,16 +3,17 @@ using static UnityEngine.Rendering.DebugUI;
 
 namespace AI.BT.Nodes
 {
+    [System.Serializable]
     public abstract class DecoratorNode
         : BTNode
     {
-
         protected bool isRunning;
         protected string boardKey;
         //protected string keyValue;
 
         protected SO_Blackboard blackboard;
 
+        [SerializeField]
         protected BTNode childNode;
         public BTNode ChildNode { get => childNode; set => childNode = value; }
 

@@ -32,8 +32,11 @@ public class BTAIController_Melee : BTAIController
         waitCondition = WaitCondition.None;
         blackboard.AddEnumComparisonStrategy<AIStateType>();
         blackboard.AddEnumComparisonStrategy<WaitCondition>();
-        btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
-        btRunner.RunBehaviorTree(0.01f);
+
+        if (btRunner != null)
+        {
+            btRunner.RunBehaviorTree(0.01f);
+        }
         navMeshAgent.avoidancePriority = Random.Range(1, 100);
     }
 

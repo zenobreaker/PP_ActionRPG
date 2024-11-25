@@ -23,7 +23,13 @@ public class InspectorView : VisualElement
         UnityEngine.Object.DestroyImmediate(editor);
         editor = Editor.CreateEditor(nodeView.node);
         // editor 정보를 담을 컨테이너 
-        IMGUIContainer container = new IMGUIContainer(() => { editor.OnInspectorGUI(); });
+        IMGUIContainer container = new IMGUIContainer(() => 
+        {
+            if (editor.target)
+            {
+                editor.OnInspectorGUI();
+            }
+        });
         Add(container);
     }
 }

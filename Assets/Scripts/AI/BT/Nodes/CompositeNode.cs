@@ -1,12 +1,15 @@
 using AI.BT;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace AI.BT.Nodes
 {
+    [System.Serializable]
     public abstract class CompositeNode : BTNode
     {
-        protected List<BTNode> children = new List<BTNode>();
+        [SerializeField] protected List<BTNode> children = new List<BTNode>();
 
         public List<BTNode> Children { get => children; }
 
@@ -16,6 +19,11 @@ namespace AI.BT.Nodes
         public void AddChild(BTNode node)
         {
             children.Add(node);
+        }
+
+        public void RemoveChild(BTNode node)
+        {
+            children.Remove(node);
         }
 
         protected virtual void OnStart()

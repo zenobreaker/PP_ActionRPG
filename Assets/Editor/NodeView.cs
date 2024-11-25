@@ -136,4 +136,44 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         base.OnSelected();
         OnNodeSelected?.Invoke(this);
     }
+
+    // 수평에 따라 로직이 수행되도록 작업
+    public void SortChildren()
+    {
+        CompositeNode composite = node as CompositeNode;
+        if (composite != null)
+        {
+            composite.Children.Sort(SortByHorizontalPosition);
+        }
+    }
+
+    private int SortByHorizontalPosition(BTNode left, BTNode right)
+    {
+        return left.position.x < right.position.x ? -1 : 1; 
+    }
+
+    public void UpdateState()
+    {
+        RemoveFromClassList("running");
+        RemoveFromClassList("failure");
+        RemoveFromClassList("success");
+
+        if (Application.isPlaying)
+        {
+            switch (node.GetNodeState)
+            {
+                case BTNode.NodeState.Running:
+                    //TODO: 이전 버전으로 구성했었기에 started 변수같은것으로 체크할 수 있다.
+                    if(node.GetNodeState != BTNode.NodeState.Max)
+                        AddToClassList("running");
+                break;
+                case BTNode.NodeState.Failure:
+                AddToClassList("failure");
+                break;
+                case BTNode.NodeState.Success:
+                AddToClassList("success");
+                break;
+            }
+        }
+    }
 }

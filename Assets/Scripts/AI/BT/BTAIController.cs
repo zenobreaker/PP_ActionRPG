@@ -14,6 +14,7 @@ public enum AIStateType
 
 [RequireComponent(typeof(MovementComponent))]
 [RequireComponent(typeof(PerceptionComponent))]
+[RequireComponent(typeof(BehaviorTreeRunner))]
 public abstract class BTAIController : MonoBehaviour
 {
 
@@ -99,7 +100,7 @@ public abstract class BTAIController : MonoBehaviour
 
 
     [SerializeField] protected float tickInterval = 0.1f;
-    protected BehaviorTreeRunner btRunner;
+    [SerializeField] protected BehaviorTreeRunner btRunner;
 
 
     protected Enemy enemy;
@@ -124,6 +125,12 @@ public abstract class BTAIController : MonoBehaviour
         action = GetComponent<ActionComponent>();
         perception = GetComponent<PerceptionComponent>();
         Debug.Assert(perception != null);
+
+        btRunner = GetComponent<BehaviorTreeRunner>();
+        if(btRunner == null)
+        {
+            btRunner = gameObject.AddComponent<BehaviorTreeRunner>();
+        }
     }
 
     protected virtual void Start()
@@ -137,9 +144,6 @@ public abstract class BTAIController : MonoBehaviour
         Transform t = uiStateCanvas.transform.FindChildByName("Txt_AIState");
         userInterface = t.GetComponent<TextMeshProUGUI>();
         userInterface.text = "";
-
-        //btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
-        //btRunner.RunBehaviorTree(0.1f);
     }
 
     protected virtual void Update()

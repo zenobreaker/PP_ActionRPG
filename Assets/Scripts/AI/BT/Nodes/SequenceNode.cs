@@ -22,26 +22,20 @@ namespace AI.BT.Nodes
             if (currentRunningNodeIndex != -1)
             {
                 NodeState result = children[currentRunningNodeIndex].Evaluate();
-                //Debug.Log($"Sequence = Previous Node Evaluate {currentRunningNodeIndex} /" +
-                //   $"{children[currentRunningNodeIndex].NodeName}");
                 if (result == NodeState.Running)
-                    return NodeState.Running;
+                    return nodeState = NodeState.Running;
                 else if (result == NodeState.Failure)
                 {
-                   // Debug.Log($"Sequence = Previous Node Evaluate Fail {currentRunningNodeIndex} /" +
-                   //$"{children[currentRunningNodeIndex].NodeName}");
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Failure;
+                    return nodeState = NodeState.Failure;
                 }
                 else if (result == NodeState.Abort)
                 {
-                    // Debug.Log($"Sequence = Previous Node Evaluate Fail {currentRunningNodeIndex} /" +
-                    //$"{children[currentRunningNodeIndex].NodeName}");
                     //TODO: 중단시 처음부터 자식 노드들을 검사시킬지 의문이다.
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Abort;
+                    return nodeState = NodeState.Abort;
                 }
 
             }
@@ -54,23 +48,23 @@ namespace AI.BT.Nodes
                 switch (result)
                 {
                     case NodeState.Running:
-                    return NodeState.Running;
+                    return nodeState =  NodeState.Running;
                     
                     case NodeState.Failure:
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Failure;
+                    return nodeState = NodeState.Failure;
 
                     case NodeState.Abort:
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Abort;
+                    return nodeState = NodeState.Abort;
                 }
             }
 
             currentRunningNodeIndex = -1;
             OnEnd();
-            return NodeState.Success;
+            return nodeState = NodeState.Success;
 
         }
 

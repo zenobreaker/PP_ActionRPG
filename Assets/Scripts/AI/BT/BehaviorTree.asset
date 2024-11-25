@@ -1,6 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7350890067731539497
+--- !u!114 &-2875798733101030962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3454944e56199c49ac5c3a0b6b0b08d, type: 3}
+  m_Name: DebugNode
+  m_EditorClassIdentifier: 
+  guid: 625fc047499a70e42a3c98e9c3422227
+  position: {x: 233, y: 338}
+  message: devil may cry
+--- !u!114 &-2754112221079443478
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12,8 +27,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d920735591f0f32498a869a5e4c75515, type: 3}
   m_Name: WaitNode
   m_EditorClassIdentifier: 
-  guid: f731235cac0c2704bafcaf7b848f9012
-  position: {x: 78, y: 351}
+  guid: 878391003fb37554eb7538f61f0d76d4
+  position: {x: 41, y: 324}
+  waitTime: 1
+  waitRandDelay: 0
+--- !u!114 &-2513773681390872435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d920735591f0f32498a869a5e4c75515, type: 3}
+  m_Name: WaitNode
+  m_EditorClassIdentifier: 
+  guid: 2231224ca10b2734f8dfc96846ae0398
+  position: {x: 426.65002, y: 324}
   waitTime: 1
   waitRandDelay: 0
 --- !u!114 &-1560327815827273397
@@ -29,7 +60,12 @@ MonoBehaviour:
   m_Name: SequenceNode
   m_EditorClassIdentifier: 
   guid: 1bbef5c19c351304c85fb0a00d7c0a9d
-  position: {x: 59, y: 168}
+  position: {x: 59, y: 176}
+  children:
+  - {fileID: 1209049729329261134}
+  - {fileID: -2754112221079443478}
+  - {fileID: -2875798733101030962}
+  - {fileID: -2513773681390872435}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,12 +82,12 @@ MonoBehaviour:
   rootNode: {fileID: 1310686004459896305}
   state: 0
   nodes:
-  - {fileID: -7350890067731539497}
   - {fileID: -1560327815827273397}
   - {fileID: 1310686004459896305}
-  - {fileID: 2660936823486044378}
   - {fileID: 1209049729329261134}
-  - {fileID: 5676496311404015147}
+  - {fileID: -2754112221079443478}
+  - {fileID: -2875798733101030962}
+  - {fileID: -2513773681390872435}
 --- !u!114 &1209049729329261134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +101,7 @@ MonoBehaviour:
   m_Name: DebugNode
   m_EditorClassIdentifier: 
   guid: f1e157d5fbdee194a8901939d73a2246
-  position: {x: -154, y: 351}
+  position: {x: -187, y: 324}
   message: im tree
 --- !u!114 &1310686004459896305
 MonoBehaviour:
@@ -80,33 +116,5 @@ MonoBehaviour:
   m_Name: RootNode
   m_EditorClassIdentifier: 
   guid: a42d9309366cb48448fc9458b5ea89f3
-  position: {x: 78.000015, y: 48.29024}
---- !u!114 &2660936823486044378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3454944e56199c49ac5c3a0b6b0b08d, type: 3}
-  m_Name: DebugNode
-  m_EditorClassIdentifier: 
-  guid: 13e93ad4a280c2047af165d5de385d2a
-  position: {x: 330.84998, y: 351}
-  message: hi
---- !u!114 &5676496311404015147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e97d3c95f49aab4c97c90fd8c670f0c, type: 3}
-  m_Name: Decorator_WaitCondition
-  m_EditorClassIdentifier: 
-  guid: 18ed8da98e9a3354b86daeb671871536
-  position: {x: 335, y: 159}
+  position: {x: 69.00002, y: 61.80398}
+  childNode: {fileID: -1560327815827273397}

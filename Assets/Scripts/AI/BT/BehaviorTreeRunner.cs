@@ -6,70 +6,62 @@ using UnityEngine;
 
 namespace AI.BT
 {
-    public class BehaviorTreeRunner
+    public class BehaviorTreeRunner : MonoBehaviour
     {
         public BehaviorTree tree; 
-
-        private GameObject owner;
-        private MonoBehaviour ownerMBH; 
-        private RootNode rootNode;
-        private SO_Blackboard blackboard;
+        
         private Coroutine btRunCoroutine;
         //private bool isRunning = false; 
-        public BehaviorTreeRunner(GameObject owner, SO_Blackboard blackboard, RootNode rootNode)
-        {
-            this.owner = owner;
-            this.blackboard = blackboard;
-            if(owner != null)
-            {
-                ownerMBH = owner.GetComponent<MonoBehaviour>();
-            }
+        //public BehaviorTreeRunner(GameObject owner, SO_Blackboard blackboard, RootNode rootNode)
+        //{
+        //    this.owner = owner;
+        //    this.blackboard = blackboard;
+        //    if(owner != null)
+        //    {
+        //        ownerMBH = owner.GetComponent<MonoBehaviour>();
+        //    }
 
-            this.rootNode = rootNode;
+        //    this.rootNode = rootNode;
+        //}
+
+        private void Start()
+        {
+            tree = tree.Clone();
+            RunBehaviorTree(0.01f);
         }
+
+      
 
         public void RunBehaviorTree(float interval = -1.0f, bool debugMode = false)
         {
-            if (ownerMBH == null)
-                return;
-
-            if(blackboard != null)
-            {
-                blackboard.Initialize();
-            }
-
             //isRunning = true;
             if (btRunCoroutine == null)
             {
                 Debug.Log("Run Behaivor !!");
-                btRunCoroutine = ownerMBH.StartCoroutine(StartBTRunCoroutine(debugMode, interval));
+                btRunCoroutine = StartCoroutine(StartBTRunCoroutine(debugMode, interval));
             }
         }
 
         public void StopBehaviorTree()
         {
-            if (ownerMBH == null)
-                return;
-
-            CoroutineHelper.Instance.StopAllCoroutines();
             if(btRunCoroutine != null)
-                ownerMBH.StopCoroutine(btRunCoroutine);
+                StopCoroutine(btRunCoroutine);
+            
             StopEvaluate();
+            CoroutineHelper.Instance.StopAllCoroutines();
+        }
+        public void OperateNode()
+        {
+            tree.Evaluate();
+        }
+        public void OperateNode(bool debugMode)
+        {
+            OperateNode();
         }
 
         public void StopEvaluate()
         {
-            rootNode.StopEvaluate();
-        }
-
-        public void OperateNode()
-        {
-            rootNode.Evaluate();
-        }
-
-        public void OperateNode(bool debugMode)
-        {
-            OperateNode();
+            tree.StopEvaluate();
         }
 
         public IEnumerator StartBTRunCoroutine(bool debugMode = false, float interval = -1.0f)

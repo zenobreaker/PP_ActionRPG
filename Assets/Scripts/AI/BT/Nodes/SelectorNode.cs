@@ -27,7 +27,7 @@ namespace AI.BT.Nodes
                 //    $"{children[currentRunningNodeIndex].NodeName}"); 
                 if (result == NodeState.Running)
                 {
-                    return NodeState.Running;
+                    return nodeState = NodeState.Running;
                 }
                 else if (result == NodeState.Success)
                 {
@@ -35,7 +35,7 @@ namespace AI.BT.Nodes
                     //$"{children[currentRunningNodeIndex].NodeName}");
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Success;
+                    return nodeState = NodeState.Success;
                 }
                 else if (result == NodeState.Abort)
                 {
@@ -44,7 +44,7 @@ namespace AI.BT.Nodes
                     //TODO: 중단시 처음부터 자식 노드들을 검사시킬지 의문이다.
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Abort;
+                    return nodeState = NodeState.Abort;
                 }
             }
 
@@ -58,23 +58,23 @@ namespace AI.BT.Nodes
                 switch (result)
                 {
                     case NodeState.Running:
-                    return NodeState.Running;
+                    return nodeState = NodeState.Running;
                     
                     case NodeState.Success:
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Success;
+                    return nodeState = NodeState.Success;
 
                     case NodeState.Abort:
                     currentRunningNodeIndex = -1;
                     OnEnd();
-                    return NodeState.Abort;
+                    return nodeState = NodeState.Abort;
                 }
             }
 
             currentRunningNodeIndex = -1;
             OnEnd();
-            return NodeState.Failure;
+            return nodeState = NodeState.Failure;
         }
 
         public override void AbortTask()

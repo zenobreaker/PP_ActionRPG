@@ -21,7 +21,7 @@ public class BTAIController_Boss : BTAIController
 
         waitCondition = WaitCondition.None;
         blackboard.AddEnumComparisonStrategy<AIStateType>();
-        btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
+        //btRunner = new BehaviorTreeRunner(this.gameObject, blackboard, CreateBTTree());
         btRunner.RunBehaviorTree(0.01f);
         navMeshAgent.avoidancePriority = Random.Range(1, 100);
     }
