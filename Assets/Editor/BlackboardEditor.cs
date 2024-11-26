@@ -107,7 +107,7 @@ public class BlackboardEditor : Editor
         foreach (var key in keys)
         {
             EditorGUILayout.LabelField("Key Name:", key.Key);
-            EditorGUILayout.LabelField("Value Type:", key.Value.GetValueType().Name);
+            EditorGUILayout.LabelField("Key Type:", blackboard.GeteKeyType(key.Key).Name);
             EditorGUILayout.LabelField("Current Value:", key.Value.GetValue()?.ToString() ?? "null");
             EditorGUILayout.Space();
         }

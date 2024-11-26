@@ -304,13 +304,11 @@ public class BlackboardKey<T>
 /// <summary>
 /// Dictionary의 직렬화가 되지 않은 구조를 해결하기 위한 Serializble 클래스 생성
 /// </summary>
-
-//TODO: Value 타입을 생성할 수 있는 클래스 구성
-
 [System.Serializable]
 public class KeyValue
 {
     public string Key;
+    public string KeyTypeName;  // 키의 자료형 이름 이 이름으로 리플렉션을 이용하여 자로형 추론
     public IBlackboardKey Value;
 }
 
@@ -336,36 +334,47 @@ public class SO_Blackboard : ScriptableObject
         Initialize();
 
         // 직렬화된 데이터를 Dictionary로 변환
-        //keys = serializedKeys.ToDictionary(kv => kv.Key, kv => (IBlackboardKey)kv.Value);
         foreach (var kv in serializedKeys)
         {
-            if (string.IsNullOrEmpty(kv.Key) == false)
+            if (string.IsNullOrEmpty(kv.Key) == false && string.IsNullOrEmpty(kv.KeyTypeName) == false)
             {
-                SetValue(kv.Key, kv.Value);
+                Type type = Type.GetType("System." + kv.KeyTypeName);
+                var blackboardKey = CreateBlackboardKey(type, kv.Key, kv.Value);
+
+                if (keys.ContainsKey(kv.Key) == false)
+                    keys[kv.Key] = blackboardKey;
             }
         }
     }
 
+#if UNITY_EDITOR
     private void SyncSerializedKeys()
     {
         serializedKeys.Clear();
         foreach (var kvp in keys)
         {
-            serializedKeys.Add(new KeyValue { Key = kvp.Key, Value = kvp.Value });
+            serializedKeys.Add(new KeyValue
+            {
+                Key = kvp.Key,
+                KeyTypeName = kvp.Value.GetValueType().Name,
+                Value = kvp.Value
+            });
         }
     }
+
+#endif 
 
     public void Initialize()
     {
         // 비교 전략 등록
-        RegisterComparisonStrategy<Vector3>( new Vector3ComparisonStrategy());
+        RegisterComparisonStrategy<Vector3>(new Vector3ComparisonStrategy());
         RegisterComparisonStrategy<GameObject>(new GameObjectComparisonStrategy());
         RegisterComparisonStrategy<string>(new StringComparisonStrategy());
         RegisterComparisonStrategy<int>(new NumericComparisonStrategy<int>());
         RegisterComparisonStrategy<float>(new NumericComparisonStrategy<float>());
         RegisterComparisonStrategy<double>(new NumericComparisonStrategy<double>());
     }
-    
+
     // 동적 등록을 위한 팩토리 메서드 
     public void RegisterComparisonStrategy<T>(IComparisonStrategy strategy)
     {
@@ -393,6 +402,9 @@ public class SO_Blackboard : ScriptableObject
 
     public void AddKey(Type type, string keyName)
     {
+        if (type == null)
+            return;
+
         if (!keys.ContainsKey(keyName))
         {
             // Type에 따라 다르게 생성하기 위해 리플렉션 사용
@@ -407,15 +419,19 @@ public class SO_Blackboard : ScriptableObject
 
             // keys 딕셔너리에 추가 
             keys[keyName] = (IBlackboardKey)keyInstance;
-            
+
+#if UNITY_EDITOR
             SyncSerializedKeys();
+#endif
         }
     }
 
     public void RemoveKey(string key)
     {
         keys.Remove(key);
+#if UNITY_EDITOR
         SyncSerializedKeys();
+#endif
     }
 
     public void ClearKeys()

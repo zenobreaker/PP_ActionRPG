@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Name: WaitNode
   m_EditorClassIdentifier: 
   guid: 878391003fb37554eb7538f61f0d76d4
-  position: {x: -6, y: 324}
+  position: {x: 0.72964, y: 325}
   blackboard: {fileID: 0}
   description: 
   waitTime: 1
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: RootNode
   m_EditorClassIdentifier: 
   guid: a42d9309366cb48448fc9458b5ea89f3
-  position: {x: 69, y: 48.4}
+  position: {x: 59.00002, y: 41.999992}
   blackboard: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
   description: 
   childNode: {fileID: -1560327815827273397}

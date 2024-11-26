@@ -5,6 +5,7 @@ using UnityEditor.UIElements;
 using AI.BT;
 using UnityEditor.Callbacks;
 using System;
+using UnityEditor.Experimental.GraphView;
 
 public class BehaviorTreeEditor : EditorWindow
 {
@@ -58,8 +59,23 @@ public class BehaviorTreeEditor : EditorWindow
             if (treeObject != null)
             {
                 treeObject.Update();
-                if(blackboardProperty != null)
+                if (blackboardProperty != null)
+                {
                     EditorGUILayout.PropertyField(blackboardProperty);
+
+                    SO_Blackboard blackboard = blackboardProperty.objectReferenceValue as SO_Blackboard;
+                    if(blackboard != null)
+                    {
+                        var keys = blackboard.GetAllKeys();
+                        foreach (var key in keys)
+                        {
+                            EditorGUILayout.LabelField("Key Name:", key.Key);
+                            EditorGUILayout.LabelField("Key Type:", blackboard.GeteKeyType(key.Key).Name);
+                            EditorGUILayout.LabelField("Current Value:", key.Value.GetValue()?.ToString() ?? "null");
+                            EditorGUILayout.Space();
+                        }
+                    }
+                }
                 treeObject.ApplyModifiedProperties();   // 변경사항을 직렬화된 객체에 재적용
             }
         };
@@ -126,7 +142,7 @@ public class BehaviorTreeEditor : EditorWindow
         // 추가할 수 없다는 버그를 발생한다. 그러므로 에디터를 열기전에 tree의 인스턴스ID를 가쟈온다.
         if(tree != null && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID())) 
         {
-            treeView.PopulateView(tree);
+            treeView?.PopulateView(tree);
         }
 
         // 직렬화 오브젝트 및 프로퍼티 생성
