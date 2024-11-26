@@ -79,6 +79,7 @@
 
 #description {
     font-size: 10px;
+    max-width: 150px;
 }
 
 #divider {
@@ -115,11 +116,11 @@
 }
 
 .running #node-state {
-    background-color: rgba(250, 220, 55, 255);
+    background-color: rgb(250, 220, 55);
 }
 
 .success #node-state {
-    background-color: rgba(55, 207, 1, 255);
+    background-color: rgb(55, 207, 1);
 }
 
 .failure #node-state {

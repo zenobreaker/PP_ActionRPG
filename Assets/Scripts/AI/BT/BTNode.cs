@@ -18,9 +18,10 @@ namespace AI.BT
 
 
         #endregion
+
         protected GameObject owner;
-
-
+        [SerializeField] public SO_Blackboard blackboard;
+        [TextArea] public string description;
 
         public virtual BTNode Clone()
         {

@@ -7,6 +7,7 @@ using UnityEditor.Experimental.GraphView;
 using AI.BT.Nodes;
 using UnityEngine.UIElements;
 using UnityEditor;
+using UnityEditor.UIElements;
 
 public class NodeView : UnityEditor.Experimental.GraphView.Node
 {
@@ -34,6 +35,10 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         CreateInputPorts();
         CreateOutputPorts();
         SetupClasses();
+
+        Label descriptionLabel  = this.Q<Label>("description");
+        descriptionLabel.bindingPath = "description";
+        descriptionLabel.Bind(new SerializedObject(node));
     }
 
     // 노드 유형을 전환하는 메서드

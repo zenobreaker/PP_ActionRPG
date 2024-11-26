@@ -10,9 +10,7 @@ namespace AI.BT
     [CreateAssetMenu()]
     public class BehaviorTree : ScriptableObject
     {
-        [SerializeField] protected  SO_Blackboard so_blackboard;
-        protected SO_Blackboard blackboard;
-        public SO_Blackboard Blackboard { get => blackboard; }
+        [SerializeField] public SO_Blackboard blackboard;
 
         public BTNode rootNode;
         public BTNode.NodeState state = BTNode.NodeState.Running;
@@ -170,6 +168,15 @@ namespace AI.BT
             });
 
             return tree; 
+        }
+
+        //TODO: Bind에 전달할 정보가 추가되면 node와 그와 관련된 내용을 수정해야 한다.
+        public void Bind()
+        {
+            Traverse(this.rootNode, (node) =>
+            {
+                node.blackboard = blackboard;
+            });
         }
     }
 }

@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: DebugNode
   m_EditorClassIdentifier: 
   guid: 625fc047499a70e42a3c98e9c3422227
-  position: {x: 233, y: 338}
+  position: {x: 169, y: 324}
+  blackboard: {fileID: 0}
+  description: 
   message: devil may cry
 --- !u!114 &-2754112221079443478
 MonoBehaviour:
@@ -28,7 +30,9 @@ MonoBehaviour:
   m_Name: WaitNode
   m_EditorClassIdentifier: 
   guid: 878391003fb37554eb7538f61f0d76d4
-  position: {x: 41, y: 324}
+  position: {x: -6, y: 324}
+  blackboard: {fileID: 0}
+  description: 
   waitTime: 1
   waitRandDelay: 0
 --- !u!114 &-2513773681390872435
@@ -44,7 +48,9 @@ MonoBehaviour:
   m_Name: WaitNode
   m_EditorClassIdentifier: 
   guid: 2231224ca10b2734f8dfc96846ae0398
-  position: {x: 426.65002, y: 324}
+  position: {x: 351, y: 324}
+  blackboard: {fileID: 0}
+  description: 
   waitTime: 1
   waitRandDelay: 0
 --- !u!114 &-1560327815827273397
@@ -61,6 +67,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: 1bbef5c19c351304c85fb0a00d7c0a9d
   position: {x: 59, y: 176}
+  blackboard: {fileID: 0}
+  description: 
   children:
   - {fileID: 1209049729329261134}
   - {fileID: -2754112221079443478}
@@ -78,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8c51080210c48d4db5b6892a79bff3e, type: 3}
   m_Name: BehaviorTree
   m_EditorClassIdentifier: 
-  so_blackboard: {fileID: 0}
+  blackboard: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
   rootNode: {fileID: 1310686004459896305}
   state: 0
   nodes:
@@ -102,6 +110,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guid: f1e157d5fbdee194a8901939d73a2246
   position: {x: -187, y: 324}
+  blackboard: {fileID: 0}
+  description: "\uC800\uC7A5 \uC548\uB428?"
   message: im tree
 --- !u!114 &1310686004459896305
 MonoBehaviour:
@@ -116,5 +126,7 @@ MonoBehaviour:
   m_Name: RootNode
   m_EditorClassIdentifier: 
   guid: a42d9309366cb48448fc9458b5ea89f3
-  position: {x: 69.00002, y: 61.80398}
+  position: {x: 69, y: 48.4}
+  blackboard: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
+  description: 
   childNode: {fileID: -1560327815827273397}

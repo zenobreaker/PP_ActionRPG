@@ -19,8 +19,6 @@ namespace AI.BT.Nodes
         protected Func<BTNode.NodeState> onEnd = null;
         protected Func<BTNode.NodeState> onAbort = null;
 
-        protected SO_Blackboard blackboard;
-
         #region Constructor
 
         public TaskNode(GameObject owner = null, SO_Blackboard blackboard = null,

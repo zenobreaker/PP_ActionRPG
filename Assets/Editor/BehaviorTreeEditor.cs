@@ -10,6 +10,10 @@ public class BehaviorTreeEditor : EditorWindow
 {
     private BehaviorTreeView treeView;
     private InspectorView inspectorView;
+    private IMGUIContainer blackboardView;
+
+    private SerializedObject treeObject;
+    private SerializedProperty blackboardProperty; 
 
     [MenuItem("BehaviorTreeEditor/Editor ...")]
     public static void OpenWindow()
@@ -46,8 +50,20 @@ public class BehaviorTreeEditor : EditorWindow
         root.styleSheets.Add(styleSheet);
 
         // 특정 유형을 쿼리로 찾아옴
-        treeView = root.Q<BehaviorTreeView>();  
+        treeView = root.Q<BehaviorTreeView>();
         inspectorView = root.Q<InspectorView>();
+        blackboardView = root.Q<IMGUIContainer>();
+        blackboardView.onGUIHandler = () =>
+        {
+            if (treeObject != null)
+            {
+                treeObject.Update();
+                if(blackboardProperty != null)
+                    EditorGUILayout.PropertyField(blackboardProperty);
+                treeObject.ApplyModifiedProperties();   // 변경사항을 직렬화된 객체에 재적용
+            }
+        };
+
         treeView.OnNodeSelected = OnNodeSelectionChanged;
         OnSelectionChange();    // 수동으로 호출하여 생성 시 선택되게 설정
     }
@@ -111,6 +127,13 @@ public class BehaviorTreeEditor : EditorWindow
         if(tree != null && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID())) 
         {
             treeView.PopulateView(tree);
+        }
+
+        // 직렬화 오브젝트 및 프로퍼티 생성
+        if(tree != null)
+        {
+            treeObject = new SerializedObject(tree);
+            blackboardProperty = treeObject?.FindProperty("blackboard");
         }
     }
 

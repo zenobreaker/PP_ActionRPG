@@ -11,22 +11,11 @@ namespace AI.BT
         public BehaviorTree tree; 
         
         private Coroutine btRunCoroutine;
-        //private bool isRunning = false; 
-        //public BehaviorTreeRunner(GameObject owner, SO_Blackboard blackboard, RootNode rootNode)
-        //{
-        //    this.owner = owner;
-        //    this.blackboard = blackboard;
-        //    if(owner != null)
-        //    {
-        //        ownerMBH = owner.GetComponent<MonoBehaviour>();
-        //    }
-
-        //    this.rootNode = rootNode;
-        //}
 
         private void Start()
         {
             tree = tree.Clone();
+            tree.Bind(); 
             RunBehaviorTree(0.01f);
         }
 
@@ -34,7 +23,6 @@ namespace AI.BT
 
         public void RunBehaviorTree(float interval = -1.0f, bool debugMode = false)
         {
-            //isRunning = true;
             if (btRunCoroutine == null)
             {
                 Debug.Log("Run Behaivor !!");

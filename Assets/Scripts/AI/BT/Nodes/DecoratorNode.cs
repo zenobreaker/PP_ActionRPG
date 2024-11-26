@@ -11,8 +11,6 @@ namespace AI.BT.Nodes
         protected string boardKey;
         //protected string keyValue;
 
-        protected SO_Blackboard blackboard;
-
         [SerializeField]
         protected BTNode childNode;
         public BTNode ChildNode { get => childNode; set => childNode = value; }

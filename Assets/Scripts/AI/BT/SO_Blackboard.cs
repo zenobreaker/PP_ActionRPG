@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
+# region ComparisonStaategy 
 public interface IComparisonStrategy
 {
     bool IsEqual(object a, object b);
@@ -237,6 +239,8 @@ public class EnumComparisonStrategy<T> : IComparisonStrategy where T : struct, E
 
 }
 
+#endregion
+
 // 블랙보드에서 사용할 데이터의 기본 인터페이스 정의 
 public interface IBlackboardKey
 {
@@ -251,6 +255,7 @@ public interface IBlackboardKey
 
 
 // 제네릭을 활용하여 다양한 타입의 블랙보드 키 구현
+[System.Serializable]
 public class BlackboardKey<T>
     : IBlackboardKey
 {
@@ -295,12 +300,30 @@ public class BlackboardKey<T>
         return copy;
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+/// <summary>
+/// Dictionary의 직렬화가 되지 않은 구조를 해결하기 위한 Serializble 클래스 생성
+/// </summary>
+
+//TODO: Value 타입을 생성할 수 있는 클래스 구성
+
+[System.Serializable]
+public class KeyValue
+{
+    public string Key;
+    public IBlackboardKey Value;
+}
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 [CreateAssetMenu(fileName = "NewBlackboard", menuName = "AI/Blackboard")]
 public class SO_Blackboard : ScriptableObject
 {
+
+    [SerializeField] private List<KeyValue> serializedKeys = new List<KeyValue>();
     private Dictionary<string, IBlackboardKey> keys = new Dictionary<string, IBlackboardKey>();
+    public Dictionary<string, IBlackboardKey> GetAllKeys() => keys;
+
     private Dictionary<Type, IComparisonStrategy> comparisonStrategies = new Dictionary<Type, IComparisonStrategy>();
 
     // 블랙보드의 특정 키의 결과가 다를 때 발생
@@ -308,16 +331,47 @@ public class SO_Blackboard : ScriptableObject
     // 블랙보드의 특정 키가 변경될 때 발생
     public event Action<string> OnValueChanged;
 
+    private void OnEnable()
+    {
+        Initialize();
+
+        // 직렬화된 데이터를 Dictionary로 변환
+        //keys = serializedKeys.ToDictionary(kv => kv.Key, kv => (IBlackboardKey)kv.Value);
+        foreach (var kv in serializedKeys)
+        {
+            if (string.IsNullOrEmpty(kv.Key) == false)
+            {
+                SetValue(kv.Key, kv.Value);
+            }
+        }
+    }
+
+    private void SyncSerializedKeys()
+    {
+        serializedKeys.Clear();
+        foreach (var kvp in keys)
+        {
+            serializedKeys.Add(new KeyValue { Key = kvp.Key, Value = kvp.Value });
+        }
+    }
+
     public void Initialize()
     {
         // 비교 전략 등록
-        comparisonStrategies[typeof(Vector3)] = new Vector3ComparisonStrategy();
-        comparisonStrategies[typeof(GameObject)] = new GameObjectComparisonStrategy();
-        comparisonStrategies[typeof(string)] = new StringComparisonStrategy();
-        comparisonStrategies[typeof(int)] = new NumericComparisonStrategy<int>();
-        comparisonStrategies[typeof(float)] = new NumericComparisonStrategy<float>();
-        comparisonStrategies[typeof(double)] = new NumericComparisonStrategy<double>();
+        RegisterComparisonStrategy<Vector3>( new Vector3ComparisonStrategy());
+        RegisterComparisonStrategy<GameObject>(new GameObjectComparisonStrategy());
+        RegisterComparisonStrategy<string>(new StringComparisonStrategy());
+        RegisterComparisonStrategy<int>(new NumericComparisonStrategy<int>());
+        RegisterComparisonStrategy<float>(new NumericComparisonStrategy<float>());
+        RegisterComparisonStrategy<double>(new NumericComparisonStrategy<double>());
     }
+    
+    // 동적 등록을 위한 팩토리 메서드 
+    public void RegisterComparisonStrategy<T>(IComparisonStrategy strategy)
+    {
+        comparisonStrategies[typeof(T)] = strategy;
+    }
+
 
     public void AddEnumComparisonStrategy<T>() where T : struct, Enum
     {
@@ -328,7 +382,13 @@ public class SO_Blackboard : ScriptableObject
     public void AddKey<T>(string keyName)
     {
         if (!keys.ContainsKey(keyName))
+        {
             keys[keyName] = new BlackboardKey<T>(keyName);
+        }
+        else
+        {
+            Debug.LogWarning($"Key {keyName} already exists.");
+        }
     }
 
     public void AddKey(Type type, string keyName)
@@ -347,12 +407,15 @@ public class SO_Blackboard : ScriptableObject
 
             // keys 딕셔너리에 추가 
             keys[keyName] = (IBlackboardKey)keyInstance;
+            
+            SyncSerializedKeys();
         }
     }
 
-    public Dictionary<string, IBlackboardKey> GetAllKeys()
+    public void RemoveKey(string key)
     {
-        return keys;
+        keys.Remove(key);
+        SyncSerializedKeys();
     }
 
     public void ClearKeys()
@@ -378,7 +441,7 @@ public class SO_Blackboard : ScriptableObject
             if (existingKey.GetValueType() == valueType)
             {
                 object oldValue = existingKey.GetValue();
-                if (!EqualityComparer<object>.Default.Equals(oldValue, value))
+                if (EqualityComparer<object>.Default.Equals(oldValue, value) == false)
                 {
                     // 값 설정 및 이벤트 트리거
                     existingKey.SetValue(value);
@@ -406,6 +469,7 @@ public class SO_Blackboard : ScriptableObject
     // 제네릭 버전의 데이터 설정 메서드
     public void SetValue<T>(string keyName, T value)
     {
+
         if (keys.TryGetValue(keyName, out IBlackboardKey key))
         {
             if (key is BlackboardKey<T> typedKey)

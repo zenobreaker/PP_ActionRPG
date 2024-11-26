@@ -32,25 +32,6 @@ public class BlackboardEditor : Editor
         { BlackboardType.GameObject, typeof(GameObject) }
     };
 
-    //public static class BlackboardTypeManager
-    //{
-    //    public static List<string> Types = new List<string>
-    //    {
-    //        nameof(BlackboardType.Int),
-    //        nameof(BlackboardType.Float),
-    //        nameof(BlackboardType.String),
-    //        nameof(BlackboardType.Vector3),
-    //        nameof(BlackboardType.GameObject),
-    //        "CustomType1",
-    //    };
-
-    //}
-
-
-    //Type selectedType = typeof(int);
-    //BlackboardType selectedType = BlackboardType.Int;
-    //private string selectedType;
-    
     private string newKey;
     private object newValue;
 
@@ -101,8 +82,21 @@ public class BlackboardEditor : Editor
         // 키 추가 섹션
         AddKeySection(blackboard);
 
+        //TODO: 값을 설정할 필요가 있을까? 블랙보드는 해당하는 이름의 키만 추가해서 게임내에서 처리할 것인데
         // 값 설정 섹션
         SetValueSection(blackboard);
+
+        // 블랙보드 저장 섹션
+        SaveBlackboardSection(blackboard);
+    }
+
+    private void SaveBlackboardSection(SO_Blackboard blackboard)
+    {
+        if (GUILayout.Button("Save"))
+        {
+            EditorUtility.SetDirty(blackboard);
+            AssetDatabase.SaveAssets();
+        }
     }
 
     private void DisplayKeys(SO_Blackboard blackboard)
@@ -169,7 +163,9 @@ public class BlackboardEditor : Editor
 
         if (GUILayout.Button("Add Key"))
         {
-            if(string.IsNullOrEmpty(newKey))
+            Undo.RecordObject(blackboard, "Add Key");
+
+            if (string.IsNullOrEmpty(newKey))
             {
                 Debug.LogError("Key Name is Null or Empty!");
                 return; 
@@ -181,6 +177,10 @@ public class BlackboardEditor : Editor
             }
             else
                 blackboard.AddKey(selectedCustomEnumType, newKey);
+
+            // 변경사항 저장
+            EditorUtility.SetDirty(blackboard);
+            AssetDatabase.SaveAssets();
         }
 
     }
@@ -238,6 +238,9 @@ public class BlackboardEditor : Editor
         if (GUILayout.Button("Set Value"))
         {
             blackboard.SetValue(selectedKey, newValue);
+
+            // 변경사항 저장
+            EditorUtility.SetDirty(blackboard);
         }
 
         // 현재 블랙보드의 모든 키와 값 출력
@@ -251,8 +254,13 @@ public class BlackboardEditor : Editor
         // key 전부 지우기 
         if (GUILayout.Button("Clear Values"))
         {
+            Undo.RecordObject(blackboard, "Clear Values");
+
             blackboard.ClearKeys();
             GUILayout.Label("All Clear");
+
+            // 변경사항 저장
+            EditorUtility.SetDirty(blackboard);
         }
     }
 
