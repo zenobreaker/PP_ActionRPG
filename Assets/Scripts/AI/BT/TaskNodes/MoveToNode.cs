@@ -1,10 +1,10 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 
-namespace AI.BT.TaskNodes
+namespace BT.TaskNodes
 {
     /// <summary>
     /// MoveToNode 는 NavMeshAgent 컴포넌트의 의존도가 높다.

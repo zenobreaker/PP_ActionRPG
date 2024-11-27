@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-namespace AI.BT
+namespace BT
 {
     public abstract class BTNode : ScriptableObject
     {

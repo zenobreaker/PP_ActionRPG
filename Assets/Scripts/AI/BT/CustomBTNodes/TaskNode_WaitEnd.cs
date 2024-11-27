@@ -1,8 +1,8 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine;
 using static BTAIController;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_WaitEnd: TaskNode
     {

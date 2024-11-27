@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     public class InvertorNode : BTNode
     {

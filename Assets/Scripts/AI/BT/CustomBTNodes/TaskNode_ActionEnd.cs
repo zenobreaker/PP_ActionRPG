@@ -1,7 +1,7 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_ActionEnd : TaskNode
     {

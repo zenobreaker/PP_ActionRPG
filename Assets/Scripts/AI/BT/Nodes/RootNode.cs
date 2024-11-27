@@ -1,7 +1,7 @@
-using AI.BT.CustomBTNodes;
+using BT.CustomBTNodes;
 using UnityEngine;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     [System.Serializable]
     public class RootNode : BTNode

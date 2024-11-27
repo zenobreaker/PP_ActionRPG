@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using AI.BT;
+using BT;
 using UnityEditor.Callbacks;
 using System;
 using UnityEditor.Experimental.GraphView;

@@ -1,10 +1,10 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     /// <summary>
     /// Pattern에 따라 일정한 수치들을 결정 해주는 노드 

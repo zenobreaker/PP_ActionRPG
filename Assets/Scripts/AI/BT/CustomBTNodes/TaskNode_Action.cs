@@ -1,9 +1,9 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_Action : TaskNode
     {

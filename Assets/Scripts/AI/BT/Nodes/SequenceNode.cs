@@ -1,7 +1,6 @@
-
 using UnityEngine;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
 
     // SequenceNode 자식이 성공하면 다음 자식을 확인한다.

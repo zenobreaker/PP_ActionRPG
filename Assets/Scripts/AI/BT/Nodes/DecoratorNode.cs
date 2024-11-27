@@ -1,7 +1,7 @@
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     [System.Serializable]
     public abstract class DecoratorNode

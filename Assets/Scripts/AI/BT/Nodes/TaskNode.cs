@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     // 최하위 작업 노드 
     public abstract class TaskNode : BTNode

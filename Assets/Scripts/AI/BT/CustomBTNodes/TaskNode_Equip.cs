@@ -1,10 +1,10 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_Equip : TaskNode
     {

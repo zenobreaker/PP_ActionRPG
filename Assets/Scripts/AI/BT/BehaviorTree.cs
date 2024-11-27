@@ -1,11 +1,11 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using System;
 
-namespace AI.BT
+namespace BT
 {
     [CreateAssetMenu()]
     public class BehaviorTree : ScriptableObject

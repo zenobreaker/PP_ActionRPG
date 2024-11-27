@@ -1,6 +1,6 @@
-using AI.BT.CustomBTNodes;
-using AI.BT.Nodes;
-using AI.BT.TaskNodes;
+using BT.CustomBTNodes;
+using BT.Nodes;
+using BT.TaskNodes;
 using UnityEditor;
 using UnityEngine;
 

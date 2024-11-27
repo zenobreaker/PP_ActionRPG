@@ -1,7 +1,7 @@
 using System;
 
 
-namespace AI.BT
+namespace BT
 {
 
     [AttributeUsage(AttributeTargets.Enum, Inherited = false)]

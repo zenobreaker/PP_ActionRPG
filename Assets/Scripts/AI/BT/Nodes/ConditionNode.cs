@@ -1,8 +1,8 @@
-using AI.BT;
+using BT;
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts.AI.BT
+namespace Assets.Scripts.BT
 {
     public class ConditionNode : BTNode
     {

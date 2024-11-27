@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using AI.BT;
+using BT;
 using System;
 using System.Collections.Generic;
 using System.Linq;

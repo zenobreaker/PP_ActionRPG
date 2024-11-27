@@ -1,10 +1,10 @@
-using AI.BT;
+using BT;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Experimental.GraphView;
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine.UIElements;
 using UnityEditor;
 using UnityEditor.UIElements;

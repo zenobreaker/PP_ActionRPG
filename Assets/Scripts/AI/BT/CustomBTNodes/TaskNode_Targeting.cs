@@ -1,5 +1,5 @@
-using AI.BT.Helpers;
-using AI.BT.Nodes;
+using BT.Helpers;
+using BT.Nodes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_Targeting : TaskNode
     {

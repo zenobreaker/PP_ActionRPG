@@ -1,7 +1,7 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     /// <summary>
     /// WaitCondition의 관련한 처리를 하는 Decorator

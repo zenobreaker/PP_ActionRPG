@@ -1,7 +1,7 @@
-using AI.BT;
-using AI.BT.CustomBTNodes;
-using AI.BT.Nodes;
-using AI.BT.TaskNodes;
+using BT;
+using BT.CustomBTNodes;
+using BT.Nodes;
+using BT.TaskNodes;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;

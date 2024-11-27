@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     //TODO: 로직 수정해야한다.
     public class ParallelNode : CompositeNode

@@ -1,8 +1,8 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace AI.BT.TaskNodes
+namespace BT.TaskNodes
 {
     public class WaitNode : TaskNode
     {

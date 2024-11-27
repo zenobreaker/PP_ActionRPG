@@ -4,9 +4,9 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using AI.BT;
+using BT;
 using System;
-using AI.BT.Nodes;
+using BT.Nodes;
 using static UnityEditor.Experimental.GraphView.GraphView;
 using System.Linq;
 

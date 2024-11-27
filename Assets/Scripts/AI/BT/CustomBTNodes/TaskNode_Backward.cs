@@ -1,12 +1,12 @@
-using AI.BT.Helpers;
-using AI.BT.Nodes;
+using BT.Helpers;
+using BT.Nodes;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     /// <summary>
     /// 정찰 지점이 있다면 해당 지점으로 이동, 없다면 일정 구간 범위에서 랜덤한 곳으로 이동

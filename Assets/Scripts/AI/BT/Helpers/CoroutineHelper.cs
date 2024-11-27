@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace AI.BT.Helpers
+namespace BT.Helpers
 {
     public class CoroutineHelper : MonoBehaviour
     {

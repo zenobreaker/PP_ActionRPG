@@ -1,10 +1,10 @@
-using AI.BT;
+using BT;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     [System.Serializable]
     public abstract class CompositeNode : BTNode

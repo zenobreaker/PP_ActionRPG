@@ -1,10 +1,10 @@
-using AI.BT.Helpers;
-using AI.BT.Nodes;
+using BT.Helpers;
+using BT.Nodes;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace AI.BT
+namespace BT
 {
     public class BehaviorTreeRunner : MonoBehaviour
     {

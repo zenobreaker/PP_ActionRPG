@@ -1,9 +1,9 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     //TODO: 이 노드는 스크립트용으로 제작된 거여서 제네릭이 기여되어 있다.
     /// <summary>

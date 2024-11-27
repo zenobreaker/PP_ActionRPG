@@ -1,8 +1,8 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using System;
 using UnityEngine;
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     /// <summary>
     /// TODO: 관찰자를 추가해서 해당 관찰자 상태에 따라 로직이 틀리면 바로 끝낼지 말지 추가해야할 듯

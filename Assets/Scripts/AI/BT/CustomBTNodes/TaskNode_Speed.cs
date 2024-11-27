@@ -1,9 +1,9 @@
-using AI.BT.Nodes;
+using BT.Nodes;
 using UnityEngine;
-using static AI.BT.BTNode;
+using static BT.BTNode;
 
 
-namespace AI.BT.CustomBTNodes
+namespace BT.CustomBTNodes
 {
     public class TaskNode_Speed : TaskNode
     {

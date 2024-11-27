@@ -3,7 +3,7 @@ using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace AI.BT.Nodes
+namespace BT.Nodes
 {
     // SelectorNode 는 실패하면 다음 자식을 확인한다. 
     public class SelectorNode : CompositeNode
