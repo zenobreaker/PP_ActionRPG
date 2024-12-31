@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ConditionComponent : MonoBehaviour
 {
+    //TODO: 여러 상태가 중첩될 수 있지 않을까?
     public enum ConditionType
     {
         None, 

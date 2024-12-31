@@ -1,14 +1,14 @@
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
-
+using System;
 namespace BT.Nodes
 {
-    [System.Serializable]
     public abstract class DecoratorNode
         : BTNode
     {
         protected bool isRunning;
-        protected string boardKey;
+
+        [SerializeField] protected string boardKey;
+        [SerializeField] protected Type bbKey;
         //protected string keyValue;
 
         [SerializeField]
@@ -27,6 +27,17 @@ namespace BT.Nodes
             this.childNode = childNode;
             this.blackboard = blackboard;
             this.boardKey = boardKey;
+        }
+
+        public DecoratorNode(string nodeName, 
+            BTNode childNode, 
+            SO_Blackboard blackboard = null, 
+            object boardKey = null)
+        {
+            this.nodeName = nodeName;
+            this.childNode = childNode;
+            this.blackboard = blackboard;
+
         }
 
         public void SetOwnerObject(GameObject owner)

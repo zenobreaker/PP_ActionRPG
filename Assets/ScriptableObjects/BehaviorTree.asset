@@ -96,6 +96,7 @@ MonoBehaviour:
   - {fileID: -2754112221079443478}
   - {fileID: -2875798733101030962}
   - {fileID: -2513773681390872435}
+  - {fileID: 7332048935277357524}
 --- !u!114 &1209049729329261134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,3 +131,21 @@ MonoBehaviour:
   blackboard: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
   description: 
   childNode: {fileID: -1560327815827273397}
+--- !u!114 &7332048935277357524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6958285490146b541aca1c503f53eb08, type: 3}
+  m_Name: Decorator_Blackboard_None
+  m_EditorClassIdentifier: 
+  guid: 78a7e96ee149b2047ae6ca6892d9b014
+  position: {x: 289.225, y: 176}
+  blackboard: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
+  description: 
+  boardKey: 
+  childNode: {fileID: 0}
