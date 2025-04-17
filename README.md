@@ -45,7 +45,7 @@ Unity Engine 2021.3.33f1
 
 ### Skill Mnagement
 ![13](https://github.com/user-attachments/assets/39da28bf-a38e-4d48-8463-37c28232e586)
-<br> 스킨 관리 <br>
+<br> 스킬 관리 <br>
 
 ### Lauch & Airbonre
 ![14](https://github.com/user-attachments/assets/e630dafb-5e90-46eb-9a38-c9ef71139cbb)
