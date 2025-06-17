@@ -64,7 +64,6 @@ public class ComboComponent : MonoBehaviour
             comboInputBase = targetTransform.gameObject;
         }
         var uiGauge = uiCanvas.transform.FindChildByName(comboMaintainGaugeName);
-        Debug.Assert(uiGauge != null);
         if(uiGauge != null)
         {
             comboMaintainTimeGauge = uiGauge.GetComponent<InputGaugeUI>();

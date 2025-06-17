@@ -58,7 +58,6 @@ internal class PoseCopy_Window : EditorWindow
         }
 
 
-        //
         if (previousTargetObject != targetObjectProperty.objectReferenceValue)
         {
             Debug.Log("TargetObject has changed!");
@@ -76,7 +75,6 @@ internal class PoseCopy_Window : EditorWindow
             return;
         }
 
-        // 
         string[] clipNames = new string[clips.Length];
         for (int i = 0; i < clips.Length; i++)
         {
@@ -85,7 +83,6 @@ internal class PoseCopy_Window : EditorWindow
 
         selectedClipIndex = EditorGUILayout.Popup("Select Animation", selectedClipIndex, clipNames);
 
-        // 
         frame = EditorGUILayout.Slider("Frame", frame, 0, clips[selectedClipIndex].length * clips[selectedClipIndex].frameRate);
 
         if (GUILayout.Button("Play Selected Frame"))
@@ -93,7 +90,6 @@ internal class PoseCopy_Window : EditorWindow
             PlaySelectedFrame();
         }
 
-        // 
         {
             if (GUILayout.Button("Copy and Create New"))
             {
@@ -109,7 +105,6 @@ internal class PoseCopy_Window : EditorWindow
     {
         if (animator != null && clips != null && clips.Length > 0)
         {
-            // 
             float normalizedTime = frame / (clips[selectedClipIndex].length * clips[selectedClipIndex].frameRate);
             animator.Play(clips[selectedClipIndex].name, 0, normalizedTime);
             animator.Update(0); // Animator 
@@ -136,22 +131,17 @@ internal class PoseCopy_Window : EditorWindow
 
     private void CopyTransformWithChildren(GameObject original)
     {
-        //
         GameObject newObject = new GameObject(original.name + "_Copy");
 
-        // 
         CopyTransformValues(original.transform, newObject.transform);
 
-        // 
         CopyComponents(original, newObject);
 
-        // 
         foreach (Transform child in original.transform)
         {
             CopyChildTransforms(child, newObject.transform);
         }
 
-        // 
         foreach (Transform child in newObject.transform)
         {
             if (child == null)
@@ -192,35 +182,29 @@ internal class PoseCopy_Window : EditorWindow
         // 
         foreach (var component in original.GetComponents<Component>())
         {
-            // Component�� �����ϰ� Ÿ�� ������Ʈ�� �߰�
-            if (component is Transform) continue; // Transform ������Ʈ�� �������� ����
-            if (component is Animator) continue; // Animator ������Ʈ�� �������� ����
+            if (component is Transform) continue; 
+            if (component is Animator) continue; 
             Component newComponent = target.AddComponent(component.GetType());
 
-            // MeshRenderer ����
             if (component is MeshRenderer)
             {
                 CopyMeshRenderer(component as MeshRenderer, newComponent as MeshRenderer);
             }
-            // MeshFilter ����
             else if (component is MeshFilter)
             {
                 CopyMeshFilter(component as MeshFilter, newComponent as MeshFilter);
             }
             else
             {
-                // ���� ������Ʈ�� ��� �ʵ� ���� ����
                 var fields = component.GetType().GetFields();
                 foreach (var field in fields)
                 {
                     field.SetValue(newComponent, field.GetValue(component));
                 }
 
-                // ���� ������Ʈ�� ��� ������Ƽ ���� ����
                 var properties = component.GetType().GetProperties();
                 foreach (var property in properties)
                 {
-                    // Ư�� ������Ƽ�� �״�� �����ϸ� ������ �߻��ϴ� ���� 
                     if (property.CanWrite &&
                         property.PropertyType != typeof(Material) &&
                         property.PropertyType != typeof(Material[]) &&
@@ -239,45 +223,35 @@ internal class PoseCopy_Window : EditorWindow
 
     private void CopySkinnedMeshRenderer(SkinnedMeshRenderer original, SkinnedMeshRenderer target)
     {
-        // Mesh ����
         if (original.sharedMesh != null)
         {
-            // ������ȭ�� �����Ƿ� 
             //Mesh newMesh = Instantiate(original.sharedMesh);
             target.sharedMesh = original.sharedMesh;
         }
 
-        // Materials ����
         Material[] originalMaterials = original.sharedMaterials;
         Material[] newMaterials = new Material[originalMaterials.Length];
         for (int i = 0; i < originalMaterials.Length; i++)
         {
             if (originalMaterials[i] != null)
             {
-                //  newMaterials[i] = new Material(originalMaterials[i]);
-                // ���� ��Ƽ������ ������ �ʿ� ���� �ٷ� ����
                 newMaterials[i] = originalMaterials[i];
             }
         }
         target.sharedMaterials = newMaterials;
 
 
-        // Bone �迭 ����
-        // Bones ����
         Transform[] originalBones = original.bones;
         Transform[] newBones = new Transform[originalBones.Length];
         for (int i = 0; i < originalBones.Length; i++)
         {
-            // ������ Bones Transform�� ���纻�� Transform���� ����
             if (originalBones[i] != null)
             {
-                // ���� ����� ���� ������Ʈ�� �ڽ����� ���� Transform�� �����ؾ� �մϴ�.
                 newBones[i] = target.transform.parent.FindChildByName(originalBones[i].name);
             }
         }
         target.bones = newBones;
 
-        // rootBone ����
         if (original.rootBone != null)
         {
 
@@ -286,26 +260,21 @@ internal class PoseCopy_Window : EditorWindow
     }
 
 
-    // �ڽ� Ʈ������ ����
     void CopyChildTransforms(Transform originalChild, Transform newParent)
     {
         GameObject newChild = new GameObject(originalChild.name);
 
-        // ���ο� �ڽ� ������Ʈ�� Ʈ������ ���� ����
         newChild.transform.SetParent(newParent);
         CopyTransformValues(originalChild, newChild.transform);
 
-        // ���� �ڽ��� ������Ʈ ���� 
         CopyComponents(originalChild.gameObject, newChild);
 
-        // ��������� �ڽĵ��� Ʈ�������� ����
         foreach (Transform child in originalChild)
         {
             CopyChildTransforms(child, newChild.transform);
         }
     }
 
-    // Ʈ������ ���� �����ϴ� �Լ�
     void CopyTransformValues(Transform source, Transform target)
     {
         target.position = source.position;
@@ -323,7 +292,6 @@ internal class PoseCopy_Window : EditorWindow
             {
                 if (originalMaterials[i] != null)
                 {
-                    // ���� ��Ƽ������ ������ �ʿ� ���� �ٷ� ����
                     //newMaterials[i] = new Material(originalMaterials[i]);
                     newMaterials[i] = originalMaterials[i];
                 }

@@ -79,11 +79,6 @@ public class AirborneComponent : MonoBehaviour
 #endif
     }
 
-    //private void OnStateTypeChanging(StateType prevType)
-    //{
-    //    this.prevType = prevType;
-    //}
-
     private void OnConditionChanged(ConditionType prevType, ConditionType newType)
     {
         if (condition == null)
@@ -91,19 +86,7 @@ public class AirborneComponent : MonoBehaviour
 
         bool bEnable = false; 
         conditionType = newType;
-        //TODO: 공중 상태 애니메이션 관련 정리가 필요하다.
-        //if (newType == ConditionType.Airborne &&
-        //    condition.DownCondition == false)
-        //{
-        //    bEnable = false;
-        //    animator.SetBool("Airial", true);
-        //}
-        //else
-        //{
-        //    bEnable = true; 
-        //    animator.SetBool("Airial", false);
-        //}
-
+    
         if (newType != ConditionType.None)
         {
             bEnable = false;

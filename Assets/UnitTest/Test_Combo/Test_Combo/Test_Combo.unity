@@ -1907,9 +1907,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: btRunner
+      value: 
+      objectReference: {fileID: 534295754}
+    - target: {fileID: 6625144907415879968, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: so_blackboard
       value: 
-      objectReference: {fileID: 11400000, guid: 27b6cd88d77097743a332e1128db06b6, type: 2}
+      objectReference: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
     - target: {fileID: 7845690608406794497, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
       propertyPath: m_RootOrder
       value: 20
@@ -1962,6 +1966,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9165698736007683514, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+      propertyPath: tree
+      value: 
+      objectReference: {fileID: 11400000, guid: 5c310e2394eec8443af94f08577be12a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
 --- !u!1 &381564890
@@ -2739,6 +2747,17 @@ Transform:
   m_Father: {fileID: 1376474364}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &534295754 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9165698736007683514, guid: a99a5b8fbe0b71d4db0427ceaf7f18d1, type: 3}
+  m_PrefabInstance: {fileID: 367792179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ff119af6d6be14d83caa03a25ca09c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &536283608
 GameObject:
   m_ObjectHideFlags: 0
@@ -10038,6 +10057,7 @@ GameObject:
   - component: {fileID: 5108375825807144763}
   - component: {fileID: 5108375825807144765}
   - component: {fileID: 5108375825807144768}
+  - component: {fileID: 5108375825807144769}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -10214,6 +10234,7 @@ MonoBehaviour:
   uiPlayerName: Image_Healthbar_Foreground
   uiEnemyName: EnemyHealthBar
   speed: 1
+  hiddenTime: 3
 --- !u!114 &1532047566835816141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14619,6 +14640,7 @@ MonoBehaviour:
   uiStateName: EnemyAIState
   so_blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
   tickInterval: 0.1
+  btRunner: {fileID: 0}
   maxWaitCondtionPattern: 0
 --- !u!195 &5108375825807144765
 NavMeshAgent:
@@ -14688,6 +14710,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5d8b0e75d9f18439cbe381a01fd4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5108375825807144769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532047566835815990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ff119af6d6be14d83caa03a25ca09c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tree: {fileID: 0}
 --- !u!1 &5120011263382835079
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,7 @@ public abstract class BTAIController : MonoBehaviour
     public bool ActionMode { get => type == AIStateType.Action; }
     public bool DamagedMode { get => type == AIStateType.Damaged; }
 
+    [BlackboardType]
     public enum WaitCondition
     {
         None = 0, Idle = 1, Strafe, Backward,

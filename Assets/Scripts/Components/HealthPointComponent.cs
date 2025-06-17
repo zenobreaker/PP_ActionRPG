@@ -38,7 +38,6 @@ public class HealthPointComponent : MonoBehaviour
         if (GetComponent<Player>() != null)
         {
             GameObject ui = GameObject.Find(uiPlayerName);
-            Debug.Assert(ui != null, gameObject.name + " error ");
             if (ui != null)
             {
                 userInterface = ui.GetComponent<Image>();

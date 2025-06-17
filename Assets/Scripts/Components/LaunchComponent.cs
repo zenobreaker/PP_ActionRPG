@@ -115,7 +115,6 @@ public class LaunchComponent : MonoBehaviour
 
         float distance = Vector3.Distance(attacker.transform.localPosition, transform.localPosition);
 
-        //TODO: 좀 짜치지만..
         SkillActionData skillData = data as SkillActionData;
         if (skillData == null && causer is not Gun)
         {

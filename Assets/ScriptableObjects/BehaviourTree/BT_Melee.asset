@@ -13,9 +13,45 @@ MonoBehaviour:
   m_Name: TaskNode_Damaged
   m_EditorClassIdentifier: 
   guid: 42d0db1dc025b8446ba347f928c21bf8
-  position: {x: -481.57977, y: 277.22705}
+  position: {x: 42.251045, y: 340.99994}
   blackboard: {fileID: 0}
   description: 
+--- !u!114 &-7566244345020576233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ee5ada3119bc144087792e53d516039, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  guid: e6f5c60e4098f974192195f885c0b55c
+  position: {x: -365.7488, y: 413.99997}
+  blackboard: {fileID: 0}
+  description: 
+  children:
+  - {fileID: 4381642345577112385}
+--- !u!114 &-3860921054678206551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e97d3c95f49aab4c97c90fd8c670f0c, type: 3}
+  m_Name: Decorator_WaitCondition
+  m_EditorClassIdentifier: 
+  guid: 9a24c5fabcde1a94189254d19f14553f
+  position: {x: -392.00003, y: 271}
+  blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
+  description: 
+  boardKey: WaitCondition
+  childNode: {fileID: -7566244345020576233}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28,7 +64,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8c51080210c48d4db5b6892a79bff3e, type: 3}
   m_Name: BT_Melee
   m_EditorClassIdentifier: 
-  blackboard: {fileID: 0}
+  blackboard: {fileID: 11400000, guid: f60a8390afe7fdb42bff79e700ce0c39, type: 2}
   rootNode: {fileID: 9038632770551729799}
   state: 0
   nodes:
@@ -36,25 +72,8 @@ MonoBehaviour:
   - {fileID: 3148170036509205494}
   - {fileID: -9062100215666687046}
   - {fileID: 4381642345577112385}
-  - {fileID: 3410145090992963191}
-  - {fileID: 793867757330229024}
---- !u!114 &793867757330229024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ee5ada3119bc144087792e53d516039, type: 3}
-  m_Name: SelectorNode
-  m_EditorClassIdentifier: 
-  guid: 393a1d230cd802d47b68e2d2764ba6aa
-  position: {x: 2.0000658, y: 310}
-  blackboard: {fileID: 0}
-  description: 
-  children: []
+  - {fileID: -7566244345020576233}
+  - {fileID: -3860921054678206551}
 --- !u!114 &3148170036509205494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,31 +87,11 @@ MonoBehaviour:
   m_Name: SelectorNode
   m_EditorClassIdentifier: 
   guid: 8f713283e6950ed4ab183a2fbd34c291
-  position: {x: 1.9999678, y: 12.059009}
+  position: {x: -72.99995, y: 49.749}
   blackboard: {fileID: 0}
   description: 
   children:
-  - {fileID: 3410145090992963191}
-  - {fileID: 793867757330229024}
---- !u!114 &3410145090992963191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c228bfccfa7be364f8e551f1432d10a9, type: 3}
-  m_Name: SequenceNode
-  m_EditorClassIdentifier: 
-  guid: f783076e043a774439d368dd4ffadf2c
-  position: {x: -349.57983, y: 146.22708}
-  blackboard: {fileID: 0}
-  description: 
-  children:
-  - {fileID: -9062100215666687046}
-  - {fileID: 4381642345577112385}
+  - {fileID: -3860921054678206551}
 --- !u!114 &4381642345577112385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,11 +105,11 @@ MonoBehaviour:
   m_Name: WaitNode
   m_EditorClassIdentifier: 
   guid: 71020f53b4766b145b10e533b54beae3
-  position: {x: -222.57983, y: 277.22705}
+  position: {x: -410.8244, y: 556.75696}
   blackboard: {fileID: 0}
   description: 
   waitTime: 1
-  waitRandDelay: 0
+  waitRandDelay: 0.5
 --- !u!114 &9038632770551729799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +123,7 @@ MonoBehaviour:
   m_Name: RootNode
   m_EditorClassIdentifier: 
   guid: 4b057c12980294a41b1f99ba04c2faaa
-  position: {x: 1.9999888, y: -93.64498}
+  position: {x: -72.99996, y: -155.5178}
   blackboard: {fileID: 0}
   description: 
   childNode: {fileID: 3148170036509205494}
